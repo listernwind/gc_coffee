@@ -1,7 +1,11 @@
 App({
   globalData: {
-    // 后端地址：开发者工具用 127.0.0.1；真机预览请改为电脑局域网 IP，如 http://192.168.1.100:8080
-    baseUrl: 'http://127.0.0.1:8080',
+    // 后端地址：
+    // - 开发者工具（模拟器）用 127.0.0.1
+    // - 手机真机预览用电脑的局域网 IP（手机和电脑需连同一个 WiFi）
+    // 如果局域网 IP 变了，只改下面这个常量即可
+    lanIp: '192.168.31.135',
+    baseUrl: '',
     // 后端配置了真实微信 appid/secret 后，改为 true 走 wx.login 真实登录
     useRealWxLogin: false,
     userInfo: null,
@@ -9,6 +13,13 @@ App({
   },
 
   onLaunch() {
+    let platform = 'devtools';
+    try {
+      platform = wx.getSystemInfoSync().platform;
+    } catch (e) { /* ignore */ }
+    this.globalData.baseUrl = platform === 'devtools'
+      ? 'http://127.0.0.1:8080'
+      : 'http://' + this.globalData.lanIp + ':8080';
     // 本地模拟模式：生成稳定的 mock openid（后端未配置 appid 时 code 直接作为 openid）
     let mockUid = wx.getStorageSync('mock_uid');
     if (!mockUid) {

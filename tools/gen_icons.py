@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-GC Coffee 图标库生成器
-生成一套简洁线性描边 SVG 图标（24x24，1.7px 圆头描边），输出为 base64 data-URI 样式库：
-  miniprogram/assets/icons.wxss  （微信小程序）
-  preview/icons.css              （浏览器预览页）
+GC Coffee 图标库生成器（PNG 版）
+设计稿：24x24 线性描边 SVG，渲染为 96px PNG（2x 高清），输出 base64 data-URI 样式库：
+  miniprogram/assets/icons.wxss  （微信小程序，rpx 单位；WXSS 官方支持 PNG base64）
+  preview/icons.css              （浏览器预览页，px 单位）
+依赖：macOS 自带 qlmanage（SVG 渲染）。缓存于 tools/icon-cache/，重复运行秒级。
 用法：python3 tools/gen_icons.py
 """
 import base64
 import os
+import subprocess
+import sys
 
-# 图标路径定义（24x24 viewBox）
 ICONS = {
     "home": 'M4 10.5 L12 4 L20 10.5 M5.5 9.5 V20 H18.5 V9.5 M9.5 20 V13.5 H14.5 V20',
     "cup": 'M4.5 7.5 H17 V13 A5 5 0 0 1 12 18 H9.5 A5 5 0 0 1 4.5 13 Z M17 9.5 H18.8 A2.7 2.7 0 0 1 21.5 12.2 V13 M8.7 2.8 V5.2 M12 2.2 V5.2 M15.3 2.8 V5.2',
@@ -49,36 +51,60 @@ COLORS = {
 TPL = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
        'stroke="{c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{p}</svg>')
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+CACHE = os.path.join(HERE, "icon-cache")
 
-def b64(svg: str) -> str:
-    return "data:image/svg+xml;base64," + base64.b64encode(svg.encode()).decode()
+
+def render_png(svg_text: str, name: str) -> bytes:
+    """qlmanage 渲染 SVG -> PNG（批量），带缓存"""
+    os.makedirs(CACHE, exist_ok=True)
+    cache_file = os.path.join(CACHE, name + ".png")
+    if os.path.exists(cache_file) and os.path.getsize(cache_file) > 0:
+        return open(cache_file, "rb").read()
+    tmp = os.path.join(CACHE, "_render")
+    os.makedirs(tmp, exist_ok=True)
+    svg_path = os.path.join(tmp, name + ".svg")
+    with open(svg_path, "w", encoding="utf-8") as f:
+        f.write(svg_text)
+    subprocess.run(["qlmanage", "-t", "-s", "96", "-o", tmp, svg_path],
+                   capture_output=True, check=True)
+    png_path = os.path.join(tmp, name + ".svg.png")
+    data = open(png_path, "rb").read()
+    with open(cache_file, "wb") as f:
+        f.write(data)
+    return data
 
 
-def gen_css(sel_prefix: str) -> str:
+def b64_png(png: bytes) -> str:
+    return "data:image/png;base64," + base64.b64encode(png).decode()
+
+
+def gen_css() -> str:
     lines = [
-        "/* GC Coffee 线性图标库（自动生成，勿手改） */",
-        f".{sel_prefix}ic{{display:inline-block;width:40rpx;height:40rpx;background-repeat:no-repeat;background-position:center;background-size:contain;}}",
+        "/* GC Coffee 线性图标库（PNG，自动生成，勿手改） */",
+        ".ic{display:inline-block;width:40rpx;height:40rpx;background-repeat:no-repeat;background-position:center;background-size:contain;}",
     ]
     for name, path in ICONS.items():
         for suffix, color in COLORS.items():
-            cls = f"{sel_prefix}ic-{name}{suffix}"
-            lines.append(f".{cls}{{background-image:url('{b64(TPL.format(c=color, p=path))}');}}")
+            png = render_png(TPL.format(c=color, p=path), f"{name}{suffix or '-d'}")
+            cls = f"ic-{name}{suffix}"
+            lines.append(f".{cls}{{background-image:url('{b64_png(png)}');}}")
     return "\n".join(lines) + "\n"
 
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
+def main():
+    wxss = gen_css()
+    os.makedirs(os.path.join(ROOT, "miniprogram", "assets"), exist_ok=True)
+    with open(os.path.join(ROOT, "miniprogram", "assets", "icons.wxss"), "w", encoding="utf-8") as f:
+        f.write(wxss)
+    css = wxss.replace("40rpx", "18px")
+    os.makedirs(os.path.join(ROOT, "preview"), exist_ok=True)
+    with open(os.path.join(ROOT, "preview", "icons.css"), "w", encoding="utf-8") as f:
+        f.write(css)
+    size = sum(1 for _ in ICONS) * len(COLORS)
+    print(f"generated: {size} PNG icons -> miniprogram/assets/icons.wxss + preview/icons.css")
 
-# 小程序：rpx 单位
-wxss = gen_css("").replace("width:40rpx", "width:40rpx")
-os.makedirs(os.path.join(ROOT, "miniprogram", "assets"), exist_ok=True)
-with open(os.path.join(ROOT, "miniprogram", "assets", "icons.wxss"), "w", encoding="utf-8") as f:
-    f.write(wxss)
 
-# 预览页：px 单位
-css = gen_css("").replace("40rpx", "18px")
-os.makedirs(os.path.join(ROOT, "preview"), exist_ok=True)
-with open(os.path.join(ROOT, "preview", "icons.css"), "w", encoding="utf-8") as f:
-    f.write(css)
-
-print(f"generated: {len(ICONS)} icons x {len(COLORS)} variants")
+if __name__ == "__main__":
+    main()
