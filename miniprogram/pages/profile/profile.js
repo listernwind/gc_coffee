@@ -35,13 +35,17 @@ Page({
   goRecharge() { wx.navigateTo({ url: '/pages/recharge/recharge' }); },
   goMember() { wx.switchTab({ url: '/pages/member/member' }); },
 
-  // 管理后台：有店长 token 直接进，否则先登录
+  // 管理后台：店长 token 有效直接进，无效/过期则引导登录
   goAdmin() {
-    if (wx.getStorageSync('adminToken')) {
-      wx.navigateTo({ url: '/pages/admin/dashboard/dashboard' });
-    } else {
+    if (!wx.getStorageSync('adminToken')) {
       wx.navigateTo({ url: '/pages/admin-login/admin-login' });
+      return;
     }
+    api.get('/api/admin/stats/overview').then(() => {
+      wx.navigateTo({ url: '/pages/admin/dashboard/dashboard' });
+    }).catch(() => {
+      wx.navigateTo({ url: '/pages/admin-login/admin-login' });
+    });
   },
 
   openAddress() {

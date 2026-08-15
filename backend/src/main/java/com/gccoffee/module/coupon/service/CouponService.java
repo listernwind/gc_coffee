@@ -43,9 +43,14 @@ public class CouponService {
         if (claimed >= t.getPerUserLimit()) {
             throw new BizException("已达领取上限");
         }
-        templateMapper.update(null, new LambdaUpdateWrapper<CouponTemplate>()
+        // 原子自增发放量：超发时影响行数为 0
+        int updated = templateMapper.update(null, new LambdaUpdateWrapper<CouponTemplate>()
                 .eq(CouponTemplate::getId, templateId)
-                .set(CouponTemplate::getIssuedCount, t.getIssuedCount() + 1));
+                .apply("total_count = 0 OR issued_count < total_count")
+                .setSql("issued_count = issued_count + 1"));
+        if (updated == 0) {
+            throw new BizException("已被领完");
+        }
         return issue(uid, t, "CLAIM");
     }
 
@@ -56,10 +61,14 @@ public class CouponService {
             throw new BizException("该优惠券不支持积分兑换");
         }
         checkClaimable(t);
-        userService.deductPoints(uid, t.getRedeemPoints(), "CP" + t.getId(), "积分兑换「" + t.getName() + "」");
-        templateMapper.update(null, new LambdaUpdateWrapper<CouponTemplate>()
+        int updated = templateMapper.update(null, new LambdaUpdateWrapper<CouponTemplate>()
                 .eq(CouponTemplate::getId, templateId)
-                .set(CouponTemplate::getIssuedCount, t.getIssuedCount() + 1));
+                .apply("total_count = 0 OR issued_count < total_count")
+                .setSql("issued_count = issued_count + 1"));
+        if (updated == 0) {
+            throw new BizException("已被领完");
+        }
+        userService.deductPoints(uid, t.getRedeemPoints(), "CP" + t.getId(), "积分兑换「" + t.getName() + "」");
         return issue(uid, t, "REDEEM");
     }
 
@@ -137,11 +146,15 @@ public class CouponService {
             throw new BizException("未满足使用门槛（满 " + c.getMinAmount().stripTrailingZeros().toPlainString() + " 元可用）");
         }
         BigDecimal discount = calcDiscount(c, totalAmount);
-        userCouponMapper.update(null, new LambdaUpdateWrapper<UserCoupon>()
+        int updated = userCouponMapper.update(null, new LambdaUpdateWrapper<UserCoupon>()
                 .eq(UserCoupon::getId, c.getId())
+                .eq(UserCoupon::getStatus, "UNUSED")
                 .set(UserCoupon::getStatus, "USED")
                 .set(UserCoupon::getUsedAt, LocalDateTime.now())
                 .set(UserCoupon::getUsedOrderNo, orderNo));
+        if (updated == 0) {
+            throw new BizException("优惠券已被使用");
+        }
         return discount;
     }
 

@@ -42,6 +42,19 @@ public class AdminMarketingController {
 
     @PostMapping("/coupons")
     public Result<CouponTemplate> saveCoupon(@RequestBody CouponTemplate c) {
+        if (c.getName() == null || c.getName().isBlank()) {
+            throw new com.gccoffee.common.BizException("券名称不能为空");
+        }
+        if (c.getType() == null || !List.of("FULL_REDUCTION", "DISCOUNT", "CASH").contains(c.getType())) {
+            throw new com.gccoffee.common.BizException("券类型不正确");
+        }
+        if (c.getValue() == null || c.getValue().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            throw new com.gccoffee.common.BizException("券面额/折扣必须大于 0");
+        }
+        if ("DISCOUNT".equals(c.getType())
+                && c.getValue().compareTo(java.math.BigDecimal.ONE) >= 0) {
+            throw new com.gccoffee.common.BizException("折扣率必须在 0~1 之间（如 0.9 表示 9 折）");
+        }
         if (c.getId() == null) {
             c.setIssuedCount(0);
             c.setCreatedAt(LocalDateTime.now());
@@ -68,6 +81,15 @@ public class AdminMarketingController {
 
     @PostMapping("/activities")
     public Result<Activity> saveActivity(@RequestBody Activity a) {
+        if (a.getTitle() == null || a.getTitle().isBlank()) {
+            throw new com.gccoffee.common.BizException("活动标题不能为空");
+        }
+        if (a.getStartAt() == null || a.getEndAt() == null) {
+            throw new com.gccoffee.common.BizException("请填写活动开始/结束日期");
+        }
+        if (a.getEndAt().isBefore(a.getStartAt())) {
+            throw new com.gccoffee.common.BizException("结束日期不能早于开始日期");
+        }
         if (a.getId() == null) {
             a.setCreatedAt(LocalDateTime.now());
             activityMapper.insert(a);

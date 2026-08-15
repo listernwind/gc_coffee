@@ -1,5 +1,6 @@
 package com.gccoffee.module.drink.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,6 +11,7 @@ import java.util.List;
 public class DrinkOrderRequest {
 
     @NotEmpty(message = "订单不能为空")
+    @Valid
     private List<Item> items;
 
     /** BALANCE / WX_MOCK */

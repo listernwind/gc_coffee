@@ -18,6 +18,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
+    private final com.gccoffee.module.user.mapper.UserMapper userMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -37,6 +38,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         String role = claims.get("role", String.class);
         if (adminPath && !"ADMIN".equals(role)) {
             return reject(response, 403, "无管理权限");
+        }
+        // 用户被禁用后，旧 token 立即失效
+        if (!adminPath) {
+            com.gccoffee.module.user.entity.User u = userMapper.selectById(uid);
+            if (u == null || u.getStatus() == null || u.getStatus() == 0) {
+                return reject(response, 401, "账号已被禁用，请联系店主");
+            }
         }
         UserContext.set(uid, role);
         return true;

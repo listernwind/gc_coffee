@@ -162,6 +162,31 @@ setput = req('/api/admin/ops/settings', 'PUT', {'shop_name': 'GC Coffee 测试�
 check('settings put', setput['code'] == 0)
 check('settings readback', req('/api/admin/ops/settings', token=atk)['data']['shop_name'] == 'GC Coffee 测试店')
 
+# 19.6 P0 回归：WX_MOCK 饮品订单取消 → 余额不变、积分回滚
+bal_before = req('/api/user/me', token=token)['data']['balance']
+pts_before = req('/api/user/me', token=token)['data']['points']
+o2 = req('/api/drink/order', 'POST', {'items': [{'productId': p1['id'], 'quantity': 3}], 'payType': 'WX_MOCK'}, token)['data']
+pts_after_order = req('/api/user/me', token=token)['data']['points']
+check('mock order earns points', pts_after_order > pts_before)
+cancel2 = req(f"/api/drink/orders/{o2['id']}/cancel", 'POST', {}, token)
+check('cancel mock order ok', cancel2['code'] == 0 and cancel2['data']['status'] == 'CANCELLED')
+me_after_cancel = req('/api/user/me', token=token)['data']
+check('P0-fix balance unchanged', float(me_after_cancel['balance']) == float(bal_before), f"before={bal_before} after={me_after_cancel['balance']}")
+check('P0-fix points rolled back', me_after_cancel['points'] == pts_before, f"before={pts_before} after={me_after_cancel['points']}")
+
+# 19.7 短月份/非法月份边界
+m_short = req('/api/coffee/monthly?month=2026-02', token=token)
+check('short month monthly ok', m_short.get('code') == 0, str(m_short.get('code')))
+m_bad = req('/api/coffee/monthly?month=abc', token=token)
+check('invalid month rejected', m_bad.get('code') == 1, str(m_bad.get('msg')))
+
+# 19.8 禁用用户后旧 token 立即失效
+req(f'/api/admin/members/{uid}/status', 'POST', {'status': 0}, atk)
+blocked = req('/api/user/me', token=token)
+check('disabled user blocked', blocked.get('code') == 401, str(blocked.get('code')))
+req(f'/api/admin/members/{uid}/status', 'POST', {'status': 1}, atk)
+check('re-enable user', req('/api/user/me', token=token)['code'] == 0)
+
 # 21. 越权检查：用户 token 访问管理接口应 403
 forbidden = req('/api/admin/stats/overview', token=token)
 check('user blocked from admin', forbidden.get('code') == 403, str(forbidden.get('code')))
@@ -174,4 +199,4 @@ bad = req('/api/coffee/reserve', 'POST', {
 }, token)
 check('same-day delivery rejected', bad.get('code') == 1 and '次日' in bad.get('msg', ''), str(bad.get('msg')))
 
-print(f'\n===== {ok_count}/37 checks passed =====')
+print(f'\n===== {ok_count}/46 checks passed =====')

@@ -52,6 +52,9 @@ Page({
   save() {
     const url = this.data.isPoster ? '/api/admin/marketing/posters' : '/api/admin/marketing/activities';
     const form = Object.assign({}, this.data.form);
+    if (this.data.isPoster) {
+      form.linkType = form.linkId && Number(form.linkId) > 0 ? 'ACTIVITY' : 'NONE';
+    }
     api.post(url, form).then(() => {
       wx.showToast({ title: '已保存', icon: 'none' });
       this.setData({ showForm: false });

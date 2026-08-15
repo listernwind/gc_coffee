@@ -70,6 +70,7 @@ public class AdminCatalogController {
 
     @PostMapping("/drink-products")
     public Result<DrinkProduct> saveDrinkProduct(@RequestBody DrinkProduct p) {
+        validateProduct(p.getName(), p.getPrice());
         if (p.getId() == null) {
             p.setCreatedAt(LocalDateTime.now());
             drinkProductMapper.insert(p);
@@ -95,6 +96,7 @@ public class AdminCatalogController {
 
     @PostMapping("/coffee-products")
     public Result<CoffeeProduct> saveCoffeeProduct(@RequestBody CoffeeProduct p) {
+        validateProduct(p.getName(), p.getPrice());
         if (p.getId() == null) {
             p.setCreatedAt(LocalDateTime.now());
             coffeeProductMapper.insert(p);
@@ -120,6 +122,10 @@ public class AdminCatalogController {
 
     @PostMapping("/coffee-packages")
     public Result<CoffeePackage> savePackage(@RequestBody CoffeePackage p) {
+        validateProduct(p.getName(), p.getPrice());
+        if (p.getBottleCount() == null || p.getBottleCount() <= 0) {
+            throw new com.gccoffee.common.BizException("每月瓶数必须大于 0");
+        }
         if (p.getId() == null) {
             p.setCreatedAt(LocalDateTime.now());
             coffeePackageMapper.insert(p);
@@ -127,6 +133,15 @@ public class AdminCatalogController {
             coffeePackageMapper.updateById(p);
         }
         return Result.ok(p);
+    }
+
+    private void validateProduct(String name, java.math.BigDecimal price) {
+        if (name == null || name.isBlank()) {
+            throw new com.gccoffee.common.BizException("商品名称不能为空");
+        }
+        if (price == null || price.compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            throw new com.gccoffee.common.BizException("价格必须大于 0");
+        }
     }
 
     @DeleteMapping("/coffee-packages/{id}")

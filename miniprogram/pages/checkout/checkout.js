@@ -53,9 +53,11 @@ Page({
         label = c.name + ' -' + util.money(discount);
       }
     }
+    const pay = Math.max(total - discount, 0);
     this.setData({
       discount: util.money(discount),
-      payAmount: util.money(Math.max(total - discount, 0))
+      payAmount: util.money(pay),
+      balanceEnough: Number(this.data.balance) >= pay
     });
     if (label) this.setData({ couponLabel: label });
   },
@@ -92,7 +94,7 @@ Page({
   },
 
   chooseCoupon(e) {
-    const id = e.currentTarget.dataset.id;
+    const id = Number(e.currentTarget.dataset.id);
     this.setData({ couponId: id || null, showCoupons: false });
     this.applyCoupon(Number(this.data.total));
   },

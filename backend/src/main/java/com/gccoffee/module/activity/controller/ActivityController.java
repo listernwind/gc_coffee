@@ -43,4 +43,14 @@ public class ActivityController {
         return Result.ok(posterMapper.selectList(new LambdaQueryWrapper<Poster>()
                 .eq(Poster::getActive, 1).orderByAsc(Poster::getSort).orderByDesc(Poster::getId)));
     }
+
+    /** 活动详情（含已结束活动，海报跳转用） */
+    @GetMapping("/detail")
+    public Result<Activity> detail(@RequestParam Long id) {
+        Activity a = activityMapper.selectById(id);
+        if (a == null) {
+            throw new com.gccoffee.common.BizException("活动不存在");
+        }
+        return Result.ok(a);
+    }
 }

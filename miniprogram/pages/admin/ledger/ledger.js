@@ -36,8 +36,14 @@ Page({
     this.load();
   },
 
-  onStart(e) { this.setData({ startDate: e.detail.value }); },
-  onEnd(e) { this.setData({ endDate: e.detail.value }); },
+  onStart(e) {
+    this.setData({ startDate: e.detail.value });
+    this.load();
+  },
+  onEnd(e) {
+    this.setData({ endDate: e.detail.value });
+    this.load();
+  },
 
   load() {
     this.setData({ loading: true });

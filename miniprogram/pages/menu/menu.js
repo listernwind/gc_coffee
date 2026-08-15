@@ -58,7 +58,7 @@ Page({
 
   // 购物车浮层中的加号
   addOne(e) {
-    const id = e.currentTarget.dataset.id;
+    const id = Number(e.currentTarget.dataset.id);
     const cart = getApp().globalData.cart || [];
     const hit = cart.find((i) => i.productId === id);
     if (hit) hit.qty += 1;
@@ -67,7 +67,7 @@ Page({
   },
 
   minus(e) {
-    const id = e.currentTarget.dataset.id;
+    const id = Number(e.currentTarget.dataset.id);
     const cart = getApp().globalData.cart || [];
     const idx = cart.findIndex((i) => i.productId === id);
     if (idx >= 0) {

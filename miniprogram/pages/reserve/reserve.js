@@ -47,16 +47,23 @@ Page({
     }).catch(() => {});
     api.get('/api/public/settings').then((s) => {
       const slots = JSON.parse(s.delivery_slots || '[]');
-      const days = [1, 2, 3, 4, 5, 6, 7].map((n) => {
-        const d = new Date();
-        d.setDate(d.getDate() + n);
+      this.setData({ community: s.community_name || '', slots, slotIndex: slots.length ? 0 : -1 });
+      if (!slots.length) {
+        wx.showToast({ title: '门店暂未配置派送时段，请联系店主', icon: 'none' });
+      }
+    }).catch(() => {});
+    // 可选派送日期：由后端计算（次日开始，超过截止时间顺延到后天）
+    api.get('/api/coffee/delivery-days', { n: 7 }).then((list) => {
+      const days = (list || []).map((date) => {
+        const d = new Date(date.replace(/-/g, '/'));
+        const diff = Math.round((d - new Date(util.fmtDate(new Date()).replace(/-/g, '/')))) / 86400000;
         return {
-          date: util.fmtDate(d),
+          date,
           label: (d.getMonth() + 1) + '/' + d.getDate(),
-          week: n === 1 ? '明天' : '周' + '日一二三四五六'.charAt(d.getDay())
+          week: diff === 1 ? '明天' : diff === 2 ? '后天' : '周' + '日一二三四五六'.charAt(d.getDay())
         };
       });
-      this.setData({ community: s.community_name || '', slots, days, slotIndex: 0 });
+      this.setData({ days });
     }).catch(() => {});
     api.get('/api/coffee/package/current').then((up) => {
       this.setData({
@@ -127,6 +134,8 @@ Page({
     const { productId, quantity, usePackage, days, dayIndex, slots, slotIndex,
       address, contactName, contactPhone, payType, community } = this.data;
     if (!productId) return wx.showToast({ title: '请选择产品', icon: 'none' });
+    if (!slots.length) return wx.showToast({ title: '门店暂未配置派送时段，请联系店主', icon: 'none' });
+    if (!days.length) return wx.showToast({ title: '暂无可选派送日期', icon: 'none' });
     if (slotIndex < 0) return wx.showToast({ title: '请选择派送时段', icon: 'none' });
     if (!address.trim()) return wx.showToast({ title: '请填写楼栋门牌号', icon: 'none' });
     if (!contactName.trim()) return wx.showToast({ title: '请填写联系人', icon: 'none' });

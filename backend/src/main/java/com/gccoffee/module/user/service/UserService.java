@@ -43,6 +43,7 @@ public class UserService {
 
     // ==================== 登录 ====================
 
+    @Transactional
     public Map<String, Object> loginByWx(String code, String nickname, String avatar) {
         String openid = wxUtil.resolveOpenid(code);
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getOpenid, openid));
@@ -109,39 +110,42 @@ public class UserService {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0 || amount.compareTo(new BigDecimal("5000")) > 0) {
             throw new BizException("充值金额需在 0.01~5000 元之间");
         }
+        if (amount.scale() > 2) {
+            throw new BizException("金额最多保留两位小数");
+        }
         User u = getById(uid);
-        BigDecimal balance = u.getBalance().add(amount);
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getBalance, balance));
-        addBalanceRecord(uid, amount, balance, "RECHARGE", OrderNoUtil.recharge(),
+                .eq(User::getId, uid)
+                .setSql("balance = balance + " + amount));
+        addBalanceRecord(uid, amount, u.getBalance().add(amount), "RECHARGE", OrderNoUtil.recharge(),
                 appConfigPayLabel() + "充值");
-        return balance;
+        return u.getBalance().add(amount);
     }
 
-    /** 扣减余额（消费），余额不足抛异常 */
+    /** 扣减余额（消费），余额不足抛异常；条件更新保证并发安全 */
     @Transactional
     public void deductBalance(Long uid, BigDecimal amount, String bizType, String bizNo, String remark) {
         User u = getById(uid);
-        if (u.getBalance().compareTo(amount) < 0) {
+        int updated = userMapper.update(null, new LambdaUpdateWrapper<User>()
+                .eq(User::getId, uid).ge(User::getBalance, amount)
+                .setSql("balance = balance - " + amount));
+        if (updated == 0) {
             throw new BizException("余额不足，请先充值");
         }
-        BigDecimal balance = u.getBalance().subtract(amount);
-        userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getBalance, balance));
-        addBalanceRecord(uid, amount.negate(), balance, bizType, bizNo, remark);
+        addBalanceRecord(uid, amount.negate(), u.getBalance().subtract(amount), bizType, bizNo, remark);
     }
 
-    /** 余额退款（取消订单） */
+    /** 余额退款（取消订单），仅 BALANCE 支付来源调用 */
     @Transactional
     public void refundBalance(Long uid, BigDecimal amount, String bizType, String bizNo, String remark) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             return;
         }
         User u = getById(uid);
-        BigDecimal balance = u.getBalance().add(amount);
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getBalance, balance));
-        addBalanceRecord(uid, amount, balance, bizType, bizNo, remark);
+                .eq(User::getId, uid)
+                .setSql("balance = balance + " + amount));
+        addBalanceRecord(uid, amount, u.getBalance().add(amount), bizType, bizNo, remark);
     }
 
     public void addBalanceRecord(Long uid, BigDecimal change, BigDecimal balanceAfter, String bizType, String bizNo, String remark) {
@@ -156,19 +160,33 @@ public class UserService {
         balanceRecordMapper.insert(r);
     }
 
-    /** 消费后累计消费金额（等级依据） */
+    /** 消费后累计消费金额（等级依据），并发安全 */
     @Transactional
     public void addSpend(Long uid, BigDecimal amount) {
-        User u = getById(uid);
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getTotalSpend, u.getTotalSpend().add(amount)));
+                .eq(User::getId, uid)
+                .setSql("total_spend = total_spend + " + amount));
+    }
+
+    /** 取消订单时回滚累计消费（不低于 0） */
+    @Transactional
+    public void rollbackSpend(Long uid, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+        userMapper.update(null, new LambdaUpdateWrapper<User>()
+                .eq(User::getId, uid)
+                .setSql("total_spend = GREATEST(total_spend - " + amount + ", 0)"));
     }
 
     public int pointsRate() {
         return settingService.getInt(SettingService.KEY_POINTS_RATE, 1);
     }
 
-    /** 按实付金额赠送积分 */
+    /** 按实付金额赠送积分（并发安全） */
     @Transactional
     public int earnPoints(Long uid, BigDecimal payAmount, String bizNo, String remark) {
         int rate = pointsRate();
@@ -182,7 +200,8 @@ public class UserService {
         User u = getById(uid);
         int after = u.getPoints() + pts;
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getPoints, after));
+                .eq(User::getId, uid)
+                .setSql("points = points + " + pts));
         PointsRecord r = new PointsRecord();
         r.setUserId(uid);
         r.setChangePoints(pts);
@@ -195,20 +214,45 @@ public class UserService {
         return pts;
     }
 
-    /** 扣除积分（兑换） */
+    /** 取消订单时回滚获赠积分（不低于 0） */
+    @Transactional
+    public void rollbackPoints(Long uid, int points, String bizNo, String remark) {
+        if (points <= 0) {
+            return;
+        }
+        User u = getById(uid);
+        int deduct = Math.min(u.getPoints(), points);
+        if (deduct <= 0) {
+            return;
+        }
+        userMapper.update(null, new LambdaUpdateWrapper<User>()
+                .eq(User::getId, uid)
+                .setSql("points = GREATEST(points - " + deduct + ", 0)"));
+        PointsRecord r = new PointsRecord();
+        r.setUserId(uid);
+        r.setChangePoints(-deduct);
+        r.setPointsAfter(Math.max(0, u.getPoints() - deduct));
+        r.setBizType("ROLLBACK");
+        r.setBizNo(bizNo);
+        r.setRemark(remark);
+        r.setCreatedAt(LocalDateTime.now());
+        pointsRecordMapper.insert(r);
+    }
+
+    /** 扣除积分（兑换），条件更新保证并发安全 */
     @Transactional
     public void deductPoints(Long uid, int points, String bizNo, String remark) {
         User u = getById(uid);
-        if (u.getPoints() < points) {
+        int updated = userMapper.update(null, new LambdaUpdateWrapper<User>()
+                .eq(User::getId, uid).ge(User::getPoints, points)
+                .setSql("points = points - " + points));
+        if (updated == 0) {
             throw new BizException("积分不足");
         }
-        int after = u.getPoints() - points;
-        userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getPoints, after));
         PointsRecord r = new PointsRecord();
         r.setUserId(uid);
         r.setChangePoints(-points);
-        r.setPointsAfter(after);
+        r.setPointsAfter(Math.max(0, u.getPoints() - points));
         r.setBizType("REDEEM");
         r.setBizNo(bizNo);
         r.setRemark(remark);
@@ -267,28 +311,28 @@ public class UserService {
 
     // ==================== 管理端 ====================
 
-    /** 店长调整余额（可为负） */
+    /** 店长调整余额（可为负），并发安全 */
     @Transactional
     public void adminAdjustBalance(Long uid, BigDecimal amount, String remark) {
         User u = getById(uid);
-        BigDecimal balance = u.getBalance().add(amount).max(BigDecimal.ZERO);
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getBalance, balance));
-        addBalanceRecord(uid, amount, balance, "ADJUST", OrderNoUtil.recharge(),
+                .eq(User::getId, uid)
+                .setSql("balance = GREATEST(balance + " + amount + ", 0)"));
+        addBalanceRecord(uid, amount, u.getBalance().add(amount).max(BigDecimal.ZERO), "ADJUST", OrderNoUtil.recharge(),
                 (remark == null || remark.isBlank() ? "店长调整" : "店长调整：" + remark));
     }
 
-    /** 店长调整积分（可为负） */
+    /** 店长调整积分（可为负），并发安全 */
     @Transactional
     public void adminAdjustPoints(Long uid, int points, String remark) {
         User u = getById(uid);
-        int after = Math.max(0, u.getPoints() + points);
         userMapper.update(null, new LambdaUpdateWrapper<User>()
-                .eq(User::getId, uid).set(User::getPoints, after));
+                .eq(User::getId, uid)
+                .setSql("points = GREATEST(points + " + points + ", 0)"));
         PointsRecord r = new PointsRecord();
         r.setUserId(uid);
         r.setChangePoints(points);
-        r.setPointsAfter(after);
+        r.setPointsAfter(Math.max(0, u.getPoints() + points));
         r.setBizType("ADJUST");
         r.setBizNo(OrderNoUtil.recharge());
         r.setRemark(remark == null || remark.isBlank() ? "店长调整" : "店长调整：" + remark);
@@ -296,10 +340,10 @@ public class UserService {
         pointsRecordMapper.insert(r);
     }
 
-    /** 店长启停用会员 */
+    /** 店长启停用会员（只更新目标字段，避免覆盖并发更新的余额/积分） */
     public void adminSetStatus(Long uid, Integer status) {
-        User u = getById(uid);
-        u.setStatus(status == null || status == 0 ? 0 : 1);
-        userMapper.updateById(u);
+        userMapper.update(null, new LambdaUpdateWrapper<User>()
+                .eq(User::getId, uid)
+                .set(User::getStatus, status == null || status == 0 ? 0 : 1));
     }
 }

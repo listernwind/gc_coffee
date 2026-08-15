@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +69,23 @@ public class CoffeeService {
         return settingService.getDeliverySlots();
     }
 
+    /** 最早可派送日期：默认次日；超过当日截止时间（reserve_deadline）则顺延到后天 */
+    public LocalDate minDeliveryDate() {
+        String deadline = settingService.get(SettingService.KEY_RESERVE_DEADLINE, "22:00");
+        try {
+            LocalTime deadlineTime = LocalTime.parse(deadline.length() == 5 ? deadline + ":00" : deadline);
+            if (LocalTime.now().isAfter(deadlineTime)) {
+                return LocalDate.now().plusDays(2);
+            }
+        } catch (Exception ignored) {
+            // 配置非法时按次日处理
+        }
+        return LocalDate.now().plusDays(1);
+    }
+
     public List<String> nextDays(int n) {
         List<String> days = new ArrayList<>();
-        LocalDate d = LocalDate.now().plusDays(1);
+        LocalDate d = minDeliveryDate();
         for (int i = 0; i < n; i++) {
             days.add(d.plusDays(i).toString());
         }
@@ -90,12 +106,13 @@ public class CoffeeService {
         }
         BigDecimal price = pkg.getPrice();
         String payType = normalizePayType(req.getPayType());
+        String bizNo = OrderNoUtil.packageNo();
         if ("BALANCE".equals(payType)) {
-            userService.deductBalance(uid, price, "PACKAGE", OrderNoUtil.packageNo(), "购买月度套餐「" + pkg.getName() + "」");
+            userService.deductBalance(uid, price, "PACKAGE", bizNo, "购买月度套餐「" + pkg.getName() + "」");
         }
         // 累计消费 + 积分
         userService.addSpend(uid, price);
-        userService.earnPoints(uid, price, OrderNoUtil.packageNo(), "购买月度套餐");
+        userService.earnPoints(uid, price, bizNo, "购买月度套餐");
 
         UserPackage up = new UserPackage();
         up.setUserId(uid);
@@ -105,8 +122,13 @@ public class CoffeeService {
         up.setTotalQuota(pkg.getBottleCount());
         up.setUsedQuota(0);
         up.setAmount(price);
+        up.setPayType(payType);
         up.setCreatedAt(LocalDateTime.now());
-        userPackageMapper.insert(up);
+        try {
+            userPackageMapper.insert(up);
+        } catch (org.springframework.dao.DuplicateKeyException e) {
+            throw new BizException("本月已购买过套餐，额度用完后可单独预订");
+        }
         return up;
     }
 
@@ -122,9 +144,9 @@ public class CoffeeService {
         if (quantity <= 0) {
             throw new BizException("数量至少为 1");
         }
-        LocalDate deliveryDate = req.getDeliveryDate() == null ? LocalDate.now().plusDays(1) : req.getDeliveryDate();
-        if (!deliveryDate.isAfter(LocalDate.now())) {
-            throw new BizException("咖啡液为次日派送，请选择明天的日期");
+        LocalDate deliveryDate = req.getDeliveryDate() == null ? minDeliveryDate() : req.getDeliveryDate();
+        if (deliveryDate.isBefore(minDeliveryDate())) {
+            throw new BizException("咖啡液为次日派送，请选择" + minDeliveryDate() + "及之后的日期");
         }
         List<String> slots = deliverySlots();
         if (slots.isEmpty() || !slots.contains(req.getTimeSlot())) {
@@ -144,22 +166,27 @@ public class CoffeeService {
         int payQty = quantity - packageUsed;
         BigDecimal amount = product.getPrice().multiply(BigDecimal.valueOf(payQty));
         String payType = normalizePayType(req.getPayType());
+        String orderNo = OrderNoUtil.coffee();
 
         if (payQty > 0) {
             if ("BALANCE".equals(payType)) {
-                userService.deductBalance(uid, amount, "CONSUME", OrderNoUtil.coffee(), "咖啡液预订 " + quantity + "瓶（含额度抵扣" + packageUsed + "瓶）");
+                userService.deductBalance(uid, amount, "CONSUME", orderNo, "咖啡液预订 " + quantity + "瓶（含额度抵扣" + packageUsed + "瓶）");
             }
             userService.addSpend(uid, amount);
-            userService.earnPoints(uid, amount, OrderNoUtil.coffee(), "咖啡液预订");
+            userService.earnPoints(uid, amount, orderNo, "咖啡液预订");
         }
         if (packageUsed > 0 && up != null) {
-            userPackageMapper.update(null, new LambdaUpdateWrapper<UserPackage>()
+            int updated = userPackageMapper.update(null, new LambdaUpdateWrapper<UserPackage>()
                     .eq(UserPackage::getId, up.getId())
-                    .set(UserPackage::getUsedQuota, up.getUsedQuota() + packageUsed));
+                    .apply("used_quota + {0} <= total_quota", packageUsed)
+                    .setSql("used_quota = used_quota + " + packageUsed));
+            if (updated == 0) {
+                throw new BizException("套餐剩余额度不足，请减少数量或取消勾选额度抵扣");
+            }
         }
 
         CoffeeReservation r = new CoffeeReservation();
-        r.setOrderNo(OrderNoUtil.coffee());
+        r.setOrderNo(orderNo);
         r.setUserId(uid);
         r.setProductId(product.getId());
         r.setProductName(product.getName());
@@ -181,7 +208,7 @@ public class CoffeeService {
         return r;
     }
 
-    /** 取消预订：退还按次支付金额 + 恢复套餐额度 */
+    /** 取消预订：按支付方式退款（余额支付退回余额；微信模拟支付不产生余额变动）+ 回滚积分/累计消费 + 恢复套餐额度 */
     @Transactional
     public CoffeeReservation cancel(Long uid, Long id) {
         CoffeeReservation r = reservationMapper.selectById(id);
@@ -194,22 +221,38 @@ public class CoffeeService {
         if (!r.getDeliveryDate().isAfter(LocalDate.now())) {
             throw new BizException("今天派送的订单已无法取消，请联系店主");
         }
+        return doCancel(r);
+    }
+
+    /** 取消核心逻辑（用户/店长共用）：退款 + 回滚 + 恢复额度 */
+    @Transactional
+    private CoffeeReservation doCancel(CoffeeReservation r) {
+        reservationMapper.update(null, new LambdaUpdateWrapper<CoffeeReservation>()
+                .eq(CoffeeReservation::getId, r.getId())
+                .set(CoffeeReservation::getStatus, "CANCELLED")
+                .set(CoffeeReservation::getCancelAt, LocalDateTime.now()));
         r.setStatus("CANCELLED");
         r.setCancelAt(LocalDateTime.now());
-        reservationMapper.updateById(r);
 
         if (r.getPayQuantity() != null && r.getPayQuantity() > 0 && r.getAmount() != null
                 && r.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-            userService.refundBalance(uid, r.getAmount(), "REFUND", r.getOrderNo(), "取消咖啡液预订退款");
+            if ("BALANCE".equals(r.getPayType())) {
+                userService.refundBalance(r.getUserId(), r.getAmount(), "REFUND", r.getOrderNo(), "取消咖啡液预订退款");
+            }
+            userService.rollbackSpend(r.getUserId(), r.getAmount());
+            userService.rollbackPoints(r.getUserId(),
+                    r.getAmount().multiply(BigDecimal.valueOf(userService.pointsRate()))
+                            .setScale(0, java.math.RoundingMode.DOWN).intValue(),
+                    r.getOrderNo(), "取消咖啡液预订回滚积分");
         }
         if (r.getPackageUsed() != null && r.getPackageUsed() > 0) {
             String month = r.getCreatedAt().toLocalDate().format(MONTH_FMT);
             UserPackage up = userPackageMapper.selectOne(new LambdaQueryWrapper<UserPackage>()
-                    .eq(UserPackage::getUserId, uid).eq(UserPackage::getMonth, month));
+                    .eq(UserPackage::getUserId, r.getUserId()).eq(UserPackage::getMonth, month));
             if (up != null) {
                 userPackageMapper.update(null, new LambdaUpdateWrapper<UserPackage>()
                         .eq(UserPackage::getId, up.getId())
-                        .set(UserPackage::getUsedQuota, Math.max(0, up.getUsedQuota() - r.getPackageUsed())));
+                        .setSql("used_quota = GREATEST(used_quota - " + r.getPackageUsed() + ", 0)"));
             }
         }
         return r;
@@ -226,6 +269,12 @@ public class CoffeeService {
     public MonthlySummaryVO monthlySummary(Long uid, String month) {
         if (month == null || month.isBlank()) {
             month = LocalDate.now().format(MONTH_FMT);
+        }
+        YearMonth ym;
+        try {
+            ym = YearMonth.parse(month);
+        } catch (Exception e) {
+            throw new BizException("月份格式应为 yyyy-MM");
         }
         List<UserPackage> ups = userPackageMapper.selectList(new LambdaQueryWrapper<UserPackage>()
                 .eq(UserPackage::getUserId, uid).eq(UserPackage::getMonth, month));
@@ -245,12 +294,13 @@ public class CoffeeService {
             card.setAmount(up.getAmount());
             cards.add(card);
         }
-        String start = month + "-01";
-        String end = month + "-31";
+        // 用下月 1 日 0 点作为开区间上界，天然兼容 2 月/大小月
+        LocalDateTime start = ym.atDay(1).atStartOfDay();
+        LocalDateTime end = ym.plusMonths(1).atDay(1).atStartOfDay();
         List<CoffeeReservation> records = reservationMapper.selectList(new LambdaQueryWrapper<CoffeeReservation>()
                 .eq(CoffeeReservation::getUserId, uid)
-                .ge(CoffeeReservation::getCreatedAt, LocalDateTime.parse(start + " 00:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .le(CoffeeReservation::getCreatedAt, LocalDateTime.parse(end + " 23:59:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .ge(CoffeeReservation::getCreatedAt, start)
+                .lt(CoffeeReservation::getCreatedAt, end)
                 .orderByDesc(CoffeeReservation::getId));
         BigDecimal paid = records.stream()
                 .filter(r -> !"CANCELLED".equals(r.getStatus()))
@@ -290,12 +340,14 @@ public class CoffeeService {
         if (!ok) {
             throw new BizException("当前状态「" + cur + "」不能变更为「" + status + "」");
         }
+        reservationMapper.update(null, new LambdaUpdateWrapper<CoffeeReservation>()
+                .eq(CoffeeReservation::getId, id)
+                .set(CoffeeReservation::getStatus, status));
         r.setStatus(status);
-        reservationMapper.updateById(r);
         return r;
     }
 
-    /** 店长取消预订（退款 + 恢复额度） */
+    /** 店长取消预订（退款 + 回滚积分/累计消费 + 恢复额度） */
     @Transactional
     public CoffeeReservation adminCancel(Long id) {
         CoffeeReservation r = reservationMapper.selectById(id);
@@ -305,23 +357,6 @@ public class CoffeeService {
         if ("CANCELLED".equals(r.getStatus()) || "DELIVERED".equals(r.getStatus())) {
             throw new BizException("当前状态不可取消");
         }
-        r.setStatus("CANCELLED");
-        r.setCancelAt(LocalDateTime.now());
-        reservationMapper.updateById(r);
-        if (r.getPayQuantity() != null && r.getPayQuantity() > 0 && r.getAmount() != null
-                && r.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-            userService.refundBalance(r.getUserId(), r.getAmount(), "REFUND", r.getOrderNo(), "店长取消预订退款");
-        }
-        if (r.getPackageUsed() != null && r.getPackageUsed() > 0) {
-            String month = r.getCreatedAt().toLocalDate().format(MONTH_FMT);
-            UserPackage up = userPackageMapper.selectOne(new LambdaQueryWrapper<UserPackage>()
-                    .eq(UserPackage::getUserId, r.getUserId()).eq(UserPackage::getMonth, month));
-            if (up != null) {
-                userPackageMapper.update(null, new LambdaUpdateWrapper<UserPackage>()
-                        .eq(UserPackage::getId, up.getId())
-                        .set(UserPackage::getUsedQuota, Math.max(0, up.getUsedQuota() - r.getPackageUsed())));
-            }
-        }
-        return r;
+        return doCancel(r);
     }
 }

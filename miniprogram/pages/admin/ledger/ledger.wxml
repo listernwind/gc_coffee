@@ -24,7 +24,7 @@
   </view>
 
   <!-- 台账明细 -->
-  <view class="card" wx:for="{{rows}}" wx:key="*this">
+  <view class="card" wx:for="{{rows}}" wx:key="orderNo">
     <view class="lg-head">
       <view class="lg-type">{{item.type}}</view>
       <view class="lg-status">{{item.statusText}}</view>

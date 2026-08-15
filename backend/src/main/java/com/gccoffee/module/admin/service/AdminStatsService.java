@@ -140,11 +140,18 @@ public class AdminStatsService {
         return list;
     }
 
-    /** 畅销商品 TOP N（饮品 + 咖啡液） */
+    /** 畅销商品 TOP N（饮品 + 咖啡液），剔除已取消订单 */
     public Map<String, Object> topProducts(int n) {
+        n = Math.max(1, Math.min(n, 50));
         Map<String, Long> drinkQty = new LinkedHashMap<>();
-        drinkOrderItemMapper.selectList(new LambdaQueryWrapper<>()).forEach(i ->
-                drinkQty.merge(i.getProductName(), (long) i.getQuantity(), Long::sum));
+        List<Long> validOrderIds = drinkOrderMapper.selectList(new LambdaQueryWrapper<DrinkOrder>()
+                        .ne(DrinkOrder::getStatus, "CANCELLED").select(DrinkOrder::getId))
+                .stream().map(DrinkOrder::getId).toList();
+        if (!validOrderIds.isEmpty()) {
+            drinkOrderItemMapper.selectList(new LambdaQueryWrapper<DrinkOrderItem>()
+                            .in(DrinkOrderItem::getOrderId, validOrderIds))
+                    .forEach(i -> drinkQty.merge(i.getProductName(), (long) i.getQuantity(), Long::sum));
+        }
         Map<String, Long> coffeeQty = new LinkedHashMap<>();
         reservationMapper.selectList(new LambdaQueryWrapper<CoffeeReservation>()
                         .ne(CoffeeReservation::getStatus, "CANCELLED"))
@@ -206,16 +213,25 @@ public class AdminStatsService {
         StringBuilder sb = new StringBuilder("\uFEFF"); // UTF-8 BOM，Excel 直接打开不乱码
         sb.append("时间,单号,类型,用户,内容,支付方式,金额,状态\n");
         for (Map<String, Object> r : rows) {
-            sb.append(r.get("time")).append(',')
-                    .append(r.get("orderNo")).append(',')
-                    .append(r.get("type")).append(',')
-                    .append(String.valueOf(r.get("user")).replace(",", " ")).append(',')
-                    .append(String.valueOf(r.get("content")).replace(",", " ")).append(',')
-                    .append(r.get("payType")).append(',')
-                    .append(r.get("amount")).append(',')
-                    .append(r.get("status")).append('\n');
+            sb.append(cell(r.get("time"))).append(',')
+                    .append(cell(r.get("orderNo"))).append(',')
+                    .append(cell(r.get("type"))).append(',')
+                    .append(cell(r.get("user"))).append(',')
+                    .append(cell(r.get("content"))).append(',')
+                    .append(cell(r.get("payType"))).append(',')
+                    .append(cell(r.get("amount"))).append(',')
+                    .append(cell(r.get("status"))).append('\n');
         }
         return sb.toString();
+    }
+
+    /** CSV 单元格转义：加引号 + 防公式注入 */
+    private String cell(Object v) {
+        String s = v == null ? "" : String.valueOf(v);
+        if (s.startsWith("=") || s.startsWith("+") || s.startsWith("-") || s.startsWith("@")) {
+            s = "'" + s;
+        }
+        return "\"" + s.replace("\"", "\"\"") + "\"";
     }
 
     private List<Map<String, Object>> drinkRows(LocalDateTime s, LocalDateTime e) {
@@ -284,7 +300,8 @@ public class AdminStatsService {
         for (UserPackage p : list) {
             rows.add(row(p.getCreatedAt(), "PKG" + p.getId(), "套餐", user(users, p.getUserId()),
                     p.getPackageName() + "（" + p.getMonth() + " " + p.getTotalQuota() + "瓶）",
-                    "WX_MOCK", p.getAmount(), "OK"));
+                    p.getPayType() == null || p.getPayType().isBlank() ? "WX_MOCK" : p.getPayType(),
+                    p.getAmount(), "OK"));
         }
         return rows;
     }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gccoffee.module.admin.entity.Setting;
 import com.gccoffee.module.admin.mapper.SettingMapper;
 import com.gccoffee.module.admin.service.SettingService;
+import com.gccoffee.module.coffee.mapper.UserPackageMapper;
 import com.gccoffee.module.user.entity.User;
 import com.gccoffee.module.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
@@ -28,6 +30,7 @@ import java.util.Map;
 public class DataInitializer implements ApplicationRunner {
 
     private final UserMapper userMapper;
+    private final UserPackageMapper userPackageMapper;
     private final SettingMapper settingMapper;
     private final ObjectMapper objectMapper;
 
@@ -76,7 +79,19 @@ public class DataInitializer implements ApplicationRunner {
         demo.setStatus(1);
         demo.setCreatedAt(LocalDateTime.now());
         userMapper.insert(demo);
-        log.info("已创建演示用户：mock_demo（余额200元/500积分）");
+        // 给演示用户配一张本月套餐（额度 30 瓶，已用 5 瓶）
+        com.gccoffee.module.coffee.entity.UserPackage up = new com.gccoffee.module.coffee.entity.UserPackage();
+        up.setUserId(demo.getId());
+        up.setPackageId(2L);
+        up.setPackageName("畅饮月卡");
+        up.setMonth(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")));
+        up.setTotalQuota(30);
+        up.setUsedQuota(5);
+        up.setAmount(new BigDecimal("360"));
+        up.setPayType("WX_MOCK");
+        up.setCreatedAt(LocalDateTime.now());
+        userPackageMapper.insert(up);
+        log.info("已创建演示用户：mock_demo（余额200元/500积分/本月畅饮月卡剩25瓶）");
     }
 
     private void ensureSettings() {
@@ -90,8 +105,7 @@ public class DataInitializer implements ApplicationRunner {
                 Map.entry(SettingService.KEY_LEVEL_SILVER, "300"),
                 Map.entry(SettingService.KEY_LEVEL_GOLD, "1000"),
                 Map.entry(SettingService.KEY_LEVEL_BLACK, "3000"),
-                Map.entry(SettingService.KEY_RESERVE_DEADLINE, "22:00"),
-                Map.entry(SettingService.KEY_DELIVERY_FEE, "0")
+                Map.entry(SettingService.KEY_RESERVE_DEADLINE, "22:00")
         );
         defaults.forEach((k, v) -> {
             if (settingMapper.selectById(k) == null) {

@@ -26,5 +26,9 @@ public class UserPackage {
     private Integer totalQuota;
     private Integer usedQuota;
     private BigDecimal amount;
+
+    /** BALANCE / WX_MOCK（台账展示用） */
+    private String payType;
+
     private LocalDateTime createdAt;
 }

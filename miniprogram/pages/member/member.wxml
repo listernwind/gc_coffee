@@ -36,7 +36,7 @@
         <view class="sub">{{packageInfo ? packageInfo.month + ' · 剩余 ' + packageInfo.remain + '/' + packageInfo.total + ' 瓶' : '开通月卡低至 12 元/瓶'}}</view>
       </view>
     </view>
-    <view class="more" bindtap="goReserve">{{packageInfo ? '去预订' : '去看看'}} ›</view>
+    <view class="more" catchtap="goReserve">{{packageInfo ? '去预订' : '去看看'}} ›</view>
   </view>
 
   <!-- 快捷 -->

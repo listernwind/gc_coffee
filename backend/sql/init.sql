@@ -88,6 +88,7 @@ CREATE TABLE IF NOT EXISTS t_user_package (
     total_quota INT NOT NULL,
     used_quota INT NOT NULL DEFAULT 0,
     amount DECIMAL(10,2) NOT NULL,
+    pay_type VARCHAR(20) NOT NULL DEFAULT 'WX_MOCK' COMMENT 'BALANCE/WX_MOCK',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_user_month (user_id, month),
     KEY idx_month (month)

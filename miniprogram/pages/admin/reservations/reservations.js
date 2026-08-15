@@ -51,11 +51,9 @@ Page({
 
   load() {
     if (!this.data.hasMore) return;
-    api.get('/api/admin/ops/reservations', {
-      page: this.data.page, size: 15,
-      date: this.data.date || undefined,
-      status: this.data.status
-    }).then((data) => {
+    const params = { page: this.data.page, size: 15, status: this.data.status };
+    if (this.data.date) params.date = this.data.date;
+    api.get('/api/admin/ops/reservations', params).then((data) => {
       const list = (data.records || []).map((r) => Object.assign({}, r, {
         statusLabel: util.RESERVE_STATUS[r.status] || r.status,
         statusClass: 'st-' + r.status,

@@ -74,13 +74,14 @@ public class DrinkService {
             if (it.getQuantity() == null || it.getQuantity() <= 0) {
                 throw new BizException("商品数量不正确");
             }
-            if (p.getStock() != null && p.getStock() >= 0 && p.getStock() < it.getQuantity()) {
-                throw new BizException("「" + p.getName() + "」库存不足");
-            }
             if (p.getStock() != null && p.getStock() >= 0) {
-                productMapper.update(null, new LambdaUpdateWrapper<DrinkProduct>()
+                int updated = productMapper.update(null, new LambdaUpdateWrapper<DrinkProduct>()
                         .eq(DrinkProduct::getId, p.getId())
-                        .set(DrinkProduct::getStock, p.getStock() - it.getQuantity()));
+                        .apply("stock >= {0}", it.getQuantity())
+                        .setSql("stock = stock - " + it.getQuantity()));
+                if (updated == 0) {
+                    throw new BizException("「" + p.getName() + "」库存不足");
+                }
             }
             DrinkOrderItem item = new DrinkOrderItem();
             item.setProductId(p.getId());
@@ -153,7 +154,7 @@ public class DrinkService {
         return m;
     }
 
-    /** 取消：仅 PAID 状态，退款 + 退券 + 回补库存 */
+    /** 取消：仅 PAID 状态；按支付方式退款 + 回滚积分/累计消费 + 退券 + 回补库存 */
     @Transactional
     public DrinkOrder cancel(Long uid, Long id) {
         DrinkOrder order = orderMapper.selectById(id);
@@ -163,20 +164,34 @@ public class DrinkService {
         if (!"PAID".equals(order.getStatus())) {
             throw new BizException("当前状态不可取消");
         }
+        return doCancel(order);
+    }
+
+    /** 取消核心逻辑（用户/店长共用） */
+    private DrinkOrder doCancel(DrinkOrder order) {
+        orderMapper.update(null, new LambdaUpdateWrapper<DrinkOrder>()
+                .eq(DrinkOrder::getId, order.getId())
+                .set(DrinkOrder::getStatus, "CANCELLED"));
         order.setStatus("CANCELLED");
-        orderMapper.updateById(order);
         if (order.getPayAmount() != null && order.getPayAmount().compareTo(BigDecimal.ZERO) > 0) {
-            userService.refundBalance(uid, order.getPayAmount(), "REFUND", order.getOrderNo(), "取消饮品订单退款");
+            if ("BALANCE".equals(order.getPayType())) {
+                userService.refundBalance(order.getUserId(), order.getPayAmount(), "REFUND", order.getOrderNo(), "取消饮品订单退款");
+            }
+            userService.rollbackSpend(order.getUserId(), order.getPayAmount());
+            userService.rollbackPoints(order.getUserId(),
+                    order.getPayAmount().multiply(BigDecimal.valueOf(userService.pointsRate()))
+                            .setScale(0, java.math.RoundingMode.DOWN).intValue(),
+                    order.getOrderNo(), "取消饮品订单回滚积分");
         }
-        couponService.restoreCoupon(uid, order.getCouponId());
+        couponService.restoreCoupon(order.getUserId(), order.getCouponId());
         List<DrinkOrderItem> items = itemMapper.selectList(
-                new LambdaQueryWrapper<DrinkOrderItem>().eq(DrinkOrderItem::getOrderId, id));
+                new LambdaQueryWrapper<DrinkOrderItem>().eq(DrinkOrderItem::getOrderId, order.getId()));
         for (DrinkOrderItem item : items) {
             DrinkProduct p = productMapper.selectById(item.getProductId());
             if (p != null && p.getStock() != null && p.getStock() >= 0) {
                 productMapper.update(null, new LambdaUpdateWrapper<DrinkProduct>()
                         .eq(DrinkProduct::getId, p.getId())
-                        .set(DrinkProduct::getStock, p.getStock() + item.getQuantity()));
+                        .setSql("stock = stock + " + item.getQuantity()));
             }
         }
         return order;
@@ -200,11 +215,21 @@ public class DrinkService {
         if (!ok) {
             throw new BizException("当前状态「" + cur + "」不能变更为「" + status + "」");
         }
+        if ("CANCELLED".equals(status)) {
+            // 店长取消走完整取消流程：退款 + 回滚 + 退券 + 回补库存
+            return doCancel(order);
+        }
+        LambdaUpdateWrapper<DrinkOrder> uw = new LambdaUpdateWrapper<DrinkOrder>()
+                .eq(DrinkOrder::getId, id)
+                .set(DrinkOrder::getStatus, status);
+        if ("FINISHED".equals(status)) {
+            uw.set(DrinkOrder::getFinishedAt, LocalDateTime.now());
+        }
+        orderMapper.update(null, uw);
         order.setStatus(status);
         if ("FINISHED".equals(status)) {
             order.setFinishedAt(LocalDateTime.now());
         }
-        orderMapper.updateById(order);
         return order;
     }
 }

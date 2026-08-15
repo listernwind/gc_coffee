@@ -11,7 +11,7 @@ Component({
   methods: {
     switchTab(e) {
       const { path, index } = e.currentTarget.dataset;
-      if (index === this.data.selected) return;
+      if (Number(index) === this.data.selected) return;
       wx.switchTab({ url: path });
     }
   }
