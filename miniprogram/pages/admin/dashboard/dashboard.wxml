@@ -62,7 +62,7 @@
       <view class="rk-qty">{{item.quantity}} 杯</view>
     </view>
     <view class="rank-row" wx:for="{{top.coffees}}" wx:key="name">
-      <view class="rk-no hot">☕</view>
+      <view class="rk-no hot"><view class="ic ic-bottle" style="width:26rpx;height:26rpx;"></view></view>
       <view class="rk-name">{{item.name}}</view>
       <view class="rk-qty">{{item.quantity}} 瓶</view>
     </view>
@@ -70,13 +70,13 @@
 
   <!-- 快捷入口 -->
   <view class="quick">
-    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go">🚚 派送管理</view>
-    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go">🧋 饮品订单</view>
-    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go">📒 台账</view>
-    <view class="qk" data-url="/pages/admin/products/products" bindtap="go">📦 商品管理</view>
-    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go">🎟️ 优惠券</view>
-    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go">🎉 活动海报</view>
-    <view class="qk" data-url="/pages/admin/members/members" bindtap="go">👥 会员管理</view>
-    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go">⚙️ 设置</view>
+    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go"><view class="qk-ic ic ic-truck"></view>派送管理</view>
+    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go"><view class="qk-ic ic ic-cup"></view>饮品订单</view>
+    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go"><view class="qk-ic ic ic-book"></view>台账</view>
+    <view class="qk" data-url="/pages/admin/products/products" bindtap="go"><view class="qk-ic ic ic-box"></view>商品管理</view>
+    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go"><view class="qk-ic ic ic-ticket"></view>优惠券</view>
+    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go"><view class="qk-ic ic ic-gift"></view>活动海报</view>
+    <view class="qk" data-url="/pages/admin/members/members" bindtap="go"><view class="qk-ic ic ic-users"></view>会员管理</view>
+    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go"><view class="qk-ic ic ic-sliders"></view>设置</view>
   </view>
 </view>

@@ -133,3 +133,6 @@
   border-radius: 999rpx;
 }
 .checkout-btn.disabled { opacity: 0.45; }
+
+.cart-icon { width: 44rpx; height: 44rpx; }
+

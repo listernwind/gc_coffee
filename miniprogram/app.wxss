@@ -1,3 +1,4 @@
+@import "assets/icons.wxss";
 /* ============ GC Coffee 主题 ============
    奶咖色系 · 简洁上档次
    背景 #F6F1EA / 主色 深咖 #4B3621 / 点缀 焦糖 #C08A4E */
@@ -123,7 +124,7 @@ page {
   padding: 100rpx 0;
   color: var(--ink-3);
 }
-.empty .icon { font-size: 90rpx; display: block; margin-bottom: 20rpx; }
+.empty .icon { width: 90rpx; height: 90rpx; display: block; margin: 0 auto 20rpx; }
 
 /* 表单 */
 .form-item { margin-bottom: 28rpx; }

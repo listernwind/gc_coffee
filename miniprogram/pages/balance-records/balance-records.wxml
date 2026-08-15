@@ -9,7 +9,7 @@
     </view>
   </view>
   <view class="empty" wx:else>
-    <text class="icon">💰</text>
+    <view class="icon ic ic-wallet"></view>
     <view>暂无余额流水</view>
   </view>
 </view>

@@ -4,7 +4,7 @@
     <view class="top-bg"></view>
     <view class="greet-row">
       <view>
-        <view class="greet">☕ 你好，欢迎回来</view>
+        <view class="greet">你好，欢迎回来</view>
         <view class="shop">{{shopName}}</view>
       </view>
       <view class="date-chip">{{today}} {{week}}</view>
@@ -12,7 +12,7 @@
   </view>
 
   <view class="notice" wx:if="{{notice}}">
-    <text class="notice-dot">📢</text>
+    <view class="notice-dot ic ic-megaphone"></view>
     <text class="notice-text">{{notice}}</text>
   </view>
 
@@ -27,7 +27,7 @@
         <view class="hero-desc" wx:else>开通月卡更划算 · 低至 12 元/瓶</view>
       </view>
       <view class="hero-right">
-        <view class="hero-emoji">🥤</view>
+        <view class="hero-emoji ic ic-bottle-w"></view>
         <view class="hero-arrow">预订 →</view>
       </view>
     </view>
@@ -40,7 +40,7 @@
         <view class="hero-desc">约 10 分钟出杯 · 支持优惠券</view>
       </view>
       <view class="hero-right">
-        <view class="hero-emoji">☕</view>
+        <view class="hero-emoji ic ic-cup-w"></view>
         <view class="hero-arrow">点单 →</view>
       </view>
     </view>
@@ -52,7 +52,7 @@
       <view class="poster {{item.image ? '' : 'poster-text'}}" data-item="{{item}}" bindtap="onPosterTap">
         <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="poster-img" />
         <block wx:else>
-          <view class="poster-emoji">🎨</view>
+          <view class="poster-emoji ic ic-image-w"></view>
           <view class="poster-title">{{item.title}}</view>
         </block>
       </view>
@@ -62,23 +62,23 @@
   <!-- 快捷入口 -->
   <view class="quick">
     <view class="quick-item" bindtap="goMonthly">
-      <view class="qi-icon" style="background:#F3E7D8;">📊</view>
+      <view class="qi-icon" style="background:#F3E7D8;"><view class="ic ic-chart"></view></view>
       <view class="qi-text">月度详情</view>
     </view>
     <view class="quick-item" bindtap="goReserveRecords">
-      <view class="qi-icon" style="background:#E9E2F3;">📦</view>
+      <view class="qi-icon" style="background:#E9E2F3;"><view class="ic ic-box"></view></view>
       <view class="qi-text">我的预订</view>
     </view>
     <view class="quick-item" bindtap="goActivity">
-      <view class="qi-icon" style="background:#FBE9D8;">🎉</view>
+      <view class="qi-icon" style="background:#FBE9D8;"><view class="ic ic-gift"></view></view>
       <view class="qi-text">活动</view>
     </view>
     <view class="quick-item" bindtap="goCoupons">
-      <view class="qi-icon" style="background:#E4F0E8;">🎟️</view>
+      <view class="qi-icon" style="background:#E4F0E8;"><view class="ic ic-ticket"></view></view>
       <view class="qi-text">优惠券</view>
     </view>
     <view class="quick-item" bindtap="goOrders">
-      <view class="qi-icon" style="background:#FDECEC;">🧾</view>
+      <view class="qi-icon" style="background:#FDECEC;"><view class="ic ic-receipt"></view></view>
       <view class="qi-text">我的订单</view>
     </view>
   </view>

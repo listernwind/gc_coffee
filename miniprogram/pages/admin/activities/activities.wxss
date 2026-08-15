@@ -14,3 +14,7 @@
 .a-ops { display: flex; gap: 24rpx; margin-top: 14rpx; }
 .op { font-size: 24rpx; color: var(--accent); }
 .op.danger { color: var(--danger); }
+
+.prow { display: flex; align-items: center; }
+.p-ic { width: 36rpx; height: 36rpx; margin-right: 12rpx; }
+

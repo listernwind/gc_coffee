@@ -118,3 +118,6 @@
 .ps-item.on { background: #F3E7D8; color: #A06A2E; font-weight: 700; }
 .bar-main { flex: 1; }
 .bar-desc { font-size: 22rpx; color: var(--ink-2); }
+
+.ht-emoji { width: 64rpx; height: 64rpx; }
+

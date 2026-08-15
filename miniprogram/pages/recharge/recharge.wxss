@@ -19,3 +19,7 @@
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
 }
+
+.notice-line { display: flex; align-items: center; gap: 12rpx; }
+.nl-ic { width: 32rpx; height: 32rpx; flex-shrink: 0; }
+

@@ -6,7 +6,7 @@
   <view wx:if="{{activities.length}}">
     <view class="act-card" wx:for="{{activities}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
       <view class="act-banner">
-        <view class="ab-emoji">🎉</view>
+        <view class="ab-emoji ic ic-gift-w"></view>
         <view class="ab-title">{{item.title}}</view>
         <view class="ab-status">{{item.status}}</view>
       </view>
@@ -16,7 +16,7 @@
       </view>
     </view>
   </view>
-  <view class="empty" wx:else><text class="icon">🎉</text><view>暂无{{activeTab === 'MONTHLY' ? '月度' : '季度'}}活动</view></view>
+  <view class="empty" wx:else><view class="icon ic ic-gift"></view><view>暂无{{activeTab === 'MONTHLY' ? '月度' : '季度'}}活动</view></view>
 
   <view class="section-title" wx:if="{{posters.length}}">
     <view class="t">海报墙</view>
@@ -26,6 +26,6 @@
       <view class="pi-title">{{item.title}}</view>
       <view class="sub">长按保存分享</view>
     </view>
-    <view class="pi-emoji">🖼️</view>
+    <view class="pi-emoji ic ic-image"></view>
   </view>
 </view>

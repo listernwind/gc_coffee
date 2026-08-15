@@ -51,7 +51,7 @@ Page({
   claim(e) {
     const id = e.currentTarget.dataset.id;
     api.post('/api/coupon/' + id + '/claim').then(() => {
-      wx.showToast({ title: '领取成功 🎉', icon: 'none' });
+      wx.showToast({ title: '领取成功', icon: 'none' });
       this.loadTemplates();
       this.loadMine();
     }).catch(() => {});
@@ -66,7 +66,7 @@ Page({
       success: (res) => {
         if (!res.confirm) return;
         api.post('/api/coupon/' + id + '/redeem').then(() => {
-          wx.showToast({ title: '兑换成功 🎉', icon: 'none' });
+          wx.showToast({ title: '兑换成功', icon: 'none' });
           this.loadTemplates();
           this.loadMine();
           api.get('/api/user/me').then((u) => this.setData({ profile: u })).catch(() => {});

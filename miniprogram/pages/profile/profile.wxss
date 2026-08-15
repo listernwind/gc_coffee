@@ -61,3 +61,9 @@
   color: var(--ink-3);
   margin-top: 40rpx;
 }
+
+.uc-avatar-img { width: 110rpx; height: 110rpx; border-radius: 50%; margin-right: 24rpx; }
+.os-emoji { width: 44rpx; height: 44rpx; margin: 0 auto 8rpx; }
+.mi-icon { width: 38rpx; height: 38rpx; }
+.ae-icon { width: 44rpx; height: 44rpx; }
+

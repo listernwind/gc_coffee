@@ -16,3 +16,6 @@
   white-space: pre-wrap;
   line-height: 1.9;
 }
+
+.hb-emoji { width: 64rpx; height: 64rpx; }
+

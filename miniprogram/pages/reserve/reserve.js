@@ -168,7 +168,7 @@ Page({
       contactName: this.data.contactName.trim(),
       contactPhone: this.data.contactPhone.trim()
     }).then(() => {
-      wx.showToast({ title: '预订成功，次日送达 🚚', icon: 'none' });
+      wx.showToast({ title: '预订成功，次日送达', icon: 'none' });
       setTimeout(() => {
         wx.redirectTo({ url: '/pages/reserve-records/reserve-records' });
       }, 900);

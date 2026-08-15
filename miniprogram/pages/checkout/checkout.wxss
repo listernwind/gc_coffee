@@ -54,3 +54,6 @@
 .coupon-name { font-weight: 600; }
 .coupon-right { display: flex; align-items: center; }
 .coupon-right .sub { margin-right: 16rpx; }
+
+.pay-emoji { width: 44rpx; height: 44rpx; }
+

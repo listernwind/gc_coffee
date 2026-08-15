@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="icons.css">
 <title>GC Coffee · 前端预览</title>
 <style>
 :root{
@@ -14,6 +15,17 @@
 body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direction:column;align-items:center;padding:28px 12px 40px;min-height:100vh;}
 .hint{color:rgba(255,247,236,.75);font-size:12px;letter-spacing:2px;margin-bottom:14px;text-align:center;line-height:1.8}
 .hint b{color:#F0C98A}
+.nic{width:18px;height:18px;flex-shrink:0}
+.hero-emoji{width:44px;height:44px}
+.pe{width:32px;height:32px}
+.mc-logo{width:30px;height:30px}
+.qgi .i{width:22px;height:22px;display:block;margin:0 auto 5px}
+.rights{display:flex;align-items:flex-start}
+.ric{width:16px;height:16px;margin-right:8px;flex-shrink:0;margin-top:2px}
+.ae{width:26px;height:26px}
+.qkb{display:flex;align-items:center}
+.qkic{width:18px;height:18px;margin-right:8px}
+.tb .i{width:19px;height:19px}
 .phone{width:390px;height:780px;background:var(--bg);border-radius:44px;box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 0 0 8px #1d150f;overflow:hidden;position:relative;display:flex;flex-direction:column}
 .statusbar{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600;color:var(--coffee);background:transparent;position:relative;z-index:5}
 .screens{flex:1;position:relative;overflow:hidden}
@@ -61,7 +73,7 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 .poster .pe{font-size:32px}.poster .pt{margin-top:6px;font-size:15px;font-weight:700;letter-spacing:2px}
 .quick{display:flex;background:#FFF;margin:14px 20px 0;border-radius:20px;padding:18px 6px;box-shadow:0 6px 22px rgba(75,54,33,.06)}
 .qi{flex:1;text-align:center;cursor:pointer}
-.qi .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto}
+.qi .icbox{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto}
 .qi .tx{font-size:11px;color:var(--ink2);margin-top:7px}
 .foot{text-align:center;color:var(--ink3);font-size:11px;margin-top:26px;letter-spacing:1px}
 
@@ -225,44 +237,44 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 <body>
 <div class="hint">GC Coffee 小程序 · 浏览器 UI 预览（真实运行需微信开发者工具，安装后导入 <b>miniprogram</b> 目录）<br>点手机屏幕操作：加购 · 切换标签 · 预订试算 · 管理看板</div>
 <div class="phone">
-  <div class="statusbar"><span>9:41</span><span>☕ GC Coffee</span><span>📶 🔋</span></div>
+  <div class="statusbar"><span>9:41</span><span>GC Coffee</span><span>● ● ●</span></div>
   <div class="screens">
 
     <!-- 首页 -->
     <div class="screen active" id="scr-home">
       <div class="top"><div class="top-bg"></div>
-        <div class="greet-row"><div><div class="greet">☕ 你好，欢迎回来</div><div class="shop">GC Coffee 咖啡小馆</div></div><div class="chip">8月16日 周日</div></div>
+        <div class="greet-row"><div><div class="greet">你好，欢迎回来</div><div class="shop">GC Coffee 咖啡小馆</div></div><div class="chip">8月16日 周日</div></div>
       </div>
-      <div class="notice">📢 <span>欢迎光临！咖啡液今日预订、次日送达；饮品到店自取。</span></div>
+      <div class="notice"><div class="nic ic-megaphone"></div><span>欢迎光临！咖啡液今日预订、次日送达；饮品到店自取。</span></div>
       <div class="hero">
         <div class="hero-card coffee" onclick="go('reserve')"><div class="glow"></div>
           <div><div class="kicker">次日派送 · 本小区直达</div><div class="hero-title">咖啡液预订</div><div class="hero-desc">本月剩余额度 <span class="hero-num">25</span> 瓶</div></div>
-          <div class="hero-right"><div class="hero-emoji">🥤</div><div class="hero-arrow">预订 →</div></div>
+          <div class="hero-right"><div class="hero-emoji ic-bottle-w"></div><div class="hero-arrow">预订 →</div></div>
         </div>
         <div class="hero-card drink" onclick="go('menu')"><div class="glow"></div>
           <div><div class="kicker">现点现做 · 到店自取</div><div class="hero-title">饮品下单</div><div class="hero-desc">约 10 分钟出杯 · 支持优惠券</div></div>
-          <div class="hero-right"><div class="hero-emoji">☕</div><div class="hero-arrow">点单 →</div></div>
+          <div class="hero-right"><div class="hero-emoji ic-cup-w"></div><div class="hero-arrow">点单 →</div></div>
         </div>
       </div>
-      <div class="poster" onclick="go('activity')"><div class="pe">🎨</div><div class="pt">冷萃咖啡液 · 次日送达</div></div>
+      <div class="poster" onclick="go('activity')"><div class="pe ic-image-w"></div><div class="pt">冷萃咖啡液 · 次日送达</div></div>
       <div class="quick">
-        <div class="qi" onclick="go('monthly')"><div class="ic" style="background:#F3E7D8">📊</div><div class="tx">月度详情</div></div>
-        <div class="qi" onclick="go('reserve')"><div class="ic" style="background:#E9E2F3">📦</div><div class="tx">我的预订</div></div>
-        <div class="qi" onclick="go('activity')"><div class="ic" style="background:#FBE9D8">🎉</div><div class="tx">活动</div></div>
-        <div class="qi" onclick="go('member')"><div class="ic" style="background:#E4F0E8">🎟️</div><div class="tx">优惠券</div></div>
+        <div class="qi" onclick="go('monthly')"><div class="icbox ic-chart" style="background:#F3E7D8"></div><div class="tx">月度详情</div></div>
+        <div class="qi" onclick="go('reserve')"><div class="icbox ic-box" style="background:#E9E2F3"></div><div class="tx">我的预订</div></div>
+        <div class="qi" onclick="go('activity')"><div class="icbox ic-gift" style="background:#FBE9D8"></div><div class="tx">活动</div></div>
+        <div class="qi" onclick="go('member')"><div class="icbox ic-ticket" style="background:#E4F0E8"></div><div class="tx">优惠券</div></div>
       </div>
       <div class="foot">— 本小区专供 · 指定门牌号派送 —</div>
     </div>
 
     <!-- 菜单 -->
     <div class="screen" id="scr-menu">
-      <div class="menu-top"><div class="t">点单 ☕</div><div class="s">现点现做 · 到店自取</div></div>
+      <div class="menu-top"><div class="t">点单</div><div class="s">现点现做 · 到店自取</div></div>
       <div class="menu-body">
         <div class="cats" id="cats"></div>
         <div class="plist" id="plist"></div>
       </div>
       <div class="cart-bar">
-        <div class="ci">🛒<div class="cnt" id="cartCnt" style="display:none">0</div></div>
+        <div class="ci"><div class="ic-cart-w" style="width:22px;height:22px"></div><div class="cnt" id="cartCnt" style="display:none">0</div></div>
         <div class="tt"><div class="p" id="cartAmt">¥0.00</div><div class="d">配送费 0 元</div></div>
         <button class="ckbtn dis" id="ckbtn">去结算</button>
       </div>
@@ -270,11 +282,11 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 
     <!-- 预订 -->
     <div class="screen" id="scr-reserve">
-      <div class="hero-tip"><div class="he">🚚</div><div><div class="t">今日预订 · 次日派送</div><div class="s">仅限本小区 · 按门牌号配送上门</div></div></div>
+      <div class="hero-tip"><div class="he ic-truck-w"></div><div><div class="t">今日预订 · 次日派送</div><div class="s">仅限本小区 · 按门牌号配送上门</div></div></div>
       <div class="card"><div class="title" style="margin-bottom:8px">选择咖啡液</div>
-        <div class="prodsel sel" data-p="15" onclick="selProd(this,15)"><div class="pe2">🥤</div><div class="pi"><div class="pn">冷萃咖啡液</div><div class="ps">500ml/瓶 · 0糖0脂，兑水兑奶即饮</div></div><div class="price">¥15.00</div><div class="radio on"></div></div>
-        <div class="prodsel" data-p="18" onclick="selProd(this,18)"><div class="pe2">🥤</div><div class="pi"><div class="pn">意式浓缩液</div><div class="ps">500ml/瓶 · 门店同款豆，适合做拿铁</div></div><div class="price">¥18.00</div><div class="radio"></div></div>
-        <div class="prodsel" data-p="68" onclick="selProd(this,68)"><div class="pe2">🥤</div><div class="pi"><div class="pn">SOE 精品咖啡液</div><div class="ps">250ml/袋(10袋装) · 单一产区豆</div></div><div class="price">¥68.00</div><div class="radio"></div></div>
+        <div class="prodsel sel" data-p="15" onclick="selProd(this,15)"><div class="pe2"><div class="ic-bottle" style="width:22px;height:22px"></div></div><div class="pi"><div class="pn">冷萃咖啡液</div><div class="ps">500ml/瓶 · 0糖0脂，兑水兑奶即饮</div></div><div class="price">¥15.00</div><div class="radio on"></div></div>
+        <div class="prodsel" data-p="18" onclick="selProd(this,18)"><div class="pe2"><div class="ic-bottle" style="width:22px;height:22px"></div></div><div class="pi"><div class="pn">意式浓缩液</div><div class="ps">500ml/瓶 · 门店同款豆，适合做拿铁</div></div><div class="price">¥18.00</div><div class="radio"></div></div>
+        <div class="prodsel" data-p="68" onclick="selProd(this,68)"><div class="pe2"><div class="ic-bottle" style="width:22px;height:22px"></div></div><div class="pi"><div class="pn">SOE 精品咖啡液</div><div class="ps">250ml/袋(10袋装) · 单一产区豆</div></div><div class="price">¥68.00</div><div class="radio"></div></div>
       </div>
       <div class="card">
         <div class="row"><span class="lb">数量</span>
@@ -336,7 +348,7 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
     <!-- 会员 -->
     <div class="screen" id="scr-member">
       <div class="mcard" style="background:linear-gradient(135deg,#B9AB99,#4B3621)">
-        <div class="mc-top"><div><div class="mc-level">普通会员</div><div class="mc-name">演示用户</div></div><div class="mc-logo">☕</div></div>
+        <div class="mc-top"><div><div class="mc-level">普通会员</div><div class="mc-name">演示用户</div></div><div class="mc-logo ic-cup-w"></div></div>
         <div class="mc-row">
           <div class="mc-cell"><div class="mc-num">¥200.00</div><div class="mc-label">储值余额</div></div>
           <div class="mc-cell"><div class="mc-num">500</div><div class="mc-label">积分</div></div>
@@ -345,18 +357,18 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
         <div class="mc-progress"><div class="mc-pbar"><div class="mc-pbar-in" style="width:66%"></div></div>
           <div class="mc-ptip">再消费 ¥100 升级银卡会员 · 累计消费 ¥200</div></div>
       </div>
-      <div class="card pkg-card" onclick="go('monthly')"><div class="pkg-left"><div class="pkge">🥤</div><div><div class="pkg-name">畅饮月卡</div><div class="sub">2026-08 · 剩余 25/30 瓶</div></div></div><div class="more">去预订 ›</div></div>
+      <div class="card pkg-card" onclick="go('monthly')"><div class="pkg-left"><div class="pkge"><div class="ic-bottle" style="width:22px;height:22px"></div></div><div><div class="pkg-name">畅饮月卡</div><div class="sub">2026-08 · 剩余 25/30 瓶</div></div></div><div class="more">去预订 ›</div></div>
       <div class="qg">
-        <div class="qgi"><span class="i">💰</span>余额明细</div>
-        <div class="qgi"><span class="i">⭐</span>积分明细</div>
-        <div class="qgi" onclick="go('activity')"><span class="i">🎟️</span>优惠券 2</div>
-        <div class="qgi" onclick="go('activity')"><span class="i">🎉</span>活动</div>
+        <div class="qgi"><span class="i ic-wallet"></span>余额明细</div>
+        <div class="qgi"><span class="i ic-star"></span>积分明细</div>
+        <div class="qgi" onclick="go('activity')"><span class="i ic-ticket"></span>优惠券 2</div>
+        <div class="qgi" onclick="go('activity')"><span class="i ic-gift"></span>活动</div>
       </div>
       <div class="card"><div class="title" style="margin-bottom:6px">会员权益</div>
-        <div class="rights">✅ 消费 1 元 = 1 积分，积分可兑换优惠券</div>
-        <div class="rights">✅ 储值余额可用于饮品、咖啡液预订、月卡购买</div>
-        <div class="rights">✅ 银卡 ¥300 / 金卡 ¥1000 / 黑金 ¥3000（按累计消费）</div>
-        <div class="rights">✅ 月度套餐额度优先抵扣，超出按次购买</div>
+        <div class="rights"><div class="ric ic-check"></div><span>消费 1 元 = 1 积分，积分可兑换优惠券</span></div>
+        <div class="rights"><div class="ric ic-check"></div><span>储值余额可用于饮品、咖啡液预订、月卡购买</span></div>
+        <div class="rights"><div class="ric ic-check"></div><span>银卡 ¥300 / 金卡 ¥1000 / 黑金 ¥3000（按累计消费）</span></div>
+        <div class="rights"><div class="ric ic-check"></div><span>月度套餐额度优先抵扣，超出按次购买</span></div>
       </div>
     </div>
 
@@ -365,8 +377,8 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
       <div class="tabs"><div class="tab on">月度活动</div><div class="tab" onclick="actTab(this,1)">季度活动</div></div>
       <div id="actList"></div>
       <div class="section-t">海报墙</div>
-      <div class="poster-item"><div><div class="pn" style="font-weight:700">冷萃咖啡液 · 次日送达</div><div class="sub">长按保存分享</div></div><div style="font-size:28px">🖼️</div></div>
-      <div class="poster-item"><div><div class="pn" style="font-weight:700">季度储值返利最高12%</div><div class="sub">长按保存分享</div></div><div style="font-size:28px">🖼️</div></div>
+      <div class="poster-item"><div><div class="pn" style="font-weight:700">冷萃咖啡液 · 次日送达</div><div class="sub">长按保存分享</div></div><div class="ic-image" style="width:28px;height:28px"></div></div>
+      <div class="poster-item"><div><div class="pn" style="font-weight:700">季度储值返利最高12%</div><div class="sub">长按保存分享</div></div><div class="ic-image" style="width:28px;height:28px"></div></div>
     </div>
 
     <!-- 看板 -->
@@ -389,22 +401,22 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
       <div class="card"><div class="title" style="margin-bottom:12px">畅销 TOP 5</div>
         <div class="row"><span>1</span><span style="flex:1;margin-left:8px">美式咖啡</span><span class="muted">2 杯</span></div>
         <div class="row"><span>2</span><span style="flex:1;margin-left:8px">浓缩咖啡</span><span class="muted">1 杯</span></div>
-        <div class="row"><span>☕</span><span style="flex:1;margin-left:8px">冷萃咖啡液</span><span class="muted">5 瓶</span></div>
+        <div class="row"><span><div class="ic-bottle" style="width:16px;height:16px"></div></span><span style="flex:1;margin-left:8px">冷萃咖啡液</span><span class="muted">5 瓶</span></div>
       </div>
       <div class="qk">
-        <div class="qkb">🚚 派送管理</div><div class="qkb">🧋 饮品订单</div>
-        <div class="qkb">📒 台账</div><div class="qkb">📦 商品管理</div>
-        <div class="qkb">🎟️ 优惠券</div><div class="qkb">🎉 活动海报</div>
-        <div class="qkb">👥 会员管理</div><div class="qkb">⚙️ 设置</div>
+        <div class="qkb"><div class="qkic ic-truck"></div>派送管理</div><div class="qkb"><div class="qkic ic-cup"></div>饮品订单</div>
+        <div class="qkb"><div class="qkic ic-book"></div>台账</div><div class="qkb"><div class="qkic ic-box"></div>商品管理</div>
+        <div class="qkb"><div class="qkic ic-ticket"></div>优惠券</div><div class="qkb"><div class="qkic ic-gift"></div>活动海报</div>
+        <div class="qkb"><div class="qkic ic-users"></div>会员管理</div><div class="qkb"><div class="qkic ic-sliders"></div>设置</div>
       </div>
     </div>
 
   </div>
   <div class="tabbar">
-    <div class="tb on" data-tab="home" onclick="tab(this)"><span class="i">🏠</span><span class="t">首页</span></div>
-    <div class="tb" data-tab="menu" onclick="tab(this)"><span class="i">☕</span><span class="t">点单</span></div>
-    <div class="tb" data-tab="member" onclick="tab(this)"><span class="i">💎</span><span class="t">会员</span></div>
-    <div class="tb" data-tab="more" onclick="tab(this)"><span class="i">👤</span><span class="t">我的</span></div>
+    <div class="tb on" data-tab="home" onclick="tab(this)"><span class="i ic-home-m"></span><span class="t">首页</span></div>
+    <div class="tb" data-tab="menu" onclick="tab(this)"><span class="i ic-cup-m"></span><span class="t">点单</span></div>
+    <div class="tb" data-tab="member" onclick="tab(this)"><span class="i ic-gem-m"></span><span class="t">会员</span></div>
+    <div class="tb" data-tab="more" onclick="tab(this)"><span class="i ic-user-m"></span><span class="t">我的</span></div>
   </div>
 </div>
 <div class="hint" style="margin-top:14px">「我的」标签可切到月度详情 / 管理看板 · 数据为演示值，与后端真实接口一致</div>
@@ -413,31 +425,36 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 // ===== 菜单数据（与后端种子数据一致）=====
 const CATS = [
   {name:'经典咖啡', items:[
-    {n:'美式咖啡', d:'醇厚黑咖，提神醒脑', p:16, t:['热/冰'], e:'☕'},
-    {n:'浓缩咖啡', d:'双份浓缩，浓郁到底', p:15, t:['热'], e:'☕'}]},
+    {n:'美式咖啡', d:'醇厚黑咖，提神醒脑', p:16, t:['热/冰']},
+    {n:'浓缩咖啡', d:'双份浓缩，浓郁到底', p:15, t:['热']}]},
   {name:'拿铁系列', items:[
-    {n:'生椰拿铁', d:'椰香与咖啡的丝滑碰撞，门店爆款', p:22, t:['冰','推荐'], e:'🥥'},
-    {n:'燕麦拿铁', d:'燕麦奶香，植物基更轻盈', p:24, t:['热/冰'], e:'🥛'},
-    {n:'焦糖拿铁', d:'焦糖酱拉花，甜而不腻', p:23, t:['热/冰'], e:'🍮'}]},
+    {n:'生椰拿铁', d:'椰香与咖啡的丝滑碰撞，门店爆款', p:22, t:['冰','推荐']},
+    {n:'燕麦拿铁', d:'燕麦奶香，植物基更轻盈', p:24, t:['热/冰']},
+    {n:'焦糖拿铁', d:'焦糖酱拉花，甜而不腻', p:23, t:['热/冰']}]},
   {name:'手冲冷萃', items:[
-    {n:'冷萃咖啡', d:'12小时低温萃取，顺滑微酸', p:25, t:['冰'], e:'🧊'},
-    {n:'手冲耶加雪菲', d:'花果香明显，风味明亮', p:28, t:['热'], e:'🌸'}]},
+    {n:'冷萃咖啡', d:'12小时低温萃取，顺滑微酸', p:25, t:['冰']},
+    {n:'手冲耶加雪菲', d:'花果香明显，风味明亮', p:28, t:['热']}]},
   {name:'特调果饮', items:[
-    {n:'柠檬气泡美式', d:'气泡感十足，清爽解暑', p:21, t:['冰','新品'], e:'🍋'},
-    {n:'蜜桃乌龙茶', d:'白桃果肉+乌龙茶底', p:19, t:['冰','新品'], e:'🍑'}]}
+    {n:'柠檬气泡美式', d:'气泡感十足，清爽解暑', p:21, t:['冰','新品']},
+    {n:'蜜桃乌龙茶', d:'白桃果肉+乌龙茶底', p:19, t:['冰','新品']}]}
 ];
 const ACTS_M = [
-  {e:'🎉', t:'本月畅饮季：买咖啡液送杯套', st:'进行中', s:'本月预订咖啡液满10瓶送限定杯套', p:'8月1日 ~ 8月31日'},
-  {e:'☕', t:'生椰拿铁 第二杯半价', st:'即将开始', s:'每周三生椰拿铁第二杯半价', p:'8月19日 ~ 9月1日'}
+  { t:'本月畅饮季：买咖啡液送杯套', st:'进行中', s:'本月预订咖啡液满10瓶送限定杯套', p:'8月1日 ~ 8月31日'},
+  { t:'生椰拿铁 第二杯半价', st:'即将开始', s:'每周三生椰拿铁第二杯半价', p:'8月19日 ~ 9月1日'}
 ];
 const ACTS_Q = [
-  {e:'🎉', t:'季度储值返利 充300送30', st:'进行中', s:'本季度储值最高返 12%', p:'7月1日 ~ 9月30日'}
+  { t:'季度储值返利 充300送30', st:'进行中', s:'本季度储值最高返 12%', p:'7月1日 ~ 9月30日'}
 ];
 // ===== 路由 =====
 let cart = {}, activeCat = 0;
 function tab(el){
   document.querySelectorAll('.tb').forEach(x=>x.classList.remove('on'));
   el.classList.add('on');
+  document.querySelectorAll('.tb').forEach(x=>{
+    const key = x.dataset.tab;
+    const i = x.querySelector('.i');
+    if (i) i.className = 'i ic-' + key + (x.classList.contains('on') ? '-w' : '-m');
+  });
   go(el.dataset.tab);
 }
 function go(name){
@@ -448,7 +465,7 @@ function go(name){
   scr.scrollTop = 0;
 }
 function showMore(){
-  const choice = confirm('👤 我的\n\n[确定] 月度咖啡液详情\n[取消] 店长管理看板');
+  const choice = confirm('我的\n\n[确定] 月度咖啡液详情\n[取消] 店长管理看板');
   go(choice ? 'monthly' : 'admin');
 }
 // ===== 菜单 =====
@@ -464,7 +481,7 @@ function renderList(){
     c.items.map(p=>{
       const q = cart[p.n]||0;
       return `<div class="prod">
-        <div class="pimg">${p.e}</div>
+        <div class="pimg"><div class="ic-cup" style="width:28px;height:28px"></div></div>
         <div class="pinfo">
           <div class="pname">${p.n}</div><div class="pdesc">${p.d}</div>
           <div>${p.t.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
@@ -488,7 +505,7 @@ function syncCart(){
   document.getElementById('cartAmt').textContent = '¥'+amt.toFixed(2);
   const btn = document.getElementById('ckbtn');
   btn.classList.toggle('dis', cnt===0);
-  btn.onclick = cnt? ()=>alert('🛒 去结算\n\n共 '+cnt+' 件 · ¥'+amt.toFixed(2)+'\n（真实结算在微信小程序内：优惠券/余额/模拟微信支付）'):null;
+  btn.onclick = cnt? ()=>alert('去结算\n\n共 '+cnt+' 件 · ¥'+amt.toFixed(2)+'\n（真实结算在微信小程序内：优惠券/余额/模拟微信支付）'):null;
 }
 function priceOf(n){ for(const c of CATS) for(const p of c.items) if(p.n===n) return p.p; return 0; }
 // ===== 预订试算 =====
@@ -510,7 +527,7 @@ function actTab(el, idx){
 }
 function renderActs(list){
   document.getElementById('actList').innerHTML = list.map(a=>`
-    <div class="act"><div class="act-banner"><div class="ae">${a.e}</div><div class="at">${a.t}</div><div class="st">${a.st}</div></div>
+    <div class="act"><div class="act-banner"><div class="ae ic-gift-w"></div><div class="at">${a.t}</div><div class="st">${a.st}</div></div>
     <div class="act-body"><div class="as">${a.s}</div><div class="ap">${a.p}</div></div></div>`).join('');
 }
 // ===== 看板趋势 =====

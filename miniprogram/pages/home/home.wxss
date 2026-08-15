@@ -112,3 +112,9 @@
   margin-top: 48rpx;
   letter-spacing: 1rpx;
 }
+
+.hero-emoji { width: 88rpx; height: 88rpx; }
+.poster-emoji { width: 64rpx; height: 64rpx; }
+.notice-dot { width: 32rpx; height: 32rpx; flex-shrink: 0; }
+.notice-text { margin-left: 0; }
+

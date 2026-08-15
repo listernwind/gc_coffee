@@ -115,7 +115,7 @@ Page({
     this.setData({ submitting: true });
     api.post('/api/drink/order', payload).then((order) => {
       getApp().globalData.cart = [];
-      wx.showToast({ title: '下单成功 🎉', icon: 'none' });
+      wx.showToast({ title: '下单成功', icon: 'none' });
       setTimeout(() => {
         wx.redirectTo({ url: '/pages/order-detail/order-detail?id=' + order.id });
       }, 800);

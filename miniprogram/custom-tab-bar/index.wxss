@@ -1,3 +1,4 @@
+@import "../../assets/icons.wxss";
 .tab-bar {
   position: fixed;
   left: 24rpx;
@@ -27,5 +28,5 @@
   color: #FFF7EC;
   background: linear-gradient(135deg, #D9A05B, #B8783D);
 }
-.tab-icon { font-size: 38rpx; line-height: 1.1; }
+.tab-icon { width: 38rpx; height: 38rpx; }
 .tab-text { font-size: 20rpx; margin-top: 2rpx; }

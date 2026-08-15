@@ -45,5 +45,5 @@
       </view>
     </view>
   </view>
-  <view class="empty" wx:else><text class="icon">🚚</text><view>暂无预订</view></view>
+  <view class="empty" wx:else><view class="icon ic ic-truck"></view><view>暂无预订</view></view>
 </view>

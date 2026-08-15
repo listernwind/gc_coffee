@@ -2,7 +2,8 @@
 backend/target/
 
 # 本机开发辅助（Maven 发行版、本地 Maven 仓库、测试数据库数据目录）
-tools/
+tools/*
+!tools/gen_icons.py
 
 # 日志
 *.log

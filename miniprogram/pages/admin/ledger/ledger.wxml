@@ -37,7 +37,7 @@
   </view>
 
   <view class="empty" wx:if="{{!loading && !rows.length}}">
-    <text class="icon">📒</text>
+    <view class="icon ic ic-book"></view>
     <view>该区间暂无台账记录</view>
   </view>
 </view>

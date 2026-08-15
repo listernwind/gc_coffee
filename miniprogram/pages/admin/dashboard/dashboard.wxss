@@ -74,3 +74,7 @@
   font-weight: 700;
   box-shadow: 0 4rpx 16rpx rgba(75, 54, 33, 0.05);
 }
+
+.qk { display: flex; align-items: center; }
+.qk-ic { width: 36rpx; height: 36rpx; margin-right: 12rpx; flex-shrink: 0; }
+

@@ -28,7 +28,7 @@
   </view>
 
   <view class="empty" wx:else>
-    <text class="icon">📦</text>
+    <view class="icon ic ic-box"></view>
     <view>还没有预订记录</view>
     <view class="sub" style="margin-top:8rpx;">今日预订，次日送到家</view>
   </view>

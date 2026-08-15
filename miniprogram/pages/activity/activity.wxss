@@ -48,3 +48,7 @@
 }
 .pi-title { font-weight: 700; }
 .pi-emoji { font-size: 56rpx; }
+
+.ab-emoji { width: 56rpx; height: 56rpx; }
+.pi-emoji { width: 56rpx; height: 56rpx; }
+

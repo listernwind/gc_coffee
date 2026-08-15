@@ -9,7 +9,7 @@
     </view>
   </view>
   <view class="empty" wx:else>
-    <text class="icon">⭐</text>
+    <view class="icon ic ic-star"></view>
     <view>暂无积分记录</view>
   </view>
 </view>

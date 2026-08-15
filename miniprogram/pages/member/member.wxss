@@ -71,3 +71,9 @@
 }
 
 .right-row { padding: 12rpx 0; font-size: 25rpx; color: var(--ink-2); }
+
+.mc-logo { width: 64rpx; height: 64rpx; }
+.qg-icon { width: 48rpx; height: 48rpx; margin: 0 auto 10rpx; }
+.right-row { display: flex; align-items: flex-start; }
+.right-ic { width: 30rpx; height: 30rpx; margin-right: 12rpx; flex-shrink: 0; margin-top: 4rpx; }
+
