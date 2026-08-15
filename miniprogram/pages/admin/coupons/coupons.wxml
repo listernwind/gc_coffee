@@ -1,0 +1,58 @@
+<view class="page page-pad">
+  <view class="card row" wx:for="{{coupons}}" wx:key="id">
+    <view>
+      <view style="font-weight:700;">{{item.name}} <text class="badge" style="background:#B8783D;font-size:18rpx;">{{item.label}}</text></view>
+      <view class="sub">{{item.typeLabel}} · 满{{item.minAmount}}用 · 已发{{item.issuedCount}}/{{item.totalCount || '∞'}} · {{item.active === 1 ? '上架' : '下架'}}</view>
+    </view>
+    <view class="ops">
+      <view class="op" data-item="{{item}}" bindtap="openForm">编辑</view>
+      <view class="op danger" data-id="{{item.id}}" bindtap="remove">删除</view>
+    </view>
+  </view>
+
+  <button class="btn btn-primary" bindtap="openForm">＋ 新增优惠券</button>
+
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{editing ? '编辑' : '新增'}}优惠券</view>
+    <view class="form-item">
+      <text class="label">名称</text>
+      <input class="input" value="{{form.name}}" data-field="name" bindinput="onField" placeholder="如：满30减6" />
+    </view>
+    <view class="form-item">
+      <text class="label">类型</text>
+      <picker range="{{['满减', '折扣', '现金券']}}" value="{{form.type === 'DISCOUNT' ? 1 : form.type === 'CASH' ? 2 : 0}}" bindchange="onType">
+        <view class="input">{{form.type === 'DISCOUNT' ? '折扣' : form.type === 'CASH' ? '现金券' : '满减'}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="label">{{form.type === 'DISCOUNT' ? '折扣率（0.9 = 9折）' : '面额/减免金额'}}</text>
+      <input class="input" type="digit" value="{{form.value}}" data-field="value" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">使用门槛（满X元，0为无门槛）</text>
+      <input class="input" type="digit" value="{{form.minAmount}}" data-field="minAmount" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">有效天数（领取后）</text>
+      <input class="input" type="number" value="{{form.validDays}}" data-field="validDays" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">发放总量（0不限）</text>
+      <input class="input" type="number" value="{{form.totalCount}}" data-field="totalCount" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">每人限领</text>
+      <input class="input" type="number" value="{{form.perUserLimit}}" data-field="perUserLimit" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">积分兑换所需（0=不可兑换）</text>
+      <input class="input" type="number" value="{{form.redeemPoints}}" data-field="redeemPoints" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">上架</text>
+      <switch checked="{{form.active === 1}}" color="#C08A4E" data-field="active" bindchange="onActive" />
+    </view>
+    <button class="btn btn-primary" bindtap="save">保存</button>
+  </view>
+</view>

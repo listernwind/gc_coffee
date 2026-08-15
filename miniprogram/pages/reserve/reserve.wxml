@@ -1,0 +1,119 @@
+<view class="page page-pad">
+  <!-- 顶部说明 -->
+  <view class="hero-tip">
+    <view class="ht-emoji">🚚</view>
+    <view>
+      <view class="ht-title">今日预订 · 次日派送</view>
+      <view class="ht-sub">仅限本小区 · 按门牌号配送上门</view>
+    </view>
+  </view>
+
+  <!-- 选择产品 -->
+  <view class="card">
+    <view class="title" style="margin-bottom:20rpx;">选择咖啡液</view>
+    <view
+      wx:for="{{products}}"
+      wx:key="id"
+      class="prod {{productId === item.id ? 'sel' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="selectProduct"
+    >
+      <view class="prod-emoji">{{item.image ? '' : '🥤'}}</view>
+      <view class="prod-info">
+        <view class="prod-name">{{item.name}}</view>
+        <view class="sub">{{item.spec}} · {{item.descText}}</view>
+      </view>
+      <view class="prod-right">
+        <view class="price" style="font-size:32rpx;">¥{{item.price}}</view>
+        <view class="radio {{productId === item.id ? 'on' : ''}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数量 + 额度 -->
+  <view class="card">
+    <view class="row">
+      <view class="label">数量</view>
+      <view class="stepper">
+        <view class="step-btn minus" data-delta="-1" bindtap="changeQty">−</view>
+        <view class="step-num" style="font-size:34rpx;">{{quantity}}</view>
+        <view class="step-btn plus" data-delta="1" bindtap="changeQty">＋</view>
+      </view>
+    </view>
+    <view class="row">
+      <view class="label">优先使用套餐额度</view>
+      <switch checked="{{usePackage}}" color="#C08A4E" bindchange="togglePackage" />
+    </view>
+    <view class="quota" wx:if="{{packageInfo.hasPackage}}">
+      本月「{{packageInfo.name}}」剩余 <text class="q-num">{{packageInfo.remain}}</text> 瓶
+      <text class="q-note">（额度当月有效，次月清零）</text>
+    </view>
+    <view class="quota" wx:else>
+      暂无月度套餐
+      <text class="q-note">开通月卡低至 12 元/瓶 →</text>
+    </view>
+  </view>
+
+  <!-- 派送时间 -->
+  <view class="card">
+    <view class="title" style="margin-bottom:20rpx;">派送时间</view>
+    <view class="days">
+      <view
+        wx:for="{{days}}"
+        wx:key="date"
+        class="day {{dayIndex === index ? 'sel' : ''}}"
+        data-index="{{index}}"
+        bindtap="selectDay"
+      >
+        <view class="d-week">{{item.week}}</view>
+        <view class="d-date">{{item.label}}</view>
+      </view>
+    </view>
+    <view class="slots">
+      <view
+        wx:for="{{slots}}"
+        wx:key="*this"
+        class="slot {{slotIndex === index ? 'sel' : ''}}"
+        data-index="{{index}}"
+        bindtap="selectSlot"
+      >{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 派送地址 -->
+  <view class="card">
+    <view class="title" style="margin-bottom:20rpx;">派送信息</view>
+    <view class="form-item">
+      <text class="label">小区</text>
+      <view class="community">{{community || '本小区'}}</view>
+    </view>
+    <view class="form-item">
+      <text class="label">楼栋门牌号</text>
+      <input class="input" placeholder="如：3栋2单元501" value="{{address}}" data-field="address" bindinput="onInput" />
+    </view>
+    <view class="form-item">
+      <text class="label">联系人</text>
+      <input class="input" placeholder="收货人姓名" value="{{contactName}}" data-field="contactName" bindinput="onInput" />
+    </view>
+    <view class="form-item">
+      <text class="label">联系电话</text>
+      <input class="input" type="number" maxlength="11" placeholder="手机号" value="{{contactPhone}}" data-field="contactPhone" bindinput="onInput" />
+    </view>
+  </view>
+
+  <!-- 结算栏 -->
+  <view class="submit-bar">
+    <view class="pay-switch">
+      <view class="ps-item {{payType === 'WX_MOCK' ? 'on' : ''}}" data-type="WX_MOCK" bindtap="selectPay">微信</view>
+      <view class="ps-item {{payType === 'BALANCE' ? 'on' : ''}}" data-type="BALANCE" bindtap="selectPay">余额 ¥{{balance}}</view>
+    </view>
+    <view class="bar-main">
+      <view class="bar-desc">
+        <text wx:if="{{packageUsed > 0}}" class="ok">额度抵 {{packageUsed}} 瓶 · </text>
+        <text>{{payQty > 0 ? '支付 ' + payQty + ' 瓶' : '全部额度抵扣'}}</text>
+      </view>
+      <view class="price" style="font-size:40rpx;">¥{{amount}}</view>
+    </view>
+    <button class="btn btn-accent" style="width:240rpx;padding:18rpx 0;" disabled="{{submitting}}" bindtap="submit">提交预订</button>
+  </view>
+</view>

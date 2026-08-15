@@ -1,0 +1,80 @@
+<view class="page page-pad">
+  <view class="card">
+    <view class="title" style="margin-bottom:20rpx;">商品清单</view>
+    <view wx:for="{{items}}" wx:key="productId" class="row">
+      <view>
+        <view style="font-weight:600;">{{item.name}}</view>
+        <view class="sub">¥{{item.price}} × {{item.qty}}</view>
+      </view>
+      <view class="price">¥{{item.price * item.qty}}</view>
+    </view>
+    <view class="row">
+      <view class="label">商品金额</view>
+      <view class="value">¥{{total}}</view>
+    </view>
+    <view class="row" wx:if="{{discount > 0}}">
+      <view class="label ok">优惠券</view>
+      <view class="value ok">-¥{{discount}}</view>
+    </view>
+    <view class="row" style="border-bottom:none;">
+      <view class="label">应付金额</view>
+      <view class="price" style="font-size:40rpx;">¥{{payAmount}}</view>
+    </view>
+  </view>
+
+  <!-- 优惠券 -->
+  <view class="card" bindtap="toggleCoupons">
+    <view class="row" style="border-bottom:none;">
+      <view class="label">优惠券</view>
+      <view class="{{couponLabel ? 'ok' : ''}}">{{couponLabel || (usableCoupons.length ? '去选择 (' + usableCoupons.length + '张可用)' : '暂无可用')}} ›</view>
+    </view>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class="card">
+    <view class="title" style="margin-bottom:16rpx;">支付方式</view>
+    <view class="pay-item {{payType === 'WX_MOCK' ? 'sel' : ''}}" data-type="WX_MOCK" bindtap="selectPay">
+      <view class="pay-left"><view class="pay-emoji">💳</view><view>微信支付<view class="sub">（开发期模拟支付）</view></view></view>
+      <view class="radio {{payType === 'WX_MOCK' ? 'on' : ''}}"></view>
+    </view>
+    <view class="pay-item {{payType === 'BALANCE' ? 'sel' : ''}} {{balanceEnough ? '' : 'disabled'}}" data-type="BALANCE" bindtap="selectPay">
+      <view class="pay-left"><view class="pay-emoji">💰</view><view>余额支付<view class="sub">可用余额 ¥{{balance}}{{balanceEnough ? '' : '（不足）'}}</view></view></view>
+      <view class="radio {{payType === 'BALANCE' ? 'on' : ''}}"></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-item">
+      <text class="label">备注</text>
+      <input class="input" placeholder="口味偏好、少冰等（选填）" value="{{remark}}" bindinput="onRemark" />
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <view>
+      <view class="price" style="font-size:38rpx;">¥{{payAmount}}</view>
+      <view class="sub" wx:if="{{discount > 0}}">已优惠 ¥{{discount}}</view>
+    </view>
+    <button class="btn btn-accent" style="width:300rpx;" disabled="{{submitting}}" bindtap="submit">提交订单</button>
+  </view>
+
+  <!-- 优惠券选择弹层 -->
+  <view class="mask" wx:if="{{showCoupons}}" bindtap="toggleCoupons"></view>
+  <view class="sheet" wx:if="{{showCoupons}}">
+    <view class="sheet-title">选择优惠券</view>
+    <view class="coupon-row" data-id="{{item.id}}" bindtap="chooseCoupon" wx:for="{{usableCoupons}}" wx:key="id">
+      <view class="coupon-left">
+        <view class="coupon-value">{{item.type === 'DISCOUNT' ? item.value * 10 + '折' : '¥' + item.value}}</view>
+        <view class="coupon-name">{{item.name}}</view>
+      </view>
+      <view class="coupon-right">
+        <view class="sub">{{item.desc}}</view>
+        <view class="radio {{couponId === item.id ? 'on' : ''}}"></view>
+      </view>
+    </view>
+    <view class="coupon-row" bindtap="chooseCoupon" data-id="">
+      <view class="coupon-left"><view class="coupon-value" style="font-size:26rpx;">不使用</view></view>
+      <view class="coupon-right"><view class="radio {{!couponId ? 'on' : ''}}"></view></view>
+    </view>
+  </view>
+</view>

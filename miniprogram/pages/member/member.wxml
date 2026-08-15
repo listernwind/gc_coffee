@@ -1,0 +1,66 @@
+<view class="member-page" wx:if="{{profile}}">
+  <!-- 会员卡 -->
+  <view class="mcard" style="background:linear-gradient(135deg, {{levelColor}}, #4B3621);">
+    <view class="mc-top">
+      <view>
+        <view class="mc-level">{{profile.levelName}}</view>
+        <view class="mc-name">{{profile.nickname}}</view>
+      </view>
+      <view class="mc-logo">☕</view>
+    </view>
+    <view class="mc-balance-row">
+      <view class="mc-balance">
+        <view class="mc-num">¥{{profile.balance}}</view>
+        <view class="mc-label">储值余额</view>
+      </view>
+      <view class="mc-points">
+        <view class="mc-num">{{profile.points}}</view>
+        <view class="mc-label">积分</view>
+      </view>
+      <button class="mc-recharge" bindtap="goRecharge">充值</button>
+    </view>
+    <view class="mc-progress">
+      <view class="mc-pbar">
+        <view class="mc-pbar-inner" style="width:{{profile.nextLevelNeed !== null ? 60 : 100}}%"></view>
+      </view>
+      <view class="mc-ptip">{{nextLabel}} · 累计消费 ¥{{profile.totalSpend}}</view>
+    </view>
+  </view>
+
+  <!-- 月度套餐 -->
+  <view class="card pkg-card" bindtap="goMonthly">
+    <view class="pkg-left">
+      <view class="pkg-emoji">🥤</view>
+      <view>
+        <view class="pkg-name">{{packageInfo ? packageInfo.name : '未开通月度套餐'}}</view>
+        <view class="sub">{{packageInfo ? packageInfo.month + ' · 剩余 ' + packageInfo.remain + '/' + packageInfo.total + ' 瓶' : '开通月卡低至 12 元/瓶'}}</view>
+      </view>
+    </view>
+    <view class="more" bindtap="goReserve">{{packageInfo ? '去预订' : '去看看'}} ›</view>
+  </view>
+
+  <!-- 快捷 -->
+  <view class="quick-grid">
+    <view class="qg-item" bindtap="goBalanceRecords">
+      <view class="qg-icon">💰</view><view>余额明细</view>
+    </view>
+    <view class="qg-item" bindtap="goPointsRecords">
+      <view class="qg-icon">⭐</view><view>积分明细</view>
+    </view>
+    <view class="qg-item" bindtap="goCoupons">
+      <view class="qg-icon">🎟️</view><view>优惠券 <text class="qg-badge" wx:if="{{coupons.length}}">{{coupons.length}}</text></view>
+    </view>
+    <view class="qg-item" bindtap="goActivity">
+      <view class="qg-icon">🎉</view><view>活动</view>
+    </view>
+  </view>
+
+  <!-- 会员权益 -->
+  <view class="card">
+    <view class="title" style="margin-bottom:12rpx;">会员权益</view>
+    <view class="right-row"><text>✅ 消费 1 元 = 1 积分，积分可兑换优惠券</text></view>
+    <view class="right-row"><text>✅ 储值余额可用于饮品、咖啡液预订、月卡购买</text></view>
+    <view class="right-row"><text>✅ 银卡 ¥300 / 金卡 ¥1000 / 黑金 ¥3000（按累计消费）</text></view>
+    <view class="right-row"><text>✅ 月度套餐额度优先抵扣，超出按次购买</text></view>
+  </view>
+</view>

@@ -1,0 +1,72 @@
+<view class="menu-page">
+  <view class="menu-top">
+    <view class="menu-title">点单 ☕</view>
+    <view class="menu-sub">现点现做 · 到店自取</view>
+  </view>
+
+  <view class="menu-body">
+    <!-- 左侧分类 -->
+    <scroll-view scroll-y class="cat-rail">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="cat-item {{activeCat === index ? 'active' : ''}}"
+        data-index="{{index}}"
+        bindtap="selectCat"
+      >{{item.name}}</view>
+    </scroll-view>
+
+    <!-- 右侧商品 -->
+    <scroll-view scroll-y class="product-list" scroll-into-view="cat-{{activeCat}}">
+      <view wx:for="{{categories}}" wx:key="id" wx:for-item="cat" class="cat-block" id="cat-{{index}}">
+        <view class="cat-name">{{cat.name}}</view>
+        <view wx:for="{{cat.products}}" wx:key="id" wx:for-item="p" class="product">
+          <view class="p-img">{{p.image ? '' : '☕'}}</view>
+          <view class="p-info">
+            <view class="p-name">{{p.name}}</view>
+            <view class="p-desc">{{p.descText}}</view>
+            <view class="p-tags">
+              <text wx:for="{{p.tagsList}}" wx:key="*this" wx:for-item="t" class="tag" wx:if="{{t}}">{{t}}</text>
+            </view>
+            <view class="p-bottom">
+              <view class="price"><text class="price-symbol">¥</text>{{p.price}}</view>
+              <view class="stepper">
+                <view wx:if="{{cartMap[p.id] > 0}}" class="step-btn minus" data-id="{{p.id}}" catchtap="minus">−</view>
+                <view wx:if="{{cartMap[p.id] > 0}}" class="step-num">{{cartMap[p.id]}}</view>
+                <view class="step-btn plus" data-item="{{p}}" catchtap="addToCart">＋</view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="list-end">— 到底啦 —</view>
+    </scroll-view>
+  </view>
+
+  <!-- 购物车浮层 -->
+  <view class="cart-mask" wx:if="{{showCart}}" bindtap="toggleCart"></view>
+  <view class="cart-panel" wx:if="{{showCart}}">
+    <view class="cart-head">
+      <view class="cart-title">已选商品</view>
+      <view class="clear" bindtap="clearCart">清空</view>
+    </view>
+    <view wx:for="{{cart}}" wx:key="productId" class="cart-item">
+      <view class="ci-name">{{item.name}} <text class="ci-price">¥{{item.price}}</text></view>
+      <view class="stepper">
+        <view class="step-btn minus" data-id="{{item.productId}}" bindtap="minus">−</view>
+        <view class="step-num">{{item.qty}}</view>
+        <view class="step-btn plus" data-id="{{item.productId}}" bindtap="addOne">＋</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部结算栏 -->
+  <view class="cart-bar">
+    <view class="cart-icon" bindtap="toggleCart">🛒<view wx:if="{{cartCount}}" class="cart-count">{{cartCount}}</view></view>
+    <view class="cart-total">
+      <view class="price" style="color:#FFF7EC;font-size:36rpx;">¥{{cartAmount}}</view>
+      <view class="muted" style="color:rgba(255,247,236,0.6);font-size:20rpx;">配送费 0 元</view>
+    </view>
+    <view class="checkout-btn {{cartCount ? '' : 'disabled'}}" bindtap="goCheckout">去结算</view>
+  </view>
+</view>

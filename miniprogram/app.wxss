@@ -1,0 +1,157 @@
+/* ============ GC Coffee 主题 ============
+   奶咖色系 · 简洁上档次
+   背景 #F6F1EA / 主色 深咖 #4B3621 / 点缀 焦糖 #C08A4E */
+page {
+  --bg: #F6F1EA;
+  --card: #FFFFFF;
+  --ink: #2E2118;
+  --ink-2: #8A7A6A;
+  --ink-3: #B9AB99;
+  --coffee: #4B3621;
+  --coffee-2: #6F4E37;
+  --accent: #C08A4E;
+  --accent-2: #D9A05B;
+  --line: #EFE7DC;
+  --danger: #C75B39;
+  --ok: #4E8D6E;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+.page { padding: 24rpx 28rpx 60rpx; }
+.page-pad { padding-bottom: 160rpx; }
+
+/* 卡片 */
+.card {
+  background: var(--card);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  box-shadow: 0 6rpx 24rpx rgba(75, 54, 33, 0.06);
+  margin-bottom: 24rpx;
+}
+
+/* 按钮 */
+.btn {
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 22rpx 0;
+  border: none;
+  line-height: 1.4;
+}
+.btn::after { border: none; }
+.btn-primary {
+  background: linear-gradient(135deg, #6F4E37 0%, #4B3621 100%);
+  color: #FFF7EC;
+}
+.btn-primary[disabled] { opacity: 0.5; color: #FFF7EC; }
+.btn-accent {
+  background: linear-gradient(135deg, #D9A05B 0%, #B8783D 100%);
+  color: #FFF;
+}
+.btn-ghost {
+  background: #FFF;
+  color: var(--coffee);
+  border: 2rpx solid var(--line);
+}
+.btn-sm { padding: 12rpx 28rpx; font-size: 26rpx; display: inline-block; }
+.btn-danger-ghost { background: #FDF1EC; color: var(--danger); }
+
+/* 文本 */
+.title { font-size: 34rpx; font-weight: 700; color: var(--ink); }
+.sub { font-size: 24rpx; color: var(--ink-2); }
+.price { color: #B06F3A; font-weight: 700; }
+.price-symbol { font-size: 22rpx; margin-right: 2rpx; }
+.muted { color: var(--ink-3); }
+.danger { color: var(--danger); }
+.ok { color: var(--ok); }
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: #F3E7D8;
+  color: #A06A2E;
+  margin-right: 10rpx;
+}
+.badge {
+  display: inline-block;
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  color: #FFF;
+}
+
+/* 状态徽标 */
+.st-PENDING, .st-PAID { background: #E4A45B; }
+.st-CONFIRMED, .st-MAKING { background: #7C9EC0; }
+.st-DELIVERING, .st-READY { background: #8E7CC3; }
+.st-DELIVERED, .st-FINISHED { background: #4E8D6E; }
+.st-CANCELLED { background: #B9AB99; }
+
+/* 区块标题 */
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 36rpx 4rpx 20rpx;
+}
+.section-title .t { font-size: 32rpx; font-weight: 700; }
+.section-title .more { font-size: 24rpx; color: var(--ink-2); }
+
+/* 列表行 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.row:last-child { border-bottom: none; }
+.row .label { color: var(--ink-2); font-size: 26rpx; }
+.row .value { font-weight: 600; font-size: 28rpx; }
+
+/* 空态 */
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+  color: var(--ink-3);
+}
+.empty .icon { font-size: 90rpx; display: block; margin-bottom: 20rpx; }
+
+/* 表单 */
+.form-item { margin-bottom: 28rpx; }
+.form-item .label { font-size: 26rpx; color: var(--ink-2); margin-bottom: 12rpx; display: block; }
+.input, .textarea {
+  background: #FAF6F0;
+  border: 2rpx solid var(--line);
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+.textarea { min-height: 140rpx; }
+
+/* 弹层 */
+.mask {
+  position: fixed; inset: 0;
+  background: rgba(30, 20, 10, 0.5);
+  z-index: 90;
+}
+.sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: #FFF;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 40rpx 32rpx 60rpx;
+  z-index: 99;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+.sheet-title { font-size: 32rpx; font-weight: 700; text-align: center; margin-bottom: 28rpx; }

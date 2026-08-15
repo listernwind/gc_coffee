@@ -1,0 +1,4 @@
+.record { padding: 22rpx 28rpx; display: flex; justify-content: space-between; align-items: center; }
+.rec-type { font-weight: 600; font-size: 27rpx; }
+.rec-remark { font-weight: 400; color: var(--ink-2); font-size: 22rpx; }
+.rec-right { font-weight: 800; font-size: 30rpx; }

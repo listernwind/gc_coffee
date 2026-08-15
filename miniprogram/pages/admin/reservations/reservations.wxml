@@ -1,0 +1,49 @@
+<view class="page">
+  <scroll-view scroll-x class="dates">
+    <view
+      wx:for="{{dates}}"
+      wx:key="*this"
+      class="date-chip {{date === item ? 'sel' : ''}}"
+      data-index="{{index}}"
+      bindtap="selectDate"
+    >{{item === '' ? '全部日期' : item}}</view>
+  </scroll-view>
+
+  <scroll-view scroll-x class="statuses">
+    <view
+      wx:for="{{statuses}}"
+      wx:key="key"
+      class="status-chip {{status === item.key ? 'sel' : ''}}"
+      data-key="{{item.key}}"
+      bindtap="selectStatus"
+    >{{item.label}}</view>
+  </scroll-view>
+
+  <view wx:if="{{records.length}}">
+    <view class="card" wx:for="{{records}}" wx:key="id">
+      <view class="rv-head">
+        <view class="rv-product">{{item.productName}} × {{item.quantity}}</view>
+        <view class="badge {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="rv-row"><text class="label">派送</text><text class="value">{{item.dateLabel}} {{item.timeSlot}}</text></view>
+      <view class="rv-row"><text class="label">地址</text><text class="value">{{item.address}}（{{item.contactName}} {{item.contactPhone}}）</text></view>
+      <view class="rv-row">
+        <text class="label">用户</text><text class="value">{{item.nickname}}</text>
+      </view>
+      <view class="rv-row">
+        <text class="label">费用</text>
+        <text class="value">
+          <text wx:if="{{item.packageUsed > 0}}" class="ok">额度{{item.packageUsed}}瓶</text>
+          <text wx:if="{{item.payQuantity > 0}}"> ¥{{item.amount}}</text>
+        </text>
+      </view>
+      <view class="rv-actions" wx:if="{{item.status === 'PENDING' || item.status === 'CONFIRMED' || item.status === 'DELIVERING'}}">
+        <button wx:if="{{item.status === 'PENDING'}}" class="btn btn-sm btn-ghost" data-id="{{item.id}}" data-status="CONFIRMED" data-label="已确认" bindtap="setStatus">确认</button>
+        <button wx:if="{{item.status === 'CONFIRMED'}}" class="btn btn-sm btn-accent" data-id="{{item.id}}" data-status="DELIVERING" data-label="派送中" bindtap="setStatus">开始派送</button>
+        <button wx:if="{{item.status === 'DELIVERING'}}" class="btn btn-sm btn-primary" data-id="{{item.id}}" data-status="DELIVERED" data-label="已送达" bindtap="setStatus">送达</button>
+        <button wx:if="{{item.status !== 'DELIVERED'}}" class="btn btn-sm btn-danger-ghost" data-id="{{item.id}}" bindtap="cancel">取消</button>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else><text class="icon">🚚</text><view>暂无预订</view></view>
+</view>

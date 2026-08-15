@@ -1,0 +1,43 @@
+<view class="page">
+  <!-- 筛选 -->
+  <view class="card">
+    <view class="types">
+      <view wx:for="{{types}}" wx:key="key" class="type-chip {{type === item.key ? 'sel' : ''}}" data-key="{{item.key}}" bindtap="selectType">{{item.label}}</view>
+    </view>
+    <view class="dates">
+      <picker mode="date" value="{{startDate}}" bindchange="onStart">
+        <view class="date-box">{{startDate}}</view>
+      </picker>
+      <text class="to">至</text>
+      <picker mode="date" value="{{endDate}}" bindchange="onEnd">
+        <view class="date-box">{{endDate}}</view>
+      </picker>
+      <view class="export" bindtap="copyCsv">复制CSV</view>
+    </view>
+  </view>
+
+  <!-- 汇总 -->
+  <view class="summary" wx:if="{{summary}}">
+    <view class="sm-item"><view class="sm-num">¥{{summary.income}}</view><view class="sm-label">期间收入</view></view>
+    <view class="sm-item"><view class="sm-num">{{summary.count}}</view><view class="sm-label">笔数</view></view>
+    <view class="sm-item"><view class="sm-num">{{rows.length}}</view><view class="sm-label">显示</view></view>
+  </view>
+
+  <!-- 台账明细 -->
+  <view class="card" wx:for="{{rows}}" wx:key="*this">
+    <view class="lg-head">
+      <view class="lg-type">{{item.type}}</view>
+      <view class="lg-status">{{item.statusText}}</view>
+    </view>
+    <view class="lg-row"><text class="label">时间</text><text class="value">{{item.time}}</text></view>
+    <view class="lg-row"><text class="label">单号</text><text class="value">{{item.orderNo}}</text></view>
+    <view class="lg-row"><text class="label">用户</text><text class="value">{{item.user}}</text></view>
+    <view class="lg-row"><text class="label">内容</text><text class="value">{{item.content}}</text></view>
+    <view class="lg-row"><text class="label">金额</text><text class="value price">¥{{item.amountText}}</text></view>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && !rows.length}}">
+    <text class="icon">📒</text>
+    <view>该区间暂无台账记录</view>
+  </view>
+</view>

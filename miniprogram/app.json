@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/menu/menu",
+    "pages/checkout/checkout",
+    "pages/order-detail/order-detail",
+    "pages/orders/orders",
+    "pages/reserve/reserve",
+    "pages/reserve-records/reserve-records",
+    "pages/monthly/monthly",
+    "pages/coupons/coupons",
+    "pages/activity/activity",
+    "pages/activity-detail/activity-detail",
+    "pages/recharge/recharge",
+    "pages/balance-records/balance-records",
+    "pages/points-records/points-records",
+    "pages/member/member",
+    "pages/profile/profile",
+    "pages/admin-login/admin-login",
+    "pages/admin/dashboard/dashboard",
+    "pages/admin/ledger/ledger",
+    "pages/admin/reservations/reservations",
+    "pages/admin/orders/orders",
+    "pages/admin/products/products",
+    "pages/admin/coupons/coupons",
+    "pages/admin/activities/activities",
+    "pages/admin/members/members",
+    "pages/admin/settings/settings"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F6F1EA",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "GC Coffee",
+    "backgroundColor": "#F6F1EA",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#9B8C7B",
+    "selectedColor": "#4B3621",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "首页" },
+      { "pagePath": "pages/menu/menu", "text": "点单" },
+      { "pagePath": "pages/member/member", "text": "会员" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,21 @@
+.amount-grid { display: flex; flex-wrap: wrap; gap: 20rpx; }
+.amount {
+  width: calc(33.33% - 14rpx);
+  box-sizing: border-box;
+  background: #FAF6F0;
+  border: 2rpx solid transparent;
+  border-radius: 22rpx;
+  padding: 26rpx 0;
+  text-align: center;
+}
+.amount.sel { background: #F3E7D8; border-color: var(--accent); }
+.a-num { font-size: 34rpx; font-weight: 800; color: var(--coffee); }
+.a-bonus { font-size: 20rpx; color: var(--accent); margin-top: 4rpx; }
+.notice-line {
+  margin-top: 20rpx;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  background: #FAF6F0;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+}

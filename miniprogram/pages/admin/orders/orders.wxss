@@ -1,0 +1,16 @@
+.tabs {
+  display: flex;
+  background: #FFF;
+  border-radius: 999rpx;
+  padding: 8rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(75, 54, 33, 0.05);
+}
+.tab { flex: 1; text-align: center; padding: 16rpx 0; font-size: 24rpx; color: var(--ink-2); border-radius: 999rpx; }
+.tab.active { background: var(--coffee); color: #FFF7EC; font-weight: 700; }
+
+.o-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; }
+.o-row { display: flex; justify-content: space-between; padding: 5rpx 0; font-size: 24rpx; }
+.o-row .label { color: var(--ink-2); }
+.pickup { font-weight: 800; letter-spacing: 4rpx; color: var(--coffee); font-size: 30rpx; }
+.o-actions { display: flex; justify-content: flex-end; gap: 14rpx; margin-top: 14rpx; }

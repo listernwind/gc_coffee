@@ -1,0 +1,66 @@
+<view class="page" wx:if="{{summary}}">
+  <!-- 月度总览 -->
+  <view class="overview">
+    <view class="ov-head">
+      <view class="ov-month">{{summary.month}}</view>
+      <view class="ov-note">本月咖啡液账单</view>
+    </view>
+    <view class="ov-cols">
+      <view class="ov-col">
+        <view class="ov-num">¥{{summary.spend}}</view>
+        <view class="ov-label">本月花费</view>
+      </view>
+      <view class="ov-col">
+        <view class="ov-num">{{summary.quotaRemain}}</view>
+        <view class="ov-label">剩余瓶数</view>
+      </view>
+      <view class="ov-col">
+        <view class="ov-num">{{summary.quotaTotal}}</view>
+        <view class="ov-label">套餐总量</view>
+      </view>
+    </view>
+    <view class="ov-bar">
+      <view class="ov-bar-inner" style="width:{{percent}}%"></view>
+    </view>
+    <view class="ov-tip">已用 {{summary.quotaUsed}} / {{summary.quotaTotal}} 瓶 · 额度当月有效，次月清零</view>
+  </view>
+
+  <!-- 套餐卡 -->
+  <view class="card" wx:if="{{summary.packages.length}}">
+    <view class="title" style="margin-bottom:16rpx;">本月套餐</view>
+    <view class="pkg" wx:for="{{summary.packages}}" wx:key="id">
+      <view>
+        <view class="pkg-name">{{item.packageName}}</view>
+        <view class="sub">购买价 ¥{{item.amount}} · 已用 {{item.usedQuota}}/{{item.totalQuota}} 瓶</view>
+      </view>
+      <view class="pkg-remain">剩 {{item.remain}} 瓶</view>
+    </view>
+  </view>
+
+  <!-- 预订明细 -->
+  <view class="section-title">
+    <view class="t">预订明细</view>
+  </view>
+  <view wx:if="{{records.length}}">
+    <view class="card" wx:for="{{records}}" wx:key="id">
+      <view class="r-head">
+        <view style="font-weight:700;">{{item.productName}} × {{item.quantity}}</view>
+        <view class="badge {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="r-row"><text class="label">下单时间</text><text class="value">{{item.createdAt}}</text></view>
+      <view class="r-row"><text class="label">派送</text><text class="value">{{item.dateLabel}} {{item.timeSlot}}</text></view>
+      <view class="r-row">
+        <text class="label">费用</text>
+        <text class="value">
+          <text wx:if="{{item.packageUsed > 0}}" class="ok">额度抵 {{item.packageUsed}} 瓶</text>
+          <text wx:if="{{item.packageUsed > 0 && item.payQuantity > 0}}"> + </text>
+          <text wx:if="{{item.payQuantity > 0}}">¥{{item.amount}}</text>
+        </text>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <text class="icon">📊</text>
+    <view>本月还没有预订</view>
+  </view>
+</view>

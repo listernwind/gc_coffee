@@ -1,0 +1,56 @@
+.pay-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid var(--line);
+}
+.pay-item:last-child { border-bottom: none; }
+.pay-item.disabled { opacity: 0.45; }
+.pay-left { display: flex; align-items: center; font-weight: 600; }
+.pay-emoji { font-size: 44rpx; margin-right: 20rpx; }
+.pay-item.sel { color: var(--coffee); }
+
+.radio {
+  width: 36rpx; height: 36rpx;
+  border-radius: 50%;
+  border: 3rpx solid #D8CBBB;
+  box-sizing: border-box;
+}
+.radio.on {
+  border-color: var(--accent);
+  background: radial-gradient(circle, var(--accent) 40%, #FFF 45%);
+}
+
+.submit-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: #FFF;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -6rpx 24rpx rgba(75, 54, 33, 0.08);
+  z-index: 80;
+}
+
+.coupon-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #FAF6F0;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+.coupon-left { display: flex; align-items: center; }
+.coupon-value {
+  font-size: 36rpx; font-weight: 800; color: var(--accent);
+  background: #F3E7D8;
+  border-radius: 16rpx;
+  padding: 8rpx 20rpx;
+  margin-right: 20rpx;
+}
+.coupon-name { font-weight: 600; }
+.coupon-right { display: flex; align-items: center; }
+.coupon-right .sub { margin-right: 16rpx; }

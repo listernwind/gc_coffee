@@ -1,0 +1,82 @@
+<view class="page page-pad">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{activeTab === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+  </view>
+
+  <!-- 活动列表 -->
+  <block wx:if="{{activeTab === 'activity'}}">
+    <view class="card" wx:for="{{activities}}" wx:key="id">
+      <view class="a-head">
+        <view style="font-weight:700;">{{item.title}}</view>
+        <view class="a-type">{{item.typeLabel}}</view>
+      </view>
+      <view class="sub">{{item.period}} · {{item.active === 1 ? '上架' : '下架'}}</view>
+      <view class="a-ops">
+        <view class="op" data-item="{{item}}" bindtap="openForm">编辑</view>
+        <view class="op danger" data-id="{{item.id}}" bindtap="remove">删除</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 海报列表 -->
+  <block wx:if="{{activeTab === 'poster'}}">
+    <view class="card" wx:for="{{posters}}" wx:key="id">
+      <view style="font-weight:700;">🖼️ {{item.title}}</view>
+      <view class="sub">链接：{{item.linkType === 'ACTIVITY' ? '活动#' + item.linkId : '无'}} · {{item.active === 1 ? '上架' : '下架'}}</view>
+      <view class="a-ops">
+        <view class="op" data-item="{{item}}" bindtap="openForm">编辑</view>
+        <view class="op danger" data-id="{{item.id}}" bindtap="remove">删除</view>
+      </view>
+    </view>
+  </block>
+
+  <button class="btn btn-primary" bindtap="openForm">＋ 新增{{activeTab === 'poster' ? '海报' : '活动'}}</button>
+
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{editing ? '编辑' : '新增'}}{{isPoster ? '海报' : '活动'}}</view>
+    <view class="form-item" wx:if="{{!isPoster}}">
+      <text class="label">类型</text>
+      <picker range="{{['月度活动', '季度活动']}}" value="{{form.type === 'QUARTERLY' ? 1 : 0}}" bindchange="onType">
+        <view class="input">{{form.type === 'QUARTERLY' ? '季度活动' : '月度活动'}}</view>
+      </picker>
+    </view>
+    <view class="form-item">
+      <text class="label">标题</text>
+      <input class="input" value="{{form.title}}" data-field="title" bindinput="onField" />
+    </view>
+    <view class="form-item" wx:if="{{!isPoster}}">
+      <text class="label">副标题</text>
+      <input class="input" value="{{form.subtitle}}" data-field="subtitle" bindinput="onField" />
+    </view>
+    <view class="form-item" wx:if="{{!isPoster}}">
+      <text class="label">开始时间</text>
+      <picker mode="date" value="{{form.startAt}}" data-field="startAt" bindchange="onField">
+        <view class="input">{{form.startAt || '选择日期'}}</view>
+      </picker>
+    </view>
+    <view class="form-item" wx:if="{{!isPoster}}">
+      <text class="label">结束时间</text>
+      <picker mode="date" value="{{form.endAt}}" data-field="endAt" bindchange="onField">
+        <view class="input">{{form.endAt || '选择日期'}}</view>
+      </picker>
+    </view>
+    <view class="form-item" wx:if="{{!isPoster}}">
+      <text class="label">活动内容</text>
+      <textarea class="textarea" value="{{form.content}}" data-field="content" bindinput="onField" placeholder="活动规则说明" />
+    </view>
+    <view class="form-item">
+      <text class="label">图片 URL（可留空，将显示为渐变卡片）</text>
+      <input class="input" value="{{form.image}}" data-field="image" bindinput="onField" placeholder="https://..." />
+    </view>
+    <view class="form-item" wx:if="{{isPoster}}">
+      <text class="label">跳转活动ID（0=无跳转）</text>
+      <input class="input" type="number" value="{{form.linkId}}" data-field="linkId" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">上架</text>
+      <switch checked="{{form.active === 1}}" color="#C08A4E" bindchange="onActive" />
+    </view>
+    <button class="btn btn-primary" bindtap="save">保存</button>
+  </view>
+</view>

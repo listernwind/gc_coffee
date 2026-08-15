@@ -1,0 +1,15 @@
+<view class="page">
+  <view wx:if="{{records.length}}">
+    <view class="card record" wx:for="{{records}}" wx:key="id">
+      <view class="rec-left">
+        <view class="rec-type">{{item.bizType === 'EARN' ? '获得积分' : item.bizType === 'REDEEM' ? '兑换消耗' : '店长调整'}}</view>
+        <view class="sub">{{item.createdAt}} · {{item.remark}}</view>
+      </view>
+      <view class="rec-right {{item.positive ? 'ok' : ''}}">{{item.positive ? '+' : '-'}}{{item.absPoints}}</view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <text class="icon">⭐</text>
+    <view>暂无积分记录</view>
+  </view>
+</view>

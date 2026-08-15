@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gc-coffee
+  datasource:
+    url: jdbc:mysql://localhost:3306/gc_coffee?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    time-zone: Asia/Shanghai
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+
+app:
+  jwt:
+    # HS256 密钥（BASE64，>=32字节），生产环境务必更换
+    secret: R2NDb2ZmZWVSYW5kb21TZWNyZXRLZXlGb3JKV1RTaWduaW5nMjAyNCEhIQ==
+    expire-days: 7
+    admin-expire-days: 1
+  wx:
+    # 微信小程序 AppID/Secret，留空则走本地模拟登录（code 直接作为 openid）
+    appid: ""
+    secret: ""
+  mock-pay: true   # 模拟支付开关，接微信支付后置为 false
+
+logging:
+  level:
+    com.gccoffee: info

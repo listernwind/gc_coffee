@@ -1,0 +1,40 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{activeTab === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+  </view>
+
+  <!-- 我的券 -->
+  <view wx:if="{{coupons.length}}">
+    <view class="ticket {{activeTab !== 'UNUSED' ? 'dim' : ''}}" wx:for="{{coupons}}" wx:key="id">
+      <view class="t-left">
+        <view class="t-value">{{item.label}}</view>
+        <view class="t-name">{{item.name}}</view>
+      </view>
+      <view class="t-right">
+        <view class="t-desc">{{item.desc}}</view>
+        <view class="t-expire">{{item.expire}}</view>
+        <view class="t-source">{{item.source === 'REDEEM' ? '积分兑换' : '领取'}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else><text class="icon">🎟️</text><view>暂无{{activeTab === 'UNUSED' ? '可用' : ''}}优惠券</view></view>
+
+  <!-- 领券中心 -->
+  <view class="section-title"><view class="t">领券中心</view></view>
+  <view class="ticket light" wx:for="{{templates}}" wx:key="id">
+    <view class="t-left">
+      <view class="t-value">{{item.label}}</view>
+      <view class="t-name">{{item.name}}</view>
+      <view class="t-redeem" wx:if="{{item.redeemPoints > 0}}">{{item.redeemPoints}} 积分可换</view>
+    </view>
+    <view class="t-right">
+      <view class="t-desc">{{item.desc}}</view>
+      <view class="t-actions">
+        <button wx:if="{{item.redeemPoints > 0}}" class="btn btn-sm btn-ghost" data-id="{{item.id}}" data-points="{{item.redeemPoints}}" bindtap="redeem">积分兑换</button>
+        <button class="btn btn-sm btn-accent" data-id="{{item.id}}" bindtap="claim">立即领取</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="sub" style="text-align:center;margin:30rpx 0;" wx:if="{{profile}}">我的积分：{{profile.points}}</view>
+</view>

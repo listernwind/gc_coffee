@@ -1,0 +1,47 @@
+<view class="page page-pad">
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索昵称/手机号" value="{{keyword}}" bindinput="onKeyword" confirm-type="search" bindconfirm="search" />
+    <view class="search-btn" bindtap="search">搜索</view>
+  </view>
+
+  <view wx:if="{{users.length}}">
+    <view class="card" wx:for="{{users}}" wx:key="id">
+      <view class="m-head">
+        <view>
+          <view style="font-weight:700;">{{item.nickname || '未命名'}} <text class="sub">{{item.status === 0 ? '（已禁用）' : ''}}</text></view>
+          <view class="sub">{{item.phone || '未留手机号'}}</view>
+        </view>
+        <view class="m-actions">
+          <view class="op" data-user="{{item}}" data-type="balance" bindtap="openAdjust">调余额</view>
+          <view class="op" data-user="{{item}}" data-type="points" bindtap="openAdjust">调积分</view>
+          <view class="op {{item.status === 1 ? 'danger' : 'ok'}}" data-user="{{item}}" bindtap="toggleStatus">{{item.status === 1 ? '禁用' : '启用'}}</view>
+        </view>
+      </view>
+      <view class="m-stats">
+        <view class="ms"><view class="ms-num">¥{{item.balance}}</view><view class="ms-label">余额</view></view>
+        <view class="ms"><view class="ms-num">{{item.points}}</view><view class="ms-label">积分</view></view>
+        <view class="ms"><view class="ms-num">¥{{item.totalSpend}}</view><view class="ms-label">累计消费</view></view>
+        <view class="ms"><view class="ms-num">{{item.registerDate}}</view><view class="ms-label">注册时间</view></view>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else><text class="icon">👥</text><view>暂无会员</view></view>
+
+  <!-- 调整弹层 -->
+  <view class="mask" wx:if="{{adjust}}" bindtap="closeAdjust"></view>
+  <view class="sheet" wx:if="{{adjust}}">
+    <view class="sheet-title">调整{{adjustType === 'balance' ? '余额' : '积分'}} · {{adjust.nickname}}</view>
+    <view class="sub" style="text-align:center;margin-bottom:24rpx;">
+      当前{{adjustType === 'balance' ? '余额 ¥' + adjust.balance : '积分 ' + adjust.points}}
+    </view>
+    <view class="form-item">
+      <text class="label">{{adjustType === 'balance' ? '调整金额（负数为扣减）' : '调整积分（负数为扣减）'}}</text>
+      <input class="input" type="digit" value="{{adjustAmount}}" bindinput="onAmount" />
+    </view>
+    <view class="form-item">
+      <text class="label">备注</text>
+      <input class="input" value="{{adjustRemark}}" bindinput="onRemark" placeholder="调整原因" />
+    </view>
+    <button class="btn btn-primary" bindtap="submitAdjust">确认调整</button>
+  </view>
+</view>

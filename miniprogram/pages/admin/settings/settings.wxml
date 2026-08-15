@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="card">
+    <view class="title" style="margin-bottom:24rpx;">门店与派送</view>
+    <view class="form-item">
+      <text class="label">门店名称</text>
+      <input class="input" value="{{form.shop_name}}" data-field="shop_name" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">首页公告</text>
+      <textarea class="textarea" value="{{form.shop_notice}}" data-field="shop_notice" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">服务小区名称（显示在派送信息）</text>
+      <input class="input" value="{{form.community_name}}" data-field="community_name" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">客服电话</text>
+      <input class="input" value="{{form.service_phone}}" data-field="service_phone" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="title" style="margin-bottom:24rpx;">派送时段</view>
+    <view class="form-item">
+      <text class="label">每行一个时段（如 07:00-09:00）</text>
+      <textarea class="textarea" style="min-height:260rpx;" value="{{form.delivery_slots_text}}" data-field="delivery_slots_text" bindinput="onField" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="title" style="margin-bottom:24rpx;">会员体系</view>
+    <view class="form-item">
+      <text class="label">积分规则（1 元 = ? 积分）</text>
+      <input class="input" type="number" value="{{form.points_rate}}" data-field="points_rate" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">银卡门槛（累计消费，元）</text>
+      <input class="input" type="number" value="{{form.level_silver}}" data-field="level_silver" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">金卡门槛（累计消费，元）</text>
+      <input class="input" type="number" value="{{form.level_gold}}" data-field="level_gold" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">黑金卡门槛（累计消费，元）</text>
+      <input class="input" type="number" value="{{form.level_black}}" data-field="level_black" bindinput="onField" />
+    </view>
+  </view>
+
+  <button class="btn btn-primary" disabled="{{saving}}" bindtap="save">保存设置</button>
+</view>

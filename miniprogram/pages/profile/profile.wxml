@@ -1,0 +1,74 @@
+<view class="profile-page">
+  <!-- 用户卡 -->
+  <view class="user-card">
+    <view class="uc-avatar">{{profile.avatar || '☕'}}</view>
+    <view class="uc-info">
+      <view class="uc-name">{{profile.nickname}}</view>
+      <view class="uc-tags">
+        <text class="uc-tag" wx:if="{{profile.levelName}}">{{profile.levelName}}</text>
+        <text class="uc-tag" wx:if="{{isAdmin}}">店长</text>
+      </view>
+    </view>
+    <view class="uc-edit" bindtap="openAddress">收货信息 ›</view>
+  </view>
+
+  <!-- 订单状态 -->
+  <view class="card">
+    <view class="row" style="border-bottom:none;margin-bottom:8rpx;">
+      <view class="label" style="font-weight:700;color:var(--ink);font-size:30rpx;">我的订单</view>
+      <view class="more" data-status="" bindtap="goOrders">全部订单 ›</view>
+    </view>
+    <view class="order-status">
+      <view class="os-item" data-status="PAID" bindtap="goOrders">
+        <view class="os-emoji">🧋</view><view>待制作</view>
+      </view>
+      <view class="os-item" data-status="MAKING" bindtap="goOrders">
+        <view class="os-emoji">🔥</view><view>制作中</view>
+      </view>
+      <view class="os-item" data-status="READY" bindtap="goOrders">
+        <view class="os-emoji">🛎️</view><view>待取餐</view>
+      </view>
+      <view class="os-item" data-status="ALL" bindtap="goOrders">
+        <view class="os-emoji">🧾</view><view>全部</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="card menu-list">
+    <view class="mi" bindtap="goReserveRecords"><text class="mi-icon">📦</text><text class="mi-text">咖啡液预订</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goMonthly"><text class="mi-icon">📊</text><text class="mi-text">月度咖啡液详情</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goCoupons"><text class="mi-icon">🎟️</text><text class="mi-text">优惠券</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goActivity"><text class="mi-icon">🎉</text><text class="mi-text">活动</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goMember"><text class="mi-icon">💎</text><text class="mi-text">会员中心</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goBalance"><text class="mi-icon">💰</text><text class="mi-text">余额明细</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goPoints"><text class="mi-icon">⭐</text><text class="mi-text">积分明细</text><text class="mi-arrow">›</text></view>
+  </view>
+
+  <!-- 管理入口 -->
+  <view class="card admin-entry" bindtap="goAdmin">
+    <text class="ae-icon">🛠️</text>
+    <view class="ae-text">
+      <view style="font-weight:700;">店长管理后台</view>
+      <view class="sub">台账统计 · 派送管理 · 商品 · 优惠券 · 活动海报 · 会员 · 设置</view>
+    </view>
+    <text class="mi-arrow">›</text>
+  </view>
+
+  <view class="dev-zone" bindtap="switchDemo">开发辅助：切换演示账号（mock 模式）</view>
+
+  <!-- 收货信息弹层 -->
+  <view class="mask" wx:if="{{showAddress}}" bindtap="closeAddress"></view>
+  <view class="sheet" wx:if="{{showAddress}}">
+    <view class="sheet-title">收货信息</view>
+    <view class="form-item">
+      <text class="label">联系电话</text>
+      <input class="input" type="number" maxlength="11" value="{{phone}}" bindinput="onPhone" />
+    </view>
+    <view class="form-item">
+      <text class="label">默认楼栋门牌号</text>
+      <input class="input" placeholder="如：3栋2单元501" value="{{address}}" bindinput="onAddr" />
+    </view>
+    <button class="btn btn-primary" bindtap="saveAddress">保存</button>
+  </view>
+</view>

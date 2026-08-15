@@ -1,0 +1,20 @@
+<view class="login-page">
+  <view class="logo">🛠️</view>
+  <view class="l-title">店长管理后台</view>
+  <view class="l-sub">GC Coffee 咖啡小馆</view>
+
+  <view class="card" style="margin-top:60rpx;">
+    <view class="form-item">
+      <text class="label">账号</text>
+      <input class="input" placeholder="店长账号" value="{{username}}" bindinput="onUser" />
+    </view>
+    <view class="form-item">
+      <text class="label">密码</text>
+      <input class="input" password placeholder="密码" value="{{password}}" bindinput="onPass" />
+    </view>
+    <button class="btn btn-primary" disabled="{{loading}}" bindtap="login">登 录</button>
+    <view class="hint">默认账号：admin / admin123（首次登录后请修改）</view>
+  </view>
+
+  <view class="back" bindtap="backHome">← 返回用户端</view>
+</view>

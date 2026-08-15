@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{activeTab === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{activities.length}}">
+    <view class="act-card" wx:for="{{activities}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+      <view class="act-banner">
+        <view class="ab-emoji">🎉</view>
+        <view class="ab-title">{{item.title}}</view>
+        <view class="ab-status">{{item.status}}</view>
+      </view>
+      <view class="act-body">
+        <view class="act-sub">{{item.subtitle}}</view>
+        <view class="act-period">{{item.period}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else><text class="icon">🎉</text><view>暂无{{activeTab === 'MONTHLY' ? '月度' : '季度'}}活动</view></view>
+
+  <view class="section-title" wx:if="{{posters.length}}">
+    <view class="t">海报墙</view>
+  </view>
+  <view class="poster-item" wx:for="{{posters}}" wx:key="id">
+    <view class="pi-text">
+      <view class="pi-title">{{item.title}}</view>
+      <view class="sub">长按保存分享</view>
+    </view>
+    <view class="pi-emoji">🖼️</view>
+  </view>
+</view>

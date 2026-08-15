@@ -1,0 +1,12 @@
+<view class="page" wx:if="{{activity}}">
+  <view class="hero-banner">
+    <view class="hb-emoji">🎉</view>
+    <view class="hb-title">{{activity.title}}</view>
+    <view class="hb-sub">{{activity.subtitle}}</view>
+    <view class="hb-period">{{activity.period}}</view>
+  </view>
+  <view class="card">
+    <view class="title" style="margin-bottom:16rpx;">活动详情</view>
+    <view class="content-text">{{activity.content}}</view>
+  </view>
+</view>

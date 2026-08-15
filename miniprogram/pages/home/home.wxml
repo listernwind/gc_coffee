@@ -1,0 +1,87 @@
+<view class="home">
+  <!-- 顶部 -->
+  <view class="top">
+    <view class="top-bg"></view>
+    <view class="greet-row">
+      <view>
+        <view class="greet">☕ 你好，欢迎回来</view>
+        <view class="shop">{{shopName}}</view>
+      </view>
+      <view class="date-chip">{{today}} {{week}}</view>
+    </view>
+  </view>
+
+  <view class="notice" wx:if="{{notice}}">
+    <text class="notice-dot">📢</text>
+    <text class="notice-text">{{notice}}</text>
+  </view>
+
+  <!-- 两大主入口：咖啡液预订 + 饮品下单 -->
+  <view class="hero">
+    <view class="hero-card coffee" bindtap="goReserve" hover-class="hero-hover">
+      <view class="hero-glow"></view>
+      <view class="hero-left">
+        <view class="hero-kicker">次日派送 · 本小区直达</view>
+        <view class="hero-title">咖啡液预订</view>
+        <view class="hero-desc" wx:if="{{hasPackage}}">本月剩余额度 <text class="hero-num">{{remain}}</text> 瓶</view>
+        <view class="hero-desc" wx:else>开通月卡更划算 · 低至 12 元/瓶</view>
+      </view>
+      <view class="hero-right">
+        <view class="hero-emoji">🥤</view>
+        <view class="hero-arrow">预订 →</view>
+      </view>
+    </view>
+
+    <view class="hero-card drink" bindtap="goMenu" hover-class="hero-hover">
+      <view class="hero-glow"></view>
+      <view class="hero-left">
+        <view class="hero-kicker">现点现做 · 到店自取</view>
+        <view class="hero-title">饮品下单</view>
+        <view class="hero-desc">约 10 分钟出杯 · 支持优惠券</view>
+      </view>
+      <view class="hero-right">
+        <view class="hero-emoji">☕</view>
+        <view class="hero-arrow">点单 →</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 海报轮播 -->
+  <swiper wx:if="{{posters.length}}" class="posters" indicator-dots autoplay circular interval="4000">
+    <swiper-item wx:for="{{posters}}" wx:key="id">
+      <view class="poster {{item.image ? '' : 'poster-text'}}" data-item="{{item}}" bindtap="onPosterTap">
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" class="poster-img" />
+        <block wx:else>
+          <view class="poster-emoji">🎨</view>
+          <view class="poster-title">{{item.title}}</view>
+        </block>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <!-- 快捷入口 -->
+  <view class="quick">
+    <view class="quick-item" bindtap="goMonthly">
+      <view class="qi-icon" style="background:#F3E7D8;">📊</view>
+      <view class="qi-text">月度详情</view>
+    </view>
+    <view class="quick-item" bindtap="goReserveRecords">
+      <view class="qi-icon" style="background:#E9E2F3;">📦</view>
+      <view class="qi-text">我的预订</view>
+    </view>
+    <view class="quick-item" bindtap="goActivity">
+      <view class="qi-icon" style="background:#FBE9D8;">🎉</view>
+      <view class="qi-text">活动</view>
+    </view>
+    <view class="quick-item" bindtap="goCoupons">
+      <view class="qi-icon" style="background:#E4F0E8;">🎟️</view>
+      <view class="qi-text">优惠券</view>
+    </view>
+    <view class="quick-item" bindtap="goOrders">
+      <view class="qi-icon" style="background:#FDECEC;">🧾</view>
+      <view class="qi-text">我的订单</view>
+    </view>
+  </view>
+
+  <view class="foot-note">— 本小区专供 · 指定门牌号派送 —</view>
+</view>

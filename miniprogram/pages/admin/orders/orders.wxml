@@ -1,0 +1,26 @@
+<view class="page">
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{activeTab === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{orders.length}}">
+    <view class="card" wx:for="{{orders}}" wx:key="id">
+      <view class="o-head">
+        <view>
+          <view style="font-weight:700;">{{item.nickname}}</view>
+          <view class="sub">{{item.orderNo}}</view>
+        </view>
+        <view class="badge {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="o-row"><text class="label">金额</text><text class="value">¥{{item.payAmount}}（优惠 ¥{{item.discountAmount}}）</text></view>
+      <view class="o-row"><text class="label">取餐码</text><text class="value pickup">{{item.pickupCode}}</text></view>
+      <view class="o-row"><text class="label">时间</text><text class="value">{{item.createdAt}}</text></view>
+      <view class="o-actions">
+        <button wx:if="{{item.status === 'PAID'}}" class="btn btn-sm btn-accent" data-id="{{item.id}}" data-status="MAKING" data-label="制作中" bindtap="setStatus">接单制作</button>
+        <button wx:if="{{item.status === 'MAKING'}}" class="btn btn-sm btn-primary" data-id="{{item.id}}" data-status="READY" data-label="待取餐" bindtap="setStatus">出杯</button>
+        <button wx:if="{{item.status === 'READY'}}" class="btn btn-sm btn-ghost" data-id="{{item.id}}" data-status="FINISHED" data-label="已完成" bindtap="setStatus">完成</button>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else><text class="icon">🧋</text><view>暂无订单</view></view>
+</view>

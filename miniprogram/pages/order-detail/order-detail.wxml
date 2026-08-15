@@ -1,0 +1,52 @@
+<view class="page" wx:if="{{order}}">
+  <!-- 取餐码 -->
+  <view class="pickup-card">
+    <view class="pc-label">{{statusLabel}}</view>
+    <view class="pc-code">{{order.pickupCode}}</view>
+    <view class="pc-tip">到店出示取餐码取餐 · 约10分钟出杯</view>
+  </view>
+
+  <view class="card">
+    <view class="row">
+      <view class="label">订单状态</view>
+      <view class="badge {{statusClass}}">{{statusLabel}}</view>
+    </view>
+    <view class="row">
+      <view class="label">订单编号</view>
+      <view class="value" style="font-size:24rpx;">{{order.orderNo}}</view>
+    </view>
+    <view class="row">
+      <view class="label">下单时间</view>
+      <view class="value" style="font-size:24rpx;">{{order.createdAt}}</view>
+    </view>
+    <view class="row">
+      <view class="label">支付方式</view>
+      <view class="value">{{order.payType === 'BALANCE' ? '余额支付' : '微信支付'}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="title" style="margin-bottom:12rpx;">商品明细</view>
+    <view class="row" wx:for="{{items}}" wx:key="id">
+      <view>
+        <view style="font-weight:600;">{{item.productName}}</view>
+        <view class="sub">¥{{item.price}} × {{item.quantity}}</view>
+      </view>
+      <view class="price">¥{{item.price * item.quantity}}</view>
+    </view>
+    <view class="row">
+      <view class="label">合计</view>
+      <view class="value">¥{{order.totalAmount}}</view>
+    </view>
+    <view class="row" wx:if="{{order.discountAmount > 0}}">
+      <view class="label ok">优惠</view>
+      <view class="value ok">-¥{{order.discountAmount}}</view>
+    </view>
+    <view class="row" style="border-bottom:none;">
+      <view class="label">实付</view>
+      <view class="price" style="font-size:36rpx;">¥{{order.payAmount}}</view>
+    </view>
+  </view>
+
+  <button wx:if="{{order.status === 'PAID'}}" class="btn btn-danger-ghost" bindtap="cancel">取消订单</button>
+</view>
