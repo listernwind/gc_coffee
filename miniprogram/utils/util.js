@@ -4,6 +4,12 @@ function money(v) {
   return Number(v || 0).toFixed(2);
 }
 
+/** 看板等展示用金额：整数去尾零 */
+function moneyInt(v) {
+  const n = Number(v || 0);
+  return Number.isInteger(n) ? String(n) : n.toFixed(2);
+}
+
 function pad(n) {
   return n < 10 ? '0' + n : '' + n;
 }
@@ -65,6 +71,6 @@ function levelColor(name) {
 }
 
 module.exports = {
-  money, fmtDate, fmtTime, dateLabel, tomorrow,
+  money, moneyInt, fmtDate, fmtTime, dateLabel, tomorrow,
   DRINK_STATUS, RESERVE_STATUS, couponLabel, couponDesc, levelColor
 };

@@ -1,4 +1,5 @@
 <view class="dash">
+  <!-- 顶部 -->
   <view class="dash-top">
     <view class="dash-head">
       <view>
@@ -7,21 +8,39 @@
       </view>
       <view class="dash-exit" bindtap="exit">退出</view>
     </view>
+
+    <!-- 今日营业额 -->
     <view class="big-card" wx:if="{{overview}}">
-      <view class="bc-label">今日营业额</view>
-      <view class="bc-num">¥{{overview.todaySales}}</view>
-      <view class="bc-sub">饮品 ¥{{overview.todayDrink}} · 咖啡液 ¥{{overview.todayCoffee}} · 充值 ¥{{overview.todayRecharge}}</view>
+      <view class="bc-label">今日营业额（元）</view>
+      <view class="bc-num">¥{{overview.todaySalesText}}</view>
+      <view class="bc-break">
+        <view class="bc-item">
+          <view class="bc-item-num">¥{{overview.todayDrinkText}}</view>
+          <view class="bc-item-label">饮品</view>
+        </view>
+        <view class="bc-divider"></view>
+        <view class="bc-item">
+          <view class="bc-item-num">¥{{overview.todayCoffeeText}}</view>
+          <view class="bc-item-label">咖啡液</view>
+        </view>
+        <view class="bc-divider"></view>
+        <view class="bc-item">
+          <view class="bc-item-num">¥{{overview.todayRechargeText}}</view>
+          <view class="bc-item-label">充值</view>
+        </view>
+      </view>
     </view>
   </view>
 
+  <!-- 经营指标：2 列自适应 -->
   <view class="stat-grid" wx:if="{{overview}}">
     <view class="stat">
       <view class="s-num">{{overview.todayOrders}}</view>
       <view class="s-label">今日订单</view>
     </view>
     <view class="stat">
-      <view class="s-num">{{overview.monthSales}}</view>
-      <view class="s-label">本月销售额(¥)</view>
+      <view class="s-num"><text class="s-rmb">¥</text>{{overview.monthSalesText}}</view>
+      <view class="s-label">本月销售额</view>
     </view>
     <view class="stat">
       <view class="s-num">{{overview.memberCount}}</view>
@@ -41,13 +60,16 @@
     </view>
   </view>
 
-  <!-- 近14日趋势 -->
+  <!-- 近7日趋势 -->
   <view class="card">
-    <view class="card-title">近14日销售趋势</view>
+    <view class="card-head">
+      <view class="card-title">近 7 日销售趋势</view>
+      <view class="card-unit">单位：元</view>
+    </view>
     <view class="bars">
       <view class="bar-col" wx:for="{{trend}}" wx:key="date">
-        <view class="bar" style="height:{{item.sales / maxSales * 120}}rpx;" wx:if="{{item.sales > 0}}"></view>
-        <view class="bar zero" wx:else></view>
+        <view class="bar-val">{{item.sales > 0 ? item.salesText : ''}}</view>
+        <view class="bar-track"><view class="bar" style="height:{{item.barH}}rpx;"></view></view>
         <view class="bar-date">{{item.shortDate}}</view>
       </view>
     </view>
@@ -55,28 +77,41 @@
 
   <!-- 畅销榜 -->
   <view class="card" wx:if="{{top}}">
-    <view class="card-title">畅销 TOP 5</view>
-    <view class="rank-row" wx:for="{{top.drinks}}" wx:key="name">
-      <view class="rk-no {{index < 3 ? 'hot' : ''}}">{{index + 1}}</view>
-      <view class="rk-name">{{item.name}}</view>
-      <view class="rk-qty">{{item.quantity}} 杯</view>
+    <view class="card-head">
+      <view class="card-title">畅销排行</view>
+      <view class="card-unit">近30天</view>
     </view>
-    <view class="rank-row" wx:for="{{top.coffees}}" wx:key="name">
-      <view class="rk-no hot"><view class="ic ic-bottle" style="width:26rpx;height:26rpx;"></view></view>
-      <view class="rk-name">{{item.name}}</view>
-      <view class="rk-qty">{{item.quantity}} 瓶</view>
-    </view>
+    <block wx:if="{{top.drinks.length || top.coffees.length}}">
+      <view class="rank" wx:for="{{top.drinks}}" wx:key="name">
+        <view class="rk-no {{index < 3 ? 'hot' : ''}}">{{index + 1}}</view>
+        <view class="rk-main">
+          <view class="rk-name">{{item.name}}</view>
+          <view class="rk-track"><view class="rk-bar" style="width:{{item.pct}}%;"></view></view>
+        </view>
+        <view class="rk-qty">{{item.quantity}} {{item.unit}}</view>
+      </view>
+      <view class="rank" wx:for="{{top.coffees}}" wx:key="name">
+        <view class="rk-no hot coffee"><view class="ic ic-bottle" style="width:22rpx;height:22rpx;"></view></view>
+        <view class="rk-main">
+          <view class="rk-name">{{item.name}}</view>
+          <view class="rk-track"><view class="rk-bar gold" style="width:{{item.pct}}%;"></view></view>
+        </view>
+        <view class="rk-qty">{{item.quantity}} {{item.unit}}</view>
+      </view>
+    </block>
+    <view class="rank-empty" wx:else>暂无销售数据</view>
   </view>
 
   <!-- 快捷入口 -->
+  <view class="quick-title">管理功能</view>
   <view class="quick">
-    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go"><view class="qk-ic ic ic-truck"></view>派送管理</view>
-    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go"><view class="qk-ic ic ic-cup"></view>饮品订单</view>
-    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go"><view class="qk-ic ic ic-book"></view>台账</view>
-    <view class="qk" data-url="/pages/admin/products/products" bindtap="go"><view class="qk-ic ic ic-box"></view>商品管理</view>
-    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go"><view class="qk-ic ic ic-ticket"></view>优惠券</view>
-    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go"><view class="qk-ic ic ic-gift"></view>活动海报</view>
-    <view class="qk" data-url="/pages/admin/members/members" bindtap="go"><view class="qk-ic ic ic-users"></view>会员管理</view>
-    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go"><view class="qk-ic ic ic-sliders"></view>设置</view>
+    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go"><view class="qk-ic ic ic-truck"></view><view class="qk-t">派送管理</view></view>
+    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go"><view class="qk-ic ic ic-cup"></view><view class="qk-t">饮品订单</view></view>
+    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go"><view class="qk-ic ic ic-book"></view><view class="qk-t">台账</view></view>
+    <view class="qk" data-url="/pages/admin/products/products" bindtap="go"><view class="qk-ic ic ic-box"></view><view class="qk-t">商品管理</view></view>
+    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go"><view class="qk-ic ic ic-ticket"></view><view class="qk-t">优惠券</view></view>
+    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go"><view class="qk-ic ic ic-gift"></view><view class="qk-t">活动海报</view></view>
+    <view class="qk" data-url="/pages/admin/members/members" bindtap="go"><view class="qk-ic ic ic-users"></view><view class="qk-t">会员管理</view></view>
+    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go"><view class="qk-ic ic ic-sliders"></view><view class="qk-t">系统设置</view></view>
   </view>
 </view>

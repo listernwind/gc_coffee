@@ -205,25 +205,46 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 .poster-item{display:flex;justify-content:space-between;align-items:center;background:#FFF;border-radius:18px;padding:16px;margin:0 20px 12px;box-shadow:0 4px 14px rgba(75,54,33,.05)}
 
 /* ===== 看板 ===== */
-.dash-top{background:linear-gradient(160deg,#4B3621,#6F4E37);margin:0 -20px;padding:16px 26px 70px;border-radius:0 0 32px 32px;color:#FFF7EC}
+.dash-top{background:linear-gradient(160deg,#4B3621,#6F4E37);padding:24px 16px 44px;border-radius:0 0 24px 24px;color:#FFF7EC}
 .dash-head{display:flex;justify-content:space-between;align-items:center}
-.dash-title{font-size:19px;font-weight:800}
-.dash-date{font-size:11px;opacity:.7;margin-top:3px}
+.dash-title{font-size:19px;font-weight:800;letter-spacing:1px}
+.dash-date{font-size:11px;opacity:.7;margin-top:2px}
 .dash-exit{font-size:11px;background:rgba(255,255,255,.15);border-radius:999px;padding:5px 14px;cursor:pointer}
-.bc{margin-top:20px}
-.bc-label{font-size:11px;opacity:.75}
-.bc-num{font-size:36px;font-weight:800;margin:3px 0}
-.bc-sub{font-size:10px;opacity:.65}
-.sgrid{display:flex;flex-wrap:wrap;gap:10px;margin:-46px 20px 14px}
-.stat{width:calc(33.33% - 7px);background:#FFF;border-radius:16px;padding:16px 0;text-align:center;box-shadow:0 6px 20px rgba(75,54,33,.08)}
-.stat .n{font-size:19px;font-weight:800;color:var(--coffee)}
-.stat .l{font-size:10px;color:var(--ink2);margin-top:3px}
-.bars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:6px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
-.bar{width:100%;max-width:16px;background:linear-gradient(180deg,#D9A05B,#B8783D);border-radius:4px 4px 0 0}
-.bar-date{font-size:8px;color:var(--ink3);margin-top:4px;transform:scale(.85)}
-.qk{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
-.qkb{width:calc(50% - 5px);background:#FFF;border-radius:16px;padding:16px;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(75,54,33,.05);cursor:pointer}
+.bc{margin-top:18px;text-align:center}
+.bc-label{font-size:11px;opacity:.75;letter-spacing:1px}
+.bc-num{font-size:40px;font-weight:800;line-height:1.15;margin:4px 0 14px}
+.bc-break{display:flex;align-items:center;background:rgba(255,255,255,.1);border-radius:14px;padding:11px 0}
+.bc-item{flex:1;text-align:center}
+.bc-item-num{font-size:14px;font-weight:700}
+.bc-item-label{font-size:10px;opacity:.65;margin-top:2px}
+.bc-divider{width:1px;height:24px;background:rgba(255,255,255,.18)}
+.sgrid{display:flex;flex-wrap:wrap;gap:10px;margin:-24px 20px 12px}
+.stat{flex:1 1 calc(50% - 5px);min-width:0;background:#FFF;border-radius:16px;padding:15px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:66px;box-shadow:0 6px 20px rgba(75,54,33,.08)}
+.stat .n{font-size:19px;font-weight:800;color:var(--coffee);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stat .s-rmb{font-size:12px;margin-right:2px}
+.stat .l{font-size:10px;color:var(--ink2);margin-top:5px;letter-spacing:1px}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.card-title{font-size:14px;font-weight:700}
+.card-unit{font-size:10px;color:var(--ink3)}
+.bars{display:flex;align-items:flex-end;height:110px}
+.bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bar-val{font-size:9px;color:var(--ink3);height:13px;line-height:13px}
+.bar-track{width:100%;height:63px;display:flex;align-items:flex-end;justify-content:center}
+.bar{width:40%;max-width:15px;min-height:3px;background:linear-gradient(180deg,#D9A05B,#B8783D);border-radius:4px 4px 0 0}
+.bar-date{font-size:9px;color:var(--ink3);margin-top:5px}
+.rank{display:flex;align-items:center;padding:8px 0}
+.rk-no{width:24px;height:24px;border-radius:8px;background:#F1E9DE;color:var(--ink2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;margin-right:9px;flex-shrink:0}
+.rk-no.hot{background:#F3E7D8;color:#B8783D}
+.rk-no.coffee{background:#F0E3D2}
+.rk-main{flex:1;min-width:0}
+.rk-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:4px}
+.rk-track{height:4px;background:#F5EFE6;border-radius:999px;overflow:hidden}
+.rk-bar{height:100%;background:linear-gradient(90deg,#D9A05B,#B8783D);border-radius:999px;min-width:2px}
+.rk-bar.gold{background:linear-gradient(90deg,#8A6A3D,#6F4E37)}
+.rk-qty{font-size:11px;color:var(--ink2);margin-left:8px;flex-shrink:0;min-width:36px;text-align:right}
+.quick-title{font-size:14px;font-weight:700;margin:14px 6px 10px}
+.qk{display:flex;flex-wrap:wrap;gap:10px;margin-top:0}
+.qkb{flex:1 1 calc(50% - 5px);min-width:0;background:#FFF;border-radius:16px;padding:15px 12px;font-size:12px;font-weight:700;box-shadow:0 4px 14px rgba(75,54,33,.05);cursor:pointer;display:flex;align-items:center;justify-content:center}
 
 /* ===== tabbar ===== */
 .tabbar{position:absolute;left:16px;right:16px;bottom:14px;height:56px;background:rgba(46,33,24,.96);border-radius:30px;display:flex;align-items:center;box-shadow:0 10px 30px rgba(46,33,24,.35);z-index:30;padding:0 8px}
@@ -381,36 +402,52 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
       <div class="poster-item"><div><div class="pn" style="font-weight:700">季度储值返利最高12%</div><div class="sub">长按保存分享</div></div><div class="ic-image" style="width:28px;height:28px"></div></div>
     </div>
 
-    <!-- 看板 -->
+        <!-- 看板 -->
     <div class="screen" id="scr-admin">
       <div class="back" onclick="go('home')">← 用户端</div>
       <div class="dash-top"><div class="dash-head"><div><div class="dash-title">经营看板</div><div class="dash-date">2026-08-16</div></div><div class="dash-exit">退出</div></div>
-        <div class="bc"><div class="bc-label">今日营业额</div><div class="bc-num">¥962.00</div><div class="bc-sub">饮品 ¥42.00 · 咖啡液 ¥0 · 充值 ¥200.00</div></div>
+        <div class="bc">
+          <div class="bc-label">今日营业额（元）</div>
+          <div class="bc-num">¥962</div>
+          <div class="bc-break">
+            <div class="bc-item"><div class="bc-item-num">¥42</div><div class="bc-item-label">饮品</div></div>
+            <div class="bc-divider"></div>
+            <div class="bc-item"><div class="bc-item-num">¥0</div><div class="bc-item-label">咖啡液</div></div>
+            <div class="bc-divider"></div>
+            <div class="bc-item"><div class="bc-item-num">¥200</div><div class="bc-item-label">充值</div></div>
+          </div>
+        </div>
       </div>
       <div class="sgrid">
         <div class="stat"><div class="n">2</div><div class="l">今日订单</div></div>
-        <div class="stat"><div class="n">962.00</div><div class="l">本月销售(¥)</div></div>
+        <div class="stat"><div class="n"><span class="s-rmb">¥</span>962</div><div class="l">本月销售额</div></div>
         <div class="stat"><div class="n">2</div><div class="l">会员总数</div></div>
         <div class="stat"><div class="n">1</div><div class="l">待派送</div></div>
         <div class="stat"><div class="n">1</div><div class="l">制作中饮品</div></div>
         <div class="stat"><div class="n">1</div><div class="l">今日预订</div></div>
       </div>
-      <div class="card"><div class="title" style="margin-bottom:12px">近14日销售趋势</div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">近 7 日销售趋势</div><div class="card-unit">单位：元</div></div>
         <div class="bars" id="trendBars"></div>
       </div>
-      <div class="card"><div class="title" style="margin-bottom:12px">畅销 TOP 5</div>
-        <div class="row"><span>1</span><span style="flex:1;margin-left:8px">美式咖啡</span><span class="muted">2 杯</span></div>
-        <div class="row"><span>2</span><span style="flex:1;margin-left:8px">浓缩咖啡</span><span class="muted">1 杯</span></div>
-        <div class="row"><span><div class="ic-bottle" style="width:16px;height:16px"></div></span><span style="flex:1;margin-left:8px">冷萃咖啡液</span><span class="muted">5 瓶</span></div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">畅销排行</div><div class="card-unit">近30天</div></div>
+        <div class="rank"><div class="rk-no hot">1</div><div class="rk-main"><div class="rk-name">美式咖啡</div><div class="rk-track"><div class="rk-bar" style="width:100%"></div></div></div><div class="rk-qty">2 杯</div></div>
+        <div class="rank"><div class="rk-no hot">2</div><div class="rk-main"><div class="rk-name">浓缩咖啡</div><div class="rk-track"><div class="rk-bar" style="width:50%"></div></div></div><div class="rk-qty">1 杯</div></div>
+        <div class="rank"><div class="rk-no hot coffee"><div class="ic-bottle" style="width:11px;height:11px"></div></div><div class="rk-main"><div class="rk-name">冷萃咖啡液</div><div class="rk-track"><div class="rk-bar gold" style="width:70%"></div></div></div><div class="rk-qty">5 瓶</div></div>
       </div>
+      <div class="quick-title">管理功能</div>
       <div class="qk">
-        <div class="qkb"><div class="qkic ic-truck"></div>派送管理</div><div class="qkb"><div class="qkic ic-cup"></div>饮品订单</div>
-        <div class="qkb"><div class="qkic ic-book"></div>台账</div><div class="qkb"><div class="qkic ic-box"></div>商品管理</div>
-        <div class="qkb"><div class="qkic ic-ticket"></div>优惠券</div><div class="qkb"><div class="qkic ic-gift"></div>活动海报</div>
-        <div class="qkb"><div class="qkic ic-users"></div>会员管理</div><div class="qkb"><div class="qkic ic-sliders"></div>设置</div>
+        <div class="qkb"><div class="qkic ic-truck"></div><span>派送管理</span></div>
+        <div class="qkb"><div class="qkic ic-cup"></div><span>饮品订单</span></div>
+        <div class="qkb"><div class="qkic ic-book"></div><span>台账</span></div>
+        <div class="qkb"><div class="qkic ic-box"></div><span>商品管理</span></div>
+        <div class="qkb"><div class="qkic ic-ticket"></div><span>优惠券</span></div>
+        <div class="qkb"><div class="qkic ic-gift"></div><span>活动海报</span></div>
+        <div class="qkb"><div class="qkic ic-users"></div><span>会员管理</span></div>
+        <div class="qkb"><div class="qkic ic-sliders"></div><span>系统设置</span></div>
       </div>
     </div>
-
   </div>
   <div class="tabbar">
     <div class="tb on" data-tab="home" onclick="tab(this)"><span class="i ic-home-m"></span><span class="t">首页</span></div>
@@ -532,11 +569,11 @@ function renderActs(list){
 }
 // ===== 看板趋势 =====
 (function(){
-  const vals=[320,180,420,260,580,0,300,460,210,390,520,0,240,602];
-  const max=Math.max(...vals);
+  const vals=[320,180,420,260,580,0,602];
+  const max=Math.max(...vals,1);
   document.getElementById('trendBars').innerHTML = vals.map((v,i)=>{
-    const d=new Date(2026,7,3+i);
-    return `<div class="bar-col"><div class="bar" style="height:${v/max*70}px"></div><div class="bar-date">${d.getMonth()+1}/${d.getDate()}</div></div>`;
+    const d=new Date(2026,7,10+i);
+    return `<div class="bar-col"><div class="bar-val">${v?Math.round(v):''}</div><div class="bar-track"><div class="bar" style="height:${Math.max(3,v/max*60)}px"></div></div><div class="bar-date">${d.getMonth()+1}/${d.getDate()}</div></div>`;
   }).join('');
 })();
 renderMenu(); renderActs(ACTS_M); calc();
