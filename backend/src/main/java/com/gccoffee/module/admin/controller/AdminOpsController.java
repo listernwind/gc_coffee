@@ -67,9 +67,14 @@ public class AdminOpsController {
         qw.orderByAsc(CoffeeReservation::getDeliveryDate).orderByAsc(CoffeeReservation::getId);
         Page<CoffeeReservation> p = reservationMapper.selectPage(new Page<>(page, size), qw);
         Map<Long, User> users = userMap(p.getRecords().stream().map(CoffeeReservation::getUserId).toList());
+        List<Long> staffIds = p.getRecords().stream().map(CoffeeReservation::getStaffId)
+                .filter(java.util.Objects::nonNull).distinct().toList();
+        Map<Long, User> staffs = userMap(staffIds);
         List<Map<String, Object>> records = p.getRecords().stream().map(r -> {
             Map<String, Object> m = toMap(r);
             m.put("nickname", nick(users, r.getUserId()));
+            m.put("staffName", r.getStaffId() != null && staffs.get(r.getStaffId()) != null
+                    ? staffs.get(r.getStaffId()).getNickname() : "");
             return m;
         }).toList();
         return Result.ok(PageResult.of(records, p.getTotal(), p.getCurrent(), p.getSize()));

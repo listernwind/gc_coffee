@@ -48,6 +48,19 @@ Page({
     });
   },
 
+  // 派送员工作台：token 有效直接进，无效/过期则引导登录
+  goStaff() {
+    if (!wx.getStorageSync('staffToken')) {
+      wx.navigateTo({ url: '/pages/staff/login/login' });
+      return;
+    }
+    api.get('/api/staff/me').then(() => {
+      wx.navigateTo({ url: '/pages/staff/home/home' });
+    }).catch(() => {
+      wx.navigateTo({ url: '/pages/staff/login/login' });
+    });
+  },
+
   openAddress() {
     this.setData({ showAddress: true, address: this.data.profile.defaultAddress || '', phone: this.data.profile.phone || '' });
   },
@@ -69,6 +82,21 @@ Page({
       this.setData({ showAddress: false });
       this.load();
     }).catch(() => {});
+  },
+
+  // 退出登录
+  logout() {
+    wx.showModal({
+      title: '退出登录',
+      content: '退出后需重新登录才能下单预订。',
+      success: (res) => {
+        if (!res.confirm) return;
+        wx.removeStorageSync('token');
+        wx.removeStorageSync('role');
+        wx.removeStorageSync('nickname');
+        wx.reLaunch({ url: '/pages/login/login' });
+      }
+    });
   },
 
   // 开发辅助：切换演示账号（mock 模式）

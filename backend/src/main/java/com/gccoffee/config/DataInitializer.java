@@ -38,6 +38,7 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         ensureAdmin();
         ensureDemoUser();
+        ensureStaff();
         ensureSettings();
         log.info("数据初始化完成");
     }
@@ -92,6 +93,27 @@ public class DataInitializer implements ApplicationRunner {
         up.setCreatedAt(LocalDateTime.now());
         userPackageMapper.insert(up);
         log.info("已创建演示用户：mock_demo（余额200元/500积分/本月畅饮月卡剩25瓶）");
+    }
+
+    private void ensureStaff() {
+        Long count = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUsername, "staff1"));
+        if (count > 0) {
+            return;
+        }
+        User staff = new User();
+        staff.setOpenid("staff_openid1");
+        staff.setUsername("staff1");
+        staff.setPassword(new BCryptPasswordEncoder().encode("staff123"));
+        staff.setNickname("配送员小王");
+        staff.setPhone("13900000000");
+        staff.setRole("STAFF");
+        staff.setBalance(BigDecimal.ZERO);
+        staff.setPoints(0);
+        staff.setTotalSpend(BigDecimal.ZERO);
+        staff.setStatus(1);
+        staff.setCreatedAt(LocalDateTime.now());
+        userMapper.insert(staff);
+        log.info("已创建默认派送员账号：staff1 / staff123");
     }
 
     private void ensureSettings() {

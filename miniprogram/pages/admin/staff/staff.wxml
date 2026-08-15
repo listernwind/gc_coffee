@@ -1,0 +1,40 @@
+<view class="page page-pad">
+  <view class="card" wx:for="{{staffs}}" wx:key="id">
+    <view class="st-head">
+      <view class="st-avatar ic ic-user"></view>
+      <view class="st-info">
+        <view style="font-weight:700;">{{item.nickname}} <text class="sub" wx:if="{{item.status === 0}}">（已禁用）</text></view>
+        <view class="sub">账号 {{item.username}} · {{item.phone || '未留手机号'}}</view>
+      </view>
+      <view class="st-ops">
+        <view class="op" data-item="{{item}}" bindtap="openForm">编辑</view>
+        <view class="op {{item.status === 1 ? 'danger' : 'ok'}}" data-item="{{item}}" bindtap="toggleStatus">{{item.status === 1 ? '禁用' : '启用'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <button class="btn btn-primary" bindtap="openForm">＋ 新增派送员</button>
+
+  <!-- 新增/编辑弹层 -->
+  <view class="mask" wx:if="{{showForm}}" bindtap="closeForm"></view>
+  <view class="sheet" wx:if="{{showForm}}">
+    <view class="sheet-title">{{editing ? '编辑' : '新增'}}派送员</view>
+    <view class="form-item">
+      <text class="label">姓名</text>
+      <input class="input" value="{{form.nickname}}" data-field="nickname" bindinput="onField" placeholder="如：配送员小王" />
+    </view>
+    <view class="form-item">
+      <text class="label">登录账号（字母/数字/下划线）</text>
+      <input class="input" value="{{form.username}}" data-field="username" bindinput="onField" placeholder="如：staff2" />
+    </view>
+    <view class="form-item">
+      <text class="label">联系电话</text>
+      <input class="input" type="number" maxlength="11" value="{{form.phone}}" data-field="phone" bindinput="onField" />
+    </view>
+    <view class="form-item">
+      <text class="label">{{editing ? '重置密码（留空不修改）' : '初始密码（至少6位）'}}</text>
+      <input class="input" password value="{{form.password}}" data-field="password" bindinput="onField" />
+    </view>
+    <button class="btn btn-primary" bindtap="save">保存</button>
+  </view>
+</view>

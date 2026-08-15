@@ -64,20 +64,76 @@ public class UserService {
         user.setLastLoginAt(LocalDateTime.now());
         userMapper.updateById(user);
         String token = jwtUtil.createToken(user.getId(), user.getRole(), user.getNickname(), false);
-        return Map.of("token", token, "role", user.getRole());
+        return Map.of("token", token, "role", user.getRole(), "nickname", user.getNickname());
+    }
+
+    /** 普通用户账号密码登录 */
+    public Map<String, Object> passwordLogin(String username, String password) {
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username).eq(User::getRole, "USER"));
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            throw new BizException("账号或密码错误");
+        }
+        if (user.getStatus() != null && user.getStatus() == 0) {
+            throw new BizException("账号已被禁用，请联系店主");
+        }
+        user.setLastLoginAt(LocalDateTime.now());
+        userMapper.updateById(user);
+        String token = jwtUtil.createToken(user.getId(), "USER", user.getNickname(), false);
+        return Map.of("token", token, "role", "USER", "nickname", user.getNickname());
+    }
+
+    /** 普通用户注册（店长/派送员账号不开放注册，由系统预置） */
+    @Transactional
+    public Map<String, Object> register(String username, String password, String nickname, String phone) {
+        if (username == null || !username.matches("^[a-zA-Z0-9_]{3,20}$")) {
+            throw new BizException("账号需为 3~20 位字母/数字/下划线");
+        }
+        if (password == null || password.length() < 6) {
+            throw new BizException("密码至少 6 位");
+        }
+        Long exists = userMapper.selectCount(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username));
+        if (exists > 0) {
+            throw new BizException("该账号已被注册");
+        }
+        User u = new User();
+        u.setOpenid("reg_" + username);
+        u.setUsername(username);
+        u.setPassword(passwordEncoder.encode(password));
+        u.setNickname(nickname == null || nickname.isBlank() ? username : nickname);
+        u.setPhone(phone == null ? "" : phone);
+        u.setRole("USER");
+        u.setBalance(BigDecimal.ZERO);
+        u.setPoints(0);
+        u.setTotalSpend(BigDecimal.ZERO);
+        u.setStatus(1);
+        u.setCreatedAt(LocalDateTime.now());
+        userMapper.insert(u);
+        String token = jwtUtil.createToken(u.getId(), "USER", u.getNickname(), false);
+        return Map.of("token", token, "role", "USER", "nickname", u.getNickname());
     }
 
     public Map<String, Object> adminLogin(String username, String password) {
+        return loginByAccount(username, password, "ADMIN", true);
+    }
+
+    /** 派送员登录 */
+    public Map<String, Object> staffLogin(String username, String password) {
+        return loginByAccount(username, password, "STAFF", false);
+    }
+
+    private Map<String, Object> loginByAccount(String username, String password, String role, boolean admin) {
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
-                .eq(User::getUsername, username).eq(User::getRole, "ADMIN"));
+                .eq(User::getUsername, username).eq(User::getRole, role));
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new BizException("账号或密码错误");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
             throw new BizException("账号已被禁用");
         }
-        String token = jwtUtil.createToken(user.getId(), "ADMIN", user.getNickname(), true);
-        return Map.of("token", token, "role", "ADMIN", "nickname", user.getNickname());
+        String token = jwtUtil.createToken(user.getId(), role, user.getNickname(), admin);
+        return Map.of("token", token, "role", role, "nickname", user.getNickname());
     }
 
     public User getById(Long id) {
@@ -345,5 +401,58 @@ public class UserService {
         userMapper.update(null, new LambdaUpdateWrapper<User>()
                 .eq(User::getId, uid)
                 .set(User::getStatus, status == null || status == 0 ? 0 : 1));
+    }
+
+    // ==================== 派送员账号管理 ====================
+
+    public List<User> staffList() {
+        return userMapper.selectList(new LambdaQueryWrapper<User>()
+                .eq(User::getRole, "STAFF").orderByDesc(User::getId));
+    }
+
+    /** 新增/编辑派送员账号 */
+    public void saveStaff(Long id, String username, String password, String nickname, String phone, Integer status) {
+        if (username == null || !username.matches("^[a-zA-Z0-9_]{3,20}$")) {
+            throw new BizException("账号需为 3~20 位字母/数字/下划线");
+        }
+        User exists = userMapper.selectOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username).in(User::getRole, List.of("ADMIN", "STAFF")));
+        if (exists != null && !exists.getId().equals(id)) {
+            throw new BizException("该账号已被使用");
+        }
+        if (id == null) {
+            if (password == null || password.length() < 6) {
+                throw new BizException("密码至少 6 位");
+            }
+            User u = new User();
+            u.setOpenid("staff_" + username);
+            u.setUsername(username);
+            u.setPassword(passwordEncoder.encode(password));
+            u.setNickname(nickname == null || nickname.isBlank() ? username : nickname);
+            u.setPhone(phone == null ? "" : phone);
+            u.setRole("STAFF");
+            u.setBalance(BigDecimal.ZERO);
+            u.setPoints(0);
+            u.setTotalSpend(BigDecimal.ZERO);
+            u.setStatus(status == null || status == 0 ? 1 : status);
+            u.setCreatedAt(LocalDateTime.now());
+            userMapper.insert(u);
+        } else {
+            LambdaUpdateWrapper<User> uw = new LambdaUpdateWrapper<User>()
+                    .eq(User::getId, id).eq(User::getRole, "STAFF")
+                    .set(User::getUsername, username)
+                    .set(User::getNickname, nickname == null ? "" : nickname)
+                    .set(User::getPhone, phone == null ? "" : phone)
+                    .set(User::getStatus, status == null || status == 0 ? 0 : 1);
+            if (password != null && !password.isBlank()) {
+                if (password.length() < 6) {
+                    throw new BizException("密码至少 6 位");
+                }
+                uw.set(User::getPassword, passwordEncoder.encode(password));
+            }
+            if (userMapper.update(null, uw) == 0) {
+                throw new BizException("派送员不存在");
+            }
+        }
     }
 }

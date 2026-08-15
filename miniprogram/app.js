@@ -27,16 +27,17 @@ App({
       wx.setStorageSync('mock_uid', mockUid);
     }
     this.globalData.mockUid = mockUid;
-    this.login();
+    // 不自动登录：首页 onShow 检测到无 token 会跳转登录页
   },
 
-  // 登录：mock 模式用稳定 code（同一设备始终同一用户）；真实模式用 wx.login code
+  // 微信一键登录：mock 模式用稳定 code（同一设备始终同一用户）；真实模式用 wx.login code
   login(mockCode) {
     const req = require('./utils/request');
     const doLogin = (code, nickname, avatar) => {
       return req.post('/api/auth/login', { code, nickname, avatar }).then((data) => {
         wx.setStorageSync('token', data.token);
         wx.setStorageSync('role', data.role);
+        wx.setStorageSync('nickname', data.nickname || '');
         return data;
       });
     };

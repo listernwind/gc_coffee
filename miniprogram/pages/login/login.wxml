@@ -1,0 +1,69 @@
+<view class="login-page">
+  <!-- 品牌区 -->
+  <view class="brand">
+    <view class="brand-logo ic ic-cup-w"></view>
+    <view class="brand-name">GC Coffee</view>
+    <view class="brand-slogan">咖啡液次日送达 · 饮品到店自取</view>
+  </view>
+
+  <!-- 模式切换 -->
+  <view class="mode-tabs">
+    <view class="mtab {{mode === 'wx' ? 'on' : ''}}" data-mode="wx" bindtap="switchMode">微信登录</view>
+    <view class="mtab {{mode === 'pwd' ? 'on' : ''}}" data-mode="pwd" bindtap="switchMode">账号登录</view>
+    <view class="mtab {{mode === 'reg' ? 'on' : ''}}" data-mode="reg" bindtap="switchMode">注册</view>
+  </view>
+
+  <view class="panel">
+    <!-- 微信一键登录 -->
+    <block wx:if="{{mode === 'wx'}}">
+      <button class="btn wx-btn" disabled="{{loading}}" bindtap="wxLogin">
+        <view class="ic ic-wechat-w" style="width:40rpx;height:40rpx;"></view>
+        微信一键登录
+      </button>
+      <view class="tip">开发期为模拟登录（自动生成账号）<br />后端配置微信 AppID 后自动切换真实微信登录</view>
+    </block>
+
+    <!-- 账号登录 -->
+    <block wx:if="{{mode === 'pwd'}}">
+      <view class="form-item">
+        <text class="label">账号</text>
+        <input class="input" placeholder="3~20位字母/数字/下划线" value="{{username}}" data-field="username" bindinput="onField" />
+      </view>
+      <view class="form-item">
+        <text class="label">密码</text>
+        <input class="input" password placeholder="请输入密码" value="{{password}}" data-field="password" bindinput="onField" />
+      </view>
+      <button class="btn btn-primary" disabled="{{loading}}" bindtap="pwdLogin">登 录</button>
+      <view class="tip">没有账号？切换到「注册」创建普通用户账号</view>
+    </block>
+
+    <!-- 注册 -->
+    <block wx:if="{{mode === 'reg'}}">
+      <view class="form-item">
+        <text class="label">账号</text>
+        <input class="input" placeholder="3~20位字母/数字/下划线" value="{{username}}" data-field="username" bindinput="onField" />
+      </view>
+      <view class="form-item">
+        <text class="label">密码（至少6位）</text>
+        <input class="input" password placeholder="设置密码" value="{{password}}" data-field="password" bindinput="onField" />
+      </view>
+      <view class="form-item">
+        <text class="label">昵称</text>
+        <input class="input" placeholder="怎么称呼你" value="{{nickname}}" data-field="nickname" bindinput="onField" />
+      </view>
+      <view class="form-item">
+        <text class="label">手机号（选填，用于派送联系）</text>
+        <input class="input" type="number" maxlength="11" placeholder="用于派送联系" value="{{phone}}" data-field="phone" bindinput="onField" />
+      </view>
+      <button class="btn btn-primary" disabled="{{loading}}" bindtap="register">注册并登录</button>
+      <view class="tip">注册为普通用户账号；店长 / 派送员账号由门店预置，不开放注册</view>
+    </block>
+  </view>
+
+  <!-- 内部角色入口 -->
+  <view class="role-links">
+    <view class="rlink" bindtap="goAdminLogin">店长登录</view>
+    <view class="rdiv"></view>
+    <view class="rlink" bindtap="goStaffLogin">派送员登录</view>
+  </view>
+</view>

@@ -1,10 +1,14 @@
 /**
- * 统一请求封装：自动携带 token，/api/admin 前缀自动使用店长 token
- * 401 时：用户端自动重新登录并重试一次（解决冷启动登录竞态）；管理端清理过期店长 token
+ * 统一请求封装：自动携带 token
+ *  - /api/admin 前缀 → 店长 token
+ *  - /api/staff 前缀 → 派送员 token
+ *  - 其余 → 用户 token
+ * 401 时：用户端自动重新登录并重试一次（解决冷启动登录竞态）；管理端/派送端清理过期 token
  */
 function request(path, method, data, retried) {
   const isAdmin = path.indexOf('/api/admin') === 0;
-  const token = wx.getStorageSync(isAdmin ? 'adminToken' : 'token') || '';
+  const isStaff = path.indexOf('/api/staff') === 0;
+  const token = wx.getStorageSync(isAdmin ? 'adminToken' : (isStaff ? 'staffToken' : 'token')) || '';
   return new Promise((resolve, reject) => {
     wx.request({
       url: getApp().globalData.baseUrl + path,
@@ -27,17 +31,17 @@ function request(path, method, data, retried) {
             reject(body);
             return;
           }
-          // 用户端：token 失效或冷启动未登录 → 重新登录后重试一次
-          if (!retried) {
-            getApp().login().then(() => {
-              request(path, method, data, true).then(resolve).catch(reject);
-            }).catch(() => {
-              wx.showToast({ title: '登录失败，请重启小程序', icon: 'none' });
-              reject(body);
-            });
+          if (isStaff) {
+            wx.removeStorageSync('staffToken');
+            wx.showToast({ title: '派送员登录已过期，请重新登录', icon: 'none' });
+            reject(body);
             return;
           }
-          wx.showToast({ title: '账号状态异常，请联系店主', icon: 'none' });
+          // 用户端：token 失效或未登录 → 清理并回到登录页
+          wx.removeStorageSync('token');
+          wx.removeStorageSync('role');
+          wx.removeStorageSync('nickname');
+          wx.reLaunch({ url: '/pages/login/login' });
           reject(body);
           return;
         }

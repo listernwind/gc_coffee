@@ -55,6 +55,20 @@
     <text class="mi-arrow">›</text>
   </view>
 
+  <!-- 派送员入口 -->
+  <view class="card staff-entry" bindtap="goStaff">
+    <view class="se-icon ic ic-truck"></view>
+    <view class="se-text">
+      <view style="font-weight:700;">派送员工作台</view>
+      <view class="sub">今日派送任务 · 认领订单 · 一键拨打客户电话 · 送达确认</view>
+    </view>
+    <text class="mi-arrow">›</text>
+  </view>
+
+  <view class="card menu-list">
+    <view class="mi" bindtap="logout"><text class="mi-icon ic ic-receipt" style="margin-right:22rpx;"></text><text class="mi-text" style="color:var(--danger);">退出登录</text><text class="mi-arrow">›</text></view>
+  </view>
+
   <view class="dev-zone" bindtap="switchDemo">开发辅助：切换演示账号（mock 模式）</view>
 
   <!-- 收货信息弹层 -->

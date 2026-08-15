@@ -31,6 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         Claims claims = token == null ? null : jwtUtil.parse(token);
 
         boolean adminPath = request.getRequestURI().startsWith("/api/admin/");
+        boolean staffPath = request.getRequestURI().startsWith("/api/staff/");
         if (claims == null) {
             return reject(response, 401, "请先登录");
         }
@@ -38,6 +39,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         String role = claims.get("role", String.class);
         if (adminPath && !"ADMIN".equals(role)) {
             return reject(response, 403, "无管理权限");
+        }
+        if (staffPath && !("STAFF".equals(role) || "ADMIN".equals(role))) {
+            return reject(response, 403, "无派送员权限");
         }
         // 用户被禁用后，旧 token 立即失效
         if (!adminPath) {

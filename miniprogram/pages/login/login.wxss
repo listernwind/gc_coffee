@@ -1,0 +1,63 @@
+.login-page {
+  min-height: 100vh;
+  padding: 0 48rpx 60rpx;
+  background: linear-gradient(180deg, #4B3621 0%, #6F4E37 320rpx, #F6F1EA 320rpx);
+}
+
+/* 品牌区 */
+.brand { padding-top: 140rpx; text-align: center; color: #FFF7EC; }
+.brand-logo { width: 120rpx; height: 120rpx; margin: 0 auto; }
+.brand-name { font-size: 52rpx; font-weight: 800; letter-spacing: 4rpx; margin-top: 20rpx; }
+.brand-slogan { font-size: 24rpx; opacity: 0.75; margin-top: 10rpx; letter-spacing: 2rpx; }
+
+/* 模式切换 */
+.mode-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999rpx;
+  padding: 8rpx;
+  margin-top: 56rpx;
+}
+.mtab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  font-size: 28rpx;
+  color: rgba(255, 247, 236, 0.7);
+  border-radius: 999rpx;
+}
+.mtab.on { background: #FFF7EC; color: var(--coffee); font-weight: 700; }
+
+/* 面板 */
+.panel {
+  background: #FFF;
+  border-radius: 32rpx;
+  padding: 44rpx 36rpx;
+  margin-top: 24rpx;
+  box-shadow: 0 16rpx 40rpx rgba(75, 54, 33, 0.12);
+}
+.wx-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14rpx;
+  background: #07C160;
+  color: #FFF;
+}
+.tip {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink-3);
+  margin-top: 28rpx;
+  line-height: 1.8;
+}
+
+/* 角色入口 */
+.role-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 44rpx;
+}
+.rlink { font-size: 26rpx; color: var(--ink-2); }
+.rdiv { width: 1rpx; height: 26rpx; background: var(--line); margin: 0 32rpx; }

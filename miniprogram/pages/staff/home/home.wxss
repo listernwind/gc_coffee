@@ -1,0 +1,100 @@
+.staff-page { padding-bottom: 60rpx; }
+
+/* 顶部 */
+.s-top {
+  background: linear-gradient(160deg, #4B3621 0%, #6F4E37 100%);
+  padding: 56rpx 32rpx 36rpx;
+  border-radius: 0 0 48rpx 48rpx;
+  color: #FFF7EC;
+}
+.s-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 640rpx;
+  margin: 0 auto;
+}
+.s-title { font-size: 40rpx; font-weight: 800; letter-spacing: 2rpx; }
+.s-sub { font-size: 22rpx; opacity: 0.7; margin-top: 6rpx; }
+.s-exit {
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999rpx;
+  padding: 10rpx 28rpx;
+}
+.s-stats {
+  display: flex;
+  max-width: 640rpx;
+  margin: 32rpx auto 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 24rpx;
+  padding: 22rpx 0;
+}
+.s-stat { flex: 1; text-align: center; }
+.s-num { font-size: 40rpx; font-weight: 800; }
+.s-label { font-size: 21rpx; opacity: 0.65; margin-top: 4rpx; }
+
+/* 日期切换 */
+.tabs {
+  display: flex;
+  background: #FFF;
+  border-radius: 999rpx;
+  padding: 8rpx;
+  margin: 24rpx 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(75, 54, 33, 0.05);
+}
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: var(--ink-2);
+  border-radius: 999rpx;
+}
+.tab.active { background: var(--coffee); color: #FFF7EC; font-weight: 700; }
+
+/* 任务卡 */
+.task {
+  background: #FFF;
+  border-radius: 28rpx;
+  padding: 28rpx;
+  margin: 0 32rpx 20rpx;
+  box-shadow: 0 6rpx 24rpx rgba(75, 54, 33, 0.06);
+}
+.t-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+.t-addr { font-size: 34rpx; font-weight: 800; }
+.t-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8rpx 0;
+  font-size: 26rpx;
+}
+.t-label { color: var(--ink-2); flex-shrink: 0; margin-right: 20rpx; }
+.t-value { text-align: right; word-break: break-all; }
+.t-contact { display: flex; align-items: center; gap: 16rpx; }
+.t-call {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  background: #F3E7D8;
+  color: #A06A2E;
+  font-size: 22rpx;
+  font-weight: 700;
+  border-radius: 999rpx;
+  padding: 8rpx 20rpx;
+  flex-shrink: 0;
+}
+.t-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding-top: 18rpx;
+  border-top: 1rpx solid var(--line);
+}

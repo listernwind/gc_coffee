@@ -15,8 +15,10 @@ def req(path, method='GET', data=None, token=None, raw=False):
         return {'http_error': e.code, 'body': e.read().decode()}
 
 ok_count = 0
+TOTAL = [0]
 def check(name, cond, extra=''):
     global ok_count
+    TOTAL[0] += 1
     if cond: ok_count += 1; print(f'PASS  {name} {extra}')
     else: print(f'FAIL  {name} {extra}')
 
@@ -31,6 +33,23 @@ check('wx login', token is not None, login.get('data', {}).get('role', ''))
 # 3. 个人中心
 me = req('/api/user/me', token=token)['data']
 check('user me', me['nickname'] == '测试用户', f"balance={me['balance']} level={me['levelName']}")
+
+# 3.5 注册 + 账号密码登录
+reg_name = 'reg_' + str(int(__import__('time').time()))[-6:]
+reg = req('/api/auth/register', 'POST', {'username': reg_name, 'password': '123456', 'nickname': '注册用户', 'phone': '13600001111'})
+rtk = reg.get('data', {}).get('token')
+check('register', reg.get('code') == 0 and rtk is not None and reg['data']['role'] == 'USER', str(reg.get('msg')))
+dup = req('/api/auth/register', 'POST', {'username': reg_name, 'password': '123456', 'nickname': 'x'})
+
+check('register duplicate rejected', dup.get('code') == 1 and '已被注册' in dup.get('msg', ''), str(dup.get('msg')))
+weak = req('/api/auth/register', 'POST', {'username': 'weakuser1', 'password': '123', 'nickname': 'x'})
+check('weak password rejected', weak.get('code') == 1, str(weak.get('msg')))
+pl = req('/api/auth/password-login', 'POST', {'username': reg_name, 'password': '123456'})
+check('password login', pl.get('code') == 0 and pl['data']['role'] == 'USER' and pl['data']['nickname'] == '注册用户', str(pl.get('msg')))
+pl_bad = req('/api/auth/password-login', 'POST', {'username': reg_name, 'password': 'wrong'})
+check('bad password rejected', pl_bad.get('code') == 1, str(pl_bad.get('msg')))
+me_reg = req('/api/user/me', token=rtk)['data']
+check('registered user profile', me_reg['nickname'] == '注册用户', me_reg.get('nickname'))
 
 # 4. 公开设置 + 咖啡液产品
 settings = req('/api/public/settings')['data']
@@ -126,16 +145,48 @@ check('ledger', ledger['summary']['count'] >= 4, f"count={ledger['summary']['cou
 csv = req('/api/admin/stats/ledger/csv?type=ALL', token=atk, raw=True)
 check('ledger csv', csv.startswith('\ufeff时间,单号') and '咖啡液' in csv)
 
-# 17. 派送管理状态流转
-resv = req('/api/admin/ops/reservations?status=ALL', token=atk)['data']['records']
-target = [r for r in resv if r['status'] == 'PENDING'][0]
-check('reservation list', 'nickname' in target and 'dateLabel' not in target, f"nick={target['nickname']}")
-s1 = req(f"/api/admin/ops/reservations/{target['id']}/status", 'PUT', {'status': 'CONFIRMED'}, atk)
-check('status CONFIRMED', s1['code'] == 0)
-s2 = req(f"/api/admin/ops/reservations/{target['id']}/status", 'PUT', {'status': 'DELIVERING'}, atk)
-check('status DELIVERING', s2['code'] == 0)
-s3 = req(f"/api/admin/ops/reservations/{target['id']}/status", 'PUT', {'status': 'DELIVERED'}, atk)
-check('status DELIVERED', s3['code'] == 0)
+# 17. 派送员流程
+staff_login = req('/api/auth/staff-login', 'POST', {'username': 'staff1', 'password': 'staff123'})
+stk = staff_login.get('data', {}).get('token')
+check('staff login', stk is not None)
+sme = req('/api/staff/me', token=stk)['data']
+check('staff me', sme['name'] == '配送员小王')
+
+# 补一单用于放弃认领测试
+req('/api/coffee/reserve', 'POST', {
+    'productId': products[0]['id'], 'quantity': 1, 'usePackage': False, 'payType': 'WX_MOCK',
+    'timeSlot': slot, 'address': '5栋1单元101', 'contactName': '测试用户', 'contactPhone': '13800000000'
+}, token)
+stasks = req('/api/staff/tasks?date=tomorrow', token=stk)['data']
+check('staff tasks', len(stasks) >= 2, f'count={len(stasks)}')
+target = [t for t in stasks if t['status'] == 'PENDING'][0]
+claim = req(f"/api/staff/tasks/{target['id']}/claim", 'PUT', {}, stk)
+check('staff claim', claim['code'] == 0 and claim['data']['status'] == 'CONFIRMED' and claim['data'].get('staffId') is not None)
+d1 = req(f"/api/staff/tasks/{target['id']}/status", 'PUT', {'status': 'DELIVERING'}, stk)
+check('staff delivering', d1['code'] == 0)
+d2 = req(f"/api/staff/tasks/{target['id']}/status", 'PUT', {'status': 'DELIVERED'}, stk)
+check('staff delivered', d2['code'] == 0 and d2['data']['status'] == 'DELIVERED')
+
+# 越权：用户 token 访问派送员接口应 403
+s403 = req('/api/staff/tasks', token=token)
+check('user blocked from staff api', s403.get('code') == 403, str(s403.get('code')))
+
+# 店长端可见派送员姓名
+resv_all = req('/api/admin/ops/reservations?status=DELIVERED', token=atk)['data']['records']
+check('admin sees staffName', any(r.get('staffName') == '配送员小王' for r in resv_all))
+
+# 放弃认领流程
+p2 = [t for t in req('/api/staff/tasks?date=tomorrow', token=stk)['data'] if t['status'] == 'PENDING'][0]
+c2 = req(f"/api/staff/tasks/{p2['id']}/claim", 'PUT', {}, stk)
+u2 = req(f"/api/staff/tasks/{p2['id']}/unclaim", 'PUT', {}, stk)
+check('staff unclaim', u2['code'] == 0 and u2['data']['status'] == 'PENDING' and u2['data'].get('staffId') is None)
+
+# 派送员账号管理
+sl = req('/api/admin/staff', token=atk)['data']
+check('admin staff list', len(sl) >= 1 and any(x['nickname'] == '配送员小王' for x in sl), f"count={len(sl)}")
+req('/api/admin/staff', 'POST', {'username': 'staff2', 'password': '123456', 'nickname': '配送员小李', 'phone': '13711112222', 'status': 1}, atk)
+sl2 = req('/api/admin/staff', token=atk)['data']
+check('staff create', any(x['username'] == 'staff2' for x in sl2))
 
 # 18. 饮品订单状态流转
 ordrs = req('/api/admin/ops/orders?status=ALL', token=atk)['data']['records']
@@ -150,10 +201,11 @@ check('order FINISHED', f1['code'] == 0)
 members = req('/api/admin/members?keyword=' + __import__('urllib').parse.quote('测试'), token=atk)['data']
 check('member search', members['total'] >= 1 and members['records'][0]['nickname'] == '测试用户', f"total={members['total']}")
 uid = members['records'][0]['id']
+pts_before_adj = req('/api/user/me', token=token)['data']['points']
 adj = req(f'/api/admin/members/{uid}/points', 'POST', {'points': -50, 'remark': '测试扣减'}, atk)
 check('adjust points', adj['code'] == 0)
 me4 = req('/api/user/me', token=token)['data']
-check('points adjusted', me4['points'] == me3['points'] - 50, f"points={me4['points']}")
+check('points adjusted', me4['points'] == pts_before_adj - 50, f"points={me4['points']}")
 
 # 20. 设置读写
 setget = req('/api/admin/ops/settings', token=atk)['data']
@@ -199,4 +251,4 @@ bad = req('/api/coffee/reserve', 'POST', {
 }, token)
 check('same-day delivery rejected', bad.get('code') == 1 and '次日' in bad.get('msg', ''), str(bad.get('msg')))
 
-print(f'\n===== {ok_count}/46 checks passed =====')
+print(f'\n===== {ok_count}/{TOTAL[0]} checks passed =====')

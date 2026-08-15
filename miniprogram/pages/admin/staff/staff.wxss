@@ -1,0 +1,18 @@
+.st-head { display: flex; align-items: center; }
+.st-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background: #F3E7D8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.st-avatar .ic { width: 36rpx; height: 36rpx; }
+.st-info { flex: 1; min-width: 0; }
+.st-ops { display: flex; gap: 18rpx; flex-shrink: 0; }
+.op { font-size: 24rpx; color: var(--accent); }
+.op.danger { color: var(--danger); }
+.op.ok { color: var(--ok); }

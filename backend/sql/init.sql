@@ -114,11 +114,13 @@ CREATE TABLE IF NOT EXISTS t_coffee_reservation (
     contact_name VARCHAR(30) NOT NULL,
     contact_phone VARCHAR(20) NOT NULL,
     remark VARCHAR(200) DEFAULT '',
+    staff_id BIGINT DEFAULT NULL COMMENT '认领派送员(t_user.id)',
     cancel_at DATETIME DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uk_order_no (order_no),
     KEY idx_user (user_id, delivery_date),
-    KEY idx_delivery (delivery_date, status)
+    KEY idx_delivery (delivery_date, status),
+    KEY idx_staff (staff_id, status)
 ) ENGINE=InnoDB COMMENT='咖啡液预订单(次日派送)';
 
 -- ---------- 饮品分类 ----------

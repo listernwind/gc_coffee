@@ -1,0 +1,82 @@
+<view class="staff-page">
+  <!-- 顶部 -->
+  <view class="s-top">
+    <view class="s-head">
+      <view>
+        <view class="s-title">派送工作台</view>
+        <view class="s-sub">{{staff.name}} · 今日待送 {{pendingCount}} 单</view>
+      </view>
+      <view class="s-exit" bindtap="exit">退出</view>
+    </view>
+    <view class="s-stats">
+      <view class="s-stat">
+        <view class="s-num">{{pendingCount}}</view>
+        <view class="s-label">待认领</view>
+      </view>
+      <view class="s-stat">
+        <view class="s-num">{{mineCount}}</view>
+        <view class="s-label">我负责</view>
+      </view>
+      <view class="s-stat">
+        <view class="s-num">{{doneCount}}</view>
+        <view class="s-label">已送达</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 日期切换 -->
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="key" class="tab {{activeTab === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchTab">{{item.label}}</view>
+  </view>
+
+  <!-- 任务列表 -->
+  <view wx:if="{{tasks.length}}">
+    <view class="task" wx:for="{{tasks}}" wx:key="id">
+      <view class="t-head">
+        <view class="t-addr">{{item.address}}</view>
+        <view class="badge {{item.statusClass}}">{{item.statusLabel}}</view>
+      </view>
+      <view class="t-row">
+        <text class="t-label">商品</text>
+        <text class="t-value">{{item.productName}} × {{item.quantity}}</text>
+      </view>
+      <view class="t-row">
+        <text class="t-label">时段</text>
+        <text class="t-value">{{item.dateLabel}} {{item.timeSlot}}</text>
+      </view>
+      <view class="t-row">
+        <text class="t-label">联系人</text>
+        <view class="t-value t-contact">
+          <text>{{item.contactName}} {{item.contactPhone}}</text>
+          <view class="t-call" data-phone="{{item.contactPhone}}" bindtap="call">
+            <view class="ic ic-phone-w" style="width:24rpx;height:24rpx;"></view>
+            拨打
+          </view>
+        </view>
+      </view>
+      <view class="t-row" wx:if="{{item.staffName}}">
+        <text class="t-label">派送员</text>
+        <text class="t-value {{item.isMine ? 'ok' : ''}}">{{item.staffName}}{{item.isMine ? '（我）' : ''}}</text>
+      </view>
+      <view class="t-row" wx:if="{{item.remark}}">
+        <text class="t-label">备注</text>
+        <text class="t-value">{{item.remark}}</text>
+      </view>
+
+      <!-- 操作 -->
+      <view class="t-actions" wx:if="{{item.status === 'PENDING' || (item.isMine && (item.status === 'CONFIRMED' || item.status === 'DELIVERING'))}}">
+        <button wx:if="{{item.status === 'PENDING'}}" class="btn btn-sm btn-accent" data-id="{{item.id}}" bindtap="claim">认领</button>
+        <block wx:if="{{item.isMine}}">
+          <button wx:if="{{item.status === 'CONFIRMED'}}" class="btn btn-sm btn-ghost" data-id="{{item.id}}" bindtap="unclaim">放弃认领</button>
+          <button wx:if="{{item.status === 'CONFIRMED'}}" class="btn btn-sm btn-primary" data-id="{{item.id}}" data-status="DELIVERING" data-label="派送中" bindtap="setStatus">开始派送</button>
+          <button wx:if="{{item.status === 'DELIVERING'}}" class="btn btn-sm btn-primary" data-id="{{item.id}}" data-status="DELIVERED" data-label="已送达" bindtap="setStatus">确认送达</button>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:else>
+    <view class="icon ic ic-truck"></view>
+    <view>{{activeTab === 'today' ? '今天' : activeTab === 'tomorrow' ? '明天' : '暂'}}暂无派送任务</view>
+  </view>
+</view>

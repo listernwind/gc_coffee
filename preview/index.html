@@ -26,6 +26,26 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 .qkb{display:flex;align-items:center}
 .qkic{width:18px;height:18px;margin-right:8px}
 .tb .i{width:19px;height:19px}
+.more-sheet{position:absolute;left:0;right:0;bottom:0;background:#FFF;border-radius:26px 26px 0 0;padding:14px 16px 24px;z-index:95}
+.ms-item{display:flex;align-items:center;padding:14px 10px;cursor:pointer}
+.ms-ic{width:20px;height:20px;margin-right:12px}
+.ms-t{font-size:14px;font-weight:700}
+.ms-s{font-size:10px;color:var(--ink2);margin-top:2px}
+.ms-arrow{margin-left:auto;color:var(--ink3)}
+.ms-cancel{text-align:center;padding:12px;color:var(--ink2);border-top:1px solid var(--line);margin-top:8px;cursor:pointer}
+.s-stats{display:flex;background:rgba(255,255,255,.1);border-radius:14px;padding:11px 0;margin-top:14px}
+.s-stat{flex:1;text-align:center}
+.s-num{font-size:19px;font-weight:800}
+.s-label{font-size:10px;opacity:.65;margin-top:2px}
+.task{background:#FFF;border-radius:18px;padding:16px;margin:0 20px 12px;box-shadow:0 4px 14px rgba(75,54,33,.06)}
+.t-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.t-addr{font-size:16px;font-weight:800}
+.t-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+.t-row .lb{color:var(--ink2)}
+.t-contact{display:flex;align-items:center;gap:8px}
+.t-call{display:flex;align-items:center;gap:4px;background:#F3E7D8;color:#A06A2E;font-size:10px;font-weight:700;border-radius:999px;padding:4px 10px}
+.t-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.t-actions .btn{padding:6px 16px;font-size:12px}
 .phone{width:390px;height:780px;background:var(--bg);border-radius:44px;box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 0 0 8px #1d150f;overflow:hidden;position:relative;display:flex;flex-direction:column}
 .statusbar{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600;color:var(--coffee);background:transparent;position:relative;z-index:5}
 .screens{flex:1;position:relative;overflow:hidden}
@@ -253,6 +273,18 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
 .tb .i{font-size:19px;line-height:1.1}
 .tb .t{font-size:9px;margin-top:1px}
 .back{position:absolute;top:52px;left:18px;z-index:40;font-size:11px;color:var(--ink2);cursor:pointer;background:rgba(255,255,255,.8);border-radius:999px;padding:4px 12px}
+.brand{padding-top:120px;text-align:center;color:#FFF7EC}
+.b-name{font-size:26px;font-weight:800;letter-spacing:2px;margin-top:10px}
+.b-slogan{font-size:12px;opacity:.75;margin-top:5px;letter-spacing:1px}
+.mode-tabs{display:flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;margin:28px 20px 0}
+.mtab{flex:1;text-align:center;padding:9px 0;font-size:13px;color:rgba(255,247,236,.7);border-radius:999px;cursor:pointer}
+.mtab.on{background:#FFF7EC;color:var(--coffee);font-weight:700}
+.login-panel{background:#FFF;border-radius:20px;padding:22px 18px;margin:12px 20px 0;box-shadow:0 12px 30px rgba(75,54,33,.12)}
+.wx-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:#07C160;color:#fff;width:100%}
+.tip{text-align:center;font-size:10px;color:var(--ink3);margin-top:14px;line-height:1.7}
+.role-links{display:flex;align-items:center;justify-content:center;margin-top:22px}
+.rlink{font-size:12px;color:var(--ink2);cursor:pointer}
+.rdiv{width:1px;height:13px;background:var(--line);margin:0 16px}
 </style>
 </head>
 <body>
@@ -261,8 +293,47 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
   <div class="statusbar"><span>9:41</span><span>GC Coffee</span><span>● ● ●</span></div>
   <div class="screens">
 
+    <!-- 登录 -->
+    <div class="screen active" id="scr-login">
+      <div class="brand">
+        <div class="ic-cup-w" style="width:60px;height:60px;margin:0 auto"></div>
+        <div class="b-name">GC Coffee</div>
+        <div class="b-slogan">咖啡液次日送达 · 饮品到店自取</div>
+      </div>
+      <div class="mode-tabs">
+        <div class="mtab on" onclick="loginMode(this,'wx')">微信登录</div>
+        <div class="mtab" onclick="loginMode(this,'pwd')">账号登录</div>
+        <div class="mtab" onclick="loginMode(this,'reg')">注册</div>
+      </div>
+      <div class="login-panel">
+        <div id="lm-wx">
+          <button class="btn wx-btn" onclick="go('home')"><span class="ic-wechat-w" style="width:20px;height:20px"></span> 微信一键登录</button>
+          <div class="tip">开发期为模拟登录（自动生成账号）<br>后端配置微信 AppID 后自动切换真实登录</div>
+        </div>
+        <div id="lm-pwd" style="display:none">
+          <div class="fi"><span class="lb">账号</span><input class="inp" placeholder="3~20位字母/数字/下划线"></div>
+          <div class="fi"><span class="lb">密码</span><input class="inp" type="password" placeholder="请输入密码"></div>
+          <button class="btn btn-primary" style="width:100%" onclick="go('home')">登 录</button>
+          <div class="tip">没有账号？切换到「注册」创建普通用户账号</div>
+        </div>
+        <div id="lm-reg" style="display:none">
+          <div class="fi"><span class="lb">账号</span><input class="inp" placeholder="3~20位字母/数字/下划线"></div>
+          <div class="fi"><span class="lb">密码（至少6位）</span><input class="inp" type="password"></div>
+          <div class="fi"><span class="lb">昵称</span><input class="inp" placeholder="怎么称呼你"></div>
+          <div class="fi"><span class="lb">手机号（选填）</span><input class="inp" placeholder="用于派送联系"></div>
+          <button class="btn btn-primary" style="width:100%" onclick="go('home')">注册并登录</button>
+          <div class="tip">注册为普通用户账号；店长 / 派送员账号由门店预置，不开放注册</div>
+        </div>
+      </div>
+      <div class="role-links">
+        <span class="rlink" onclick="go('admin')">店长登录</span>
+        <span class="rdiv"></span>
+        <span class="rlink" onclick="go('staff-login')">派送员登录</span>
+      </div>
+    </div>
+
     <!-- 首页 -->
-    <div class="screen active" id="scr-home">
+    <div class="screen" id="scr-home">
       <div class="top"><div class="top-bg"></div>
         <div class="greet-row"><div><div class="greet">你好，欢迎回来</div><div class="shop">GC Coffee 咖啡小馆</div></div><div class="chip">8月16日 周日</div></div>
       </div>
@@ -445,7 +516,63 @@ body{background:linear-gradient(160deg,#3A2C20,#241A12);display:flex;flex-direct
         <div class="qkb"><div class="qkic ic-ticket"></div><span>优惠券</span></div>
         <div class="qkb"><div class="qkic ic-gift"></div><span>活动海报</span></div>
         <div class="qkb"><div class="qkic ic-users"></div><span>会员管理</span></div>
+        <div class="qkb" onclick="moreGo('staff-login')"><div class="qkic ic-user"></div><span>派送员</span></div>
         <div class="qkb"><div class="qkic ic-sliders"></div><span>系统设置</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- 我的-动作面板 -->
+  <div class="mask" id="moreSheet" style="display:none" onclick="hideMore()"></div>
+  <div class="more-sheet" id="moreSheetPanel" style="display:none">
+    <div class="ms-item" onclick="moreGo('monthly')"><div class="ms-ic ic-chart"></div><div><div class="ms-t">月度咖啡液详情</div><div class="ms-s">花费 / 剩余额度 / 明细</div></div><div class="ms-arrow">›</div></div>
+    <div class="ms-item" onclick="moreGo('admin')"><div class="ms-ic ic-sliders"></div><div><div class="ms-t">店长经营看板</div><div class="ms-s">台账 / 派送 / 营销 / 会员</div></div><div class="ms-arrow">›</div></div>
+    <div class="ms-item" onclick="moreGo('staff-login')"><div class="ms-ic ic-truck"></div><div><div class="ms-t">派送员工作台</div><div class="ms-s">派送任务 / 认领 / 送达</div></div><div class="ms-arrow">›</div></div>
+    <div class="ms-cancel" onclick="hideMore()">取消</div>
+  </div>
+
+    <!-- 派送员登录 -->
+    <div class="screen" id="scr-staff-login">
+      <div class="back" onclick="go('home')">← 返回</div>
+      <div style="padding:90px 30px 0;text-align:center">
+        <div class="ic-truck" style="width:50px;height:50px;margin:0 auto"></div>
+        <div class="l-t" style="font-size:22px;font-weight:800;margin-top:10px">派送员工作台</div>
+        <div class="sub" style="margin-top:4px">GC Coffee · 本小区配送</div>
+        <div class="card" style="margin-top:30px;text-align:left">
+          <div class="fi"><span class="lb">账号</span><input class="inp" value="staff1"></div>
+          <div class="fi"><span class="lb">密码</span><input class="inp" type="password" value="staff123"></div>
+          <button class="btn btn-primary" style="width:100%" onclick="go('staff')">登 录</button>
+          <div class="muted" style="font-size:10px;text-align:center;margin-top:12px">默认账号 staff1 / staff123</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 派送员工作台 -->
+    <div class="screen" id="scr-staff">
+      <div class="back" onclick="go('home')">← 用户端</div>
+      <div class="dash-top" style="padding:24px 16px 30px">
+        <div class="dash-head"><div><div class="dash-title">派送工作台</div><div class="dash-date">配送员小王 · 今日待送 3 单</div></div><div class="dash-exit" onclick="go('staff-login')">退出</div></div>
+        <div class="s-stats"><div class="s-stat"><div class="s-num">2</div><div class="s-label">待认领</div></div><div class="s-stat"><div class="s-num">1</div><div class="s-label">我负责</div></div><div class="s-stat"><div class="s-num">5</div><div class="s-label">已送达</div></div></div>
+      </div>
+      <div class="tabs" style="margin:16px 20px 12px"><div class="tab on">今天</div><div class="tab">明天</div><div class="tab">全部</div></div>
+      <div class="task">
+        <div class="t-head"><div class="t-addr">3栋2单元501</div><span class="badge st-PENDING">待确认</span></div>
+        <div class="t-row"><span class="lb">商品</span><span>冷萃咖啡液 × 3</span></div>
+        <div class="t-row"><span class="lb">时段</span><span>今天 09:00-11:00</span></div>
+        <div class="t-row"><span class="lb">联系人</span><span class="t-contact">张三 138****0000 <span class="t-call"><span class="ic-phone-w" style="width:11px;height:11px"></span> 拨打</span></span></div>
+        <div class="t-actions"><button class="btn btn-sm btn-accent" onclick="this.textContent='已认领';this.disabled=true">认领</button></div>
+      </div>
+      <div class="task">
+        <div class="t-head"><div class="t-addr">6栋1单元1203</div><span class="badge st-DELIVERING">派送中</span></div>
+        <div class="t-row"><span class="lb">商品</span><span>意式浓缩液 × 5</span></div>
+        <div class="t-row"><span class="lb">时段</span><span>今天 13:00-15:00</span></div>
+        <div class="t-row"><span class="lb">派送员</span><span class="ok">配送员小王（我）</span></div>
+        <div class="t-actions"><button class="btn btn-sm btn-primary" onclick="this.closest('.task').querySelector('.badge').className='badge st-DELIVERED';this.closest('.task').querySelector('.badge').textContent='已送达';this.parentElement.remove()">确认送达</button></div>
+      </div>
+      <div class="task">
+        <div class="t-head"><div class="t-addr">9栋3单元202</div><span class="badge st-PENDING">待确认</span></div>
+        <div class="t-row"><span class="lb">商品</span><span>SOE 精品咖啡液 × 1</span></div>
+        <div class="t-row"><span class="lb">时段</span><span>今天 17:00-19:00</span></div>
+        <div class="t-actions"><button class="btn btn-sm btn-accent" onclick="this.textContent='已认领';this.disabled=true">认领</button></div>
       </div>
     </div>
   </div>
@@ -500,11 +627,21 @@ function go(name){
   const scr = document.getElementById('scr-'+name);
   scr.classList.add('active');
   scr.scrollTop = 0;
+  const tb = document.querySelector('.tabbar');
+  if (tb) tb.style.display = (name==='login' || name==='staff-login') ? 'none' : 'flex';
+}
+function loginMode(el, mode){
+  document.querySelectorAll('.mtab').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('lm-wx').style.display = mode==='wx' ? 'block' : 'none';
+  document.getElementById('lm-pwd').style.display = mode==='pwd' ? 'block' : 'none';
+  document.getElementById('lm-reg').style.display = mode==='reg' ? 'block' : 'none';
 }
 function showMore(){
-  const choice = confirm('我的\n\n[确定] 月度咖啡液详情\n[取消] 店长管理看板');
-  go(choice ? 'monthly' : 'admin');
+  document.getElementById('moreSheet').style.display = 'block';
 }
+function hideMore(){ document.getElementById('moreSheet').style.display = 'none'; }
+function moreGo(name){ hideMore(); go(name); }
 // ===== 菜单 =====
 function renderMenu(){
   document.getElementById('cats').innerHTML = CATS.map((c,i)=>`<div class="cat ${i===activeCat?'on':''}" onclick="selCat(${i})">${c.name}</div>`).join('');

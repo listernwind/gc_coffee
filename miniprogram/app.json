@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/home/home",
     "pages/menu/menu",
     "pages/checkout/checkout",
@@ -16,6 +17,8 @@
     "pages/points-records/points-records",
     "pages/member/member",
     "pages/profile/profile",
+    "pages/staff/login/login",
+    "pages/staff/home/home",
     "pages/admin-login/admin-login",
     "pages/admin/dashboard/dashboard",
     "pages/admin/ledger/ledger",
@@ -25,6 +28,7 @@
     "pages/admin/coupons/coupons",
     "pages/admin/activities/activities",
     "pages/admin/members/members",
+    "pages/admin/staff/staff",
     "pages/admin/settings/settings"
   ],
   "window": {

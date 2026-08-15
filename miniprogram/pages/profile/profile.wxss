@@ -67,3 +67,12 @@
 .mi-icon { width: 38rpx; height: 38rpx; }
 .ae-icon { width: 44rpx; height: 44rpx; }
 
+
+.staff-entry {
+  display: flex;
+  align-items: center;
+  background: #FFF;
+}
+.se-icon { width: 44rpx; height: 44rpx; margin-right: 20rpx; }
+.se-text { flex: 1; }
+.se-text .sub { color: var(--ink-2); font-size: 22rpx; }

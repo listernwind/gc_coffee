@@ -49,6 +49,10 @@ public class CoffeeReservation {
     private String contactName;
     private String contactPhone;
     private String remark;
+
+    /** 认领该单的派送员（t_user.id，STAFF 角色） */
+    private Long staffId;
+
     private LocalDateTime cancelAt;
     private LocalDateTime createdAt;
 }
