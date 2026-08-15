@@ -1,4 +1,4 @@
-@import "../../assets/icons.wxss";
+@import "../assets/icons.wxss";
 .tab-bar {
   position: fixed;
   left: 24rpx;
