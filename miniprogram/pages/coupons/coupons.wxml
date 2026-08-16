@@ -17,7 +17,7 @@
       </view>
     </view>
   </view>
-  <view class="empty" wx:else><view class="icon ic ic-ticket"></view><view>暂无{{activeTab === 'UNUSED' ? '可用' : ''}}优惠券</view></view>
+  <view class="empty" wx:else><image class="icon ic ic-ticket" src="/assets/icons/ticket.png" /><view>暂无{{activeTab === 'UNUSED' ? '可用' : ''}}优惠券</view></view>
 
   <!-- 领券中心 -->
   <view class="section-title"><view class="t">领券中心</view></view>

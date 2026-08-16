@@ -1,5 +1,6 @@
 {
   "navigationBarTitleText": "派送工作台",
   "navigationStyle": "custom",
-  "enablePullDownRefresh": true
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle": "white"
 }

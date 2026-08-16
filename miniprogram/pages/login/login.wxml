@@ -1,7 +1,7 @@
 <view class="login-page">
   <!-- 品牌区 -->
   <view class="brand">
-    <view class="brand-logo ic ic-cup-w"></view>
+    <image class="brand-logo ic ic-cup-w" src="/assets/icons/cup-w.png" />
     <view class="brand-name">GC Coffee</view>
     <view class="brand-slogan">咖啡液次日送达 · 饮品到店自取</view>
   </view>
@@ -17,7 +17,7 @@
     <!-- 微信一键登录 -->
     <block wx:if="{{mode === 'wx'}}">
       <button class="btn wx-btn" disabled="{{loading}}" bindtap="wxLogin">
-        <view class="ic ic-wechat-w" style="width:40rpx;height:40rpx;"></view>
+        <image class="ic ic-wechat-w" style="width:40rpx;height:40rpx;" src="/assets/icons/wechat-w.png" />
         微信一键登录
       </button>
       <view class="tip">开发期为模拟登录（自动生成账号）<br />后端配置微信 AppID 后自动切换真实微信登录</view>

@@ -1,7 +1,7 @@
 .menu-page { height: 100vh; display: flex; flex-direction: column; }
 
 .menu-top {
-  padding: 60rpx 32rpx 24rpx;
+  padding: calc(60rpx + env(safe-area-inset-top)) 32rpx 24rpx;
   background: linear-gradient(160deg, #4B3621 0%, #6F4E37 100%);
   border-radius: 0 0 40rpx 40rpx;
 }
@@ -37,7 +37,7 @@
   border-radius: 0 8rpx 8rpx 0;
 }
 
-.product-list { flex: 1; height: 100%; }
+.product-list { flex: 1; height: 100%; padding-bottom: 200rpx; box-sizing: border-box; }
 .cat-block { padding: 20rpx 24rpx 8rpx; }
 .cat-name { font-size: 30rpx; font-weight: 700; margin-bottom: 16rpx; }
 

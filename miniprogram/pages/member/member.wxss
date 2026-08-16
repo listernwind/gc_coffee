@@ -1,4 +1,4 @@
-.member-page { padding: 0 28rpx 160rpx; }
+.member-page { padding: calc(24rpx + env(safe-area-inset-top)) 28rpx 160rpx; }
 
 .mcard {
   border-radius: 36rpx;

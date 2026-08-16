@@ -60,7 +60,7 @@
     </view>
   </view>
   <view class="empty" wx:else>
-    <view class="icon ic ic-chart"></view>
+    <image class="icon ic ic-chart" src="/assets/icons/chart.png" />
     <view>本月还没有预订</view>
   </view>
 </view>

@@ -27,7 +27,7 @@
   </view>
 
   <view class="empty" wx:else>
-    <view class="icon ic ic-receipt"></view>
+    <image class="icon ic ic-receipt" src="/assets/icons/receipt.png" />
     <view>暂无相关订单</view>
     <view class="sub" style="margin-top:8rpx;">去点一杯吧</view>
   </view>

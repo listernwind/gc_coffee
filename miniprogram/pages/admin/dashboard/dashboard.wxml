@@ -91,7 +91,7 @@
         <view class="rk-qty">{{item.quantity}} {{item.unit}}</view>
       </view>
       <view class="rank" wx:for="{{top.coffees}}" wx:key="name">
-        <view class="rk-no hot coffee"><view class="ic ic-bottle" style="width:22rpx;height:22rpx;"></view></view>
+        <view class="rk-no hot coffee"><image class="ic ic-bottle" style="width:22rpx;height:22rpx;" src="/assets/icons/bottle.png" /></view>
         <view class="rk-main">
           <view class="rk-name">{{item.name}}</view>
           <view class="rk-track"><view class="rk-bar gold" style="width:{{item.pct}}%;"></view></view>
@@ -105,14 +105,14 @@
   <!-- 快捷入口 -->
   <view class="quick-title">管理功能</view>
   <view class="quick">
-    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go"><view class="qk-ic ic ic-truck"></view><view class="qk-t">派送管理</view></view>
-    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go"><view class="qk-ic ic ic-cup"></view><view class="qk-t">饮品订单</view></view>
-    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go"><view class="qk-ic ic ic-book"></view><view class="qk-t">台账</view></view>
-    <view class="qk" data-url="/pages/admin/products/products" bindtap="go"><view class="qk-ic ic ic-box"></view><view class="qk-t">商品管理</view></view>
-    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go"><view class="qk-ic ic ic-ticket"></view><view class="qk-t">优惠券</view></view>
-    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go"><view class="qk-ic ic ic-gift"></view><view class="qk-t">活动海报</view></view>
-    <view class="qk" data-url="/pages/admin/members/members" bindtap="go"><view class="qk-ic ic ic-users"></view><view class="qk-t">会员管理</view></view>
-    <view class="qk" data-url="/pages/admin/staff/staff" bindtap="go"><view class="qk-ic ic ic-user"></view><view class="qk-t">派送员</view></view>
-    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go"><view class="qk-ic ic ic-sliders"></view><view class="qk-t">系统设置</view></view>
+    <view class="qk" data-url="/pages/admin/reservations/reservations" bindtap="go"><image class="qk-ic ic ic-truck" src="/assets/icons/truck.png" /><view class="qk-t">派送管理</view></view>
+    <view class="qk" data-url="/pages/admin/orders/orders" bindtap="go"><image class="qk-ic ic ic-cup" src="/assets/icons/cup.png" /><view class="qk-t">饮品订单</view></view>
+    <view class="qk" data-url="/pages/admin/ledger/ledger" bindtap="go"><image class="qk-ic ic ic-book" src="/assets/icons/book.png" /><view class="qk-t">台账</view></view>
+    <view class="qk" data-url="/pages/admin/products/products" bindtap="go"><image class="qk-ic ic ic-box" src="/assets/icons/box.png" /><view class="qk-t">商品管理</view></view>
+    <view class="qk" data-url="/pages/admin/coupons/coupons" bindtap="go"><image class="qk-ic ic ic-ticket" src="/assets/icons/ticket.png" /><view class="qk-t">优惠券</view></view>
+    <view class="qk" data-url="/pages/admin/activities/activities" bindtap="go"><image class="qk-ic ic ic-gift" src="/assets/icons/gift.png" /><view class="qk-t">活动海报</view></view>
+    <view class="qk" data-url="/pages/admin/members/members" bindtap="go"><image class="qk-ic ic ic-users" src="/assets/icons/users.png" /><view class="qk-t">会员管理</view></view>
+    <view class="qk" data-url="/pages/admin/staff/staff" bindtap="go"><image class="qk-ic ic ic-user" src="/assets/icons/user.png" /><view class="qk-t">派送员</view></view>
+    <view class="qk" data-url="/pages/admin/settings/settings" bindtap="go"><image class="qk-ic ic ic-sliders" src="/assets/icons/sliders.png" /><view class="qk-t">系统设置</view></view>
   </view>
 </view>

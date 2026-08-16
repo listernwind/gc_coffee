@@ -1,7 +1,7 @@
 <view class="page page-pad">
   <view class="card" wx:for="{{staffs}}" wx:key="id">
     <view class="st-head">
-      <view class="st-avatar ic ic-user"></view>
+      <view class="st-avatar"><image class="ic ic-user" src="/assets/icons/user.png" /></view>
       <view class="st-info">
         <view style="font-weight:700;">{{item.nickname}} <text class="sub" wx:if="{{item.status === 0}}">（已禁用）</text></view>
         <view class="sub">账号 {{item.username}} · {{item.phone || '未留手机号'}}</view>

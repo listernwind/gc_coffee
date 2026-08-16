@@ -5,7 +5,7 @@
   align-items: center;
   background: linear-gradient(135deg, #6F4E37, #4B3621);
   border-radius: 0 0 40rpx 40rpx;
-  padding: 60rpx 32rpx 44rpx;
+  padding: calc(60rpx + env(safe-area-inset-top)) 32rpx 44rpx;
   color: #FFF7EC;
 }
 .uc-avatar {

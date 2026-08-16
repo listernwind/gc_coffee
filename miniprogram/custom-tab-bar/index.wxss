@@ -3,7 +3,7 @@
   position: fixed;
   left: 24rpx;
   right: 24rpx;
-  bottom: 24rpx;
+  bottom: calc(24rpx + env(safe-area-inset-bottom));
   height: 110rpx;
   background: rgba(46, 33, 24, 0.96);
   border-radius: 60rpx;

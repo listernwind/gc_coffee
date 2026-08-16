@@ -21,7 +21,7 @@
   <!-- 海报列表 -->
   <block wx:if="{{activeTab === 'poster'}}">
     <view class="card" wx:for="{{posters}}" wx:key="id">
-      <view style="font-weight:700;" class="prow"><view class="p-ic ic ic-image"></view><text>{{item.title}}</text></view>
+      <view style="font-weight:700;" class="prow"><image class="p-ic ic ic-image" src="/assets/icons/image.png" /><text>{{item.title}}</text></view>
       <view class="sub">链接：{{item.linkType === 'ACTIVITY' ? '活动#' + item.linkId : '无'}} · {{item.active === 1 ? '上架' : '下架'}}</view>
       <view class="a-ops">
         <view class="op" data-item="{{item}}" bindtap="openForm">编辑</view>

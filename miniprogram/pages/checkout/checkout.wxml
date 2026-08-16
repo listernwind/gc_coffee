@@ -34,11 +34,11 @@
   <view class="card">
     <view class="title" style="margin-bottom:16rpx;">支付方式</view>
     <view class="pay-item {{payType === 'WX_MOCK' ? 'sel' : ''}}" data-type="WX_MOCK" bindtap="selectPay">
-      <view class="pay-left"><view class="pay-emoji ic ic-card"></view><view>微信支付<view class="sub">（开发期模拟支付）</view></view></view>
+      <view class="pay-left"><image class="pay-emoji ic ic-card" src="/assets/icons/card.png" /><view>微信支付<view class="sub">（开发期模拟支付）</view></view></view>
       <view class="radio {{payType === 'WX_MOCK' ? 'on' : ''}}"></view>
     </view>
     <view class="pay-item {{payType === 'BALANCE' ? 'sel' : ''}} {{balanceEnough ? '' : 'disabled'}}" data-type="BALANCE" bindtap="selectPay">
-      <view class="pay-left"><view class="pay-emoji ic ic-wallet"></view><view>余额支付<view class="sub">可用余额 ¥{{balance}}{{balanceEnough ? '' : '（不足）'}}</view></view></view>
+      <view class="pay-left"><image class="pay-emoji ic ic-wallet" src="/assets/icons/wallet.png" /><view>余额支付<view class="sub">可用余额 ¥{{balance}}{{balanceEnough ? '' : '（不足）'}}</view></view></view>
       <view class="radio {{payType === 'BALANCE' ? 'on' : ''}}"></view>
     </view>
   </view>

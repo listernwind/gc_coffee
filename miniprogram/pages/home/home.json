@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "GC Coffee",
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white"
 }

@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "经营看板",
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white"
 }

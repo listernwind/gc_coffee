@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "饮品点单",
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white"
 }

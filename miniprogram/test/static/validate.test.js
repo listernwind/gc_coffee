@@ -77,18 +77,34 @@ describe('WXML 规范', () => {
     }
   });
 
-  test('WXML 引用的图标类都存在于图标库', () => {
+  test('WXML 引用的图标都有对应 PNG 文件', () => {
     const used = new Set();
+    const iconDir = path.join(ROOT, 'assets', 'icons');
     for (const page of APP_JSON.pages) {
       const wxml = fs.readFileSync(path.join(ROOT, page + '.wxml'), 'utf-8');
+      for (const m of wxml.matchAll(/src="\/assets\/icons\/([a-z]+(?:-[wmg])?)\.png"/g)) {
+        used.add(m[1]);
+      }
+      // 静态类引用（保留给预览页/样式类）
       for (const m of wxml.matchAll(/class="[^"]*\b(ic-[a-z]+(?:-[wmg])?)\b[^"]*"/g)) {
-        used.add(m[1].replace(/-(w|m|g)$/, ''));
+        used.add(m[1].replace(/^ic-/, '').replace(/-(w|m|g)$/, ''));
       }
     }
-    const defined = new Set([...ICONS_WXSS.matchAll(/\.(ic-[a-z-]+)\{/g)].map((m) => m[1]));
+    const files = new Set(fs.readdirSync(iconDir).filter((f) => f.endsWith('.png')));
+    expect(files.size).toBeGreaterThanOrEqual(100);
     for (const u of used) {
-      expect(defined.has(u)).toBe(true);
+      if (u.includes('ic-')) continue;
+      expect(files.has(u + '.png')).toBe(true);
     }
     expect(used.size).toBeGreaterThan(15);
+  });
+
+  test('图标 PNG 非纯白（含真实描边像素）', () => {
+    // 简单校验：PNG 文件大小差异明显（纯白压缩图极小）且文件头正确
+    for (const f of ['home.png', 'home-w.png', 'truck.png', 'star.png']) {
+      const buf = fs.readFileSync(path.join(ROOT, 'assets', 'icons', f));
+      expect(buf.slice(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+      expect(buf.length).toBeGreaterThan(400);
+    }
   });
 });

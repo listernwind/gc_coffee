@@ -49,7 +49,7 @@
         <view class="t-value t-contact">
           <text>{{item.contactName}} {{item.contactPhone}}</text>
           <view class="t-call" data-phone="{{item.contactPhone}}" bindtap="call">
-            <view class="ic ic-phone-w" style="width:24rpx;height:24rpx;"></view>
+            <image class="ic ic-phone-w" style="width:24rpx;height:24rpx;" src="/assets/icons/phone-w.png" />
             拨打
           </view>
         </view>
@@ -76,7 +76,7 @@
   </view>
 
   <view class="empty" wx:else>
-    <view class="icon ic ic-truck"></view>
-    <view>{{activeTab === 'today' ? '今天' : activeTab === 'tomorrow' ? '明天' : '暂'}}暂无派送任务</view>
+    <image class="icon ic ic-truck" src="/assets/icons/truck.png" />
+    <view>暂无派送任务</view>
   </view>
 </view>

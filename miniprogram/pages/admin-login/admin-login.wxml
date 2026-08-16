@@ -1,5 +1,5 @@
 <view class="login-page">
-  <view class="logo ic ic-sliders"></view>
+  <image class="logo ic ic-sliders" src="/assets/icons/sliders.png" />
   <view class="l-title">店长管理后台</view>
   <view class="l-sub">GC Coffee 咖啡小馆</view>
 

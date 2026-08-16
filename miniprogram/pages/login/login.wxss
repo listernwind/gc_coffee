@@ -1,11 +1,11 @@
 .login-page {
   min-height: 100vh;
   padding: 0 48rpx 60rpx;
-  background: linear-gradient(180deg, #4B3621 0%, #6F4E37 320rpx, #F6F1EA 320rpx);
+  background: linear-gradient(180deg, #4B3621 0%, #6F4E37 480rpx, #F6F1EA 480rpx);
 }
 
 /* 品牌区 */
-.brand { padding-top: 140rpx; text-align: center; color: #FFF7EC; }
+.brand { padding-top: calc(120rpx + env(safe-area-inset-top)); text-align: center; color: #FFF7EC; }
 .brand-logo { width: 120rpx; height: 120rpx; margin: 0 auto; }
 .brand-name { font-size: 52rpx; font-weight: 800; letter-spacing: 4rpx; margin-top: 20rpx; }
 .brand-slogan { font-size: 24rpx; opacity: 0.75; margin-top: 10rpx; letter-spacing: 2rpx; }

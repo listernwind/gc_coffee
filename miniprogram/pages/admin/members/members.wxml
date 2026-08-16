@@ -25,7 +25,7 @@
       </view>
     </view>
   </view>
-  <view class="empty" wx:else><view class="icon ic ic-users"></view><view>暂无会员</view></view>
+  <view class="empty" wx:else><image class="icon ic ic-users" src="/assets/icons/users.png" /><view>暂无会员</view></view>
 
   <!-- 调整弹层 -->
   <view class="mask" wx:if="{{adjust}}" bindtap="closeAdjust"></view>

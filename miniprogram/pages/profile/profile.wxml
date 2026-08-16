@@ -1,7 +1,7 @@
 <view class="profile-page">
   <!-- 用户卡 -->
   <view class="user-card">
-    <image wx:if="{{profile.avatar}}" class="uc-avatar-img" src="{{profile.avatar}}" mode="aspectFill" /><view wx:else class="uc-avatar"><view class="ic ic-user-w"></view></view>
+    <image wx:if="{{profile.avatar}}" class="uc-avatar-img" src="{{profile.avatar}}" mode="aspectFill" /><view wx:else class="uc-avatar"><image class="ic ic-user-w" src="/assets/icons/user-w.png" /></view>
     <view class="uc-info">
       <view class="uc-name">{{profile.nickname}}</view>
       <view class="uc-tags">
@@ -20,34 +20,34 @@
     </view>
     <view class="order-status">
       <view class="os-item" data-status="PAID" bindtap="goOrders">
-        <view class="os-emoji ic ic-cup"></view><view>待制作</view>
+        <image class="os-emoji ic ic-cup" src="/assets/icons/cup.png" /><view>待制作</view>
       </view>
       <view class="os-item" data-status="MAKING" bindtap="goOrders">
-        <view class="os-emoji ic ic-clock"></view><view>制作中</view>
+        <image class="os-emoji ic ic-clock" src="/assets/icons/clock.png" /><view>制作中</view>
       </view>
       <view class="os-item" data-status="READY" bindtap="goOrders">
-        <view class="os-emoji ic ic-bell"></view><view>待取餐</view>
+        <image class="os-emoji ic ic-bell" src="/assets/icons/bell.png" /><view>待取餐</view>
       </view>
       <view class="os-item" data-status="ALL" bindtap="goOrders">
-        <view class="os-emoji ic ic-receipt"></view><view>全部</view>
+        <image class="os-emoji ic ic-receipt" src="/assets/icons/receipt.png" /><view>全部</view>
       </view>
     </view>
   </view>
 
   <!-- 功能列表 -->
   <view class="card menu-list">
-    <view class="mi" bindtap="goReserveRecords"><view class="mi-icon ic ic-box"></view><text class="mi-text">咖啡液预订</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goMonthly"><view class="mi-icon ic ic-chart"></view><text class="mi-text">月度咖啡液详情</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goCoupons"><view class="mi-icon ic ic-ticket"></view><text class="mi-text">优惠券</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goActivity"><view class="mi-icon ic ic-gift"></view><text class="mi-text">活动</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goMember"><view class="mi-icon ic ic-gem"></view><text class="mi-text">会员中心</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goBalance"><view class="mi-icon ic ic-wallet"></view><text class="mi-text">余额明细</text><text class="mi-arrow">›</text></view>
-    <view class="mi" bindtap="goPoints"><view class="mi-icon ic ic-star"></view><text class="mi-text">积分明细</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goReserveRecords"><image class="mi-icon ic ic-box" src="/assets/icons/box.png" /><text class="mi-text">咖啡液预订</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goMonthly"><image class="mi-icon ic ic-chart" src="/assets/icons/chart.png" /><text class="mi-text">月度咖啡液详情</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goCoupons"><image class="mi-icon ic ic-ticket" src="/assets/icons/ticket.png" /><text class="mi-text">优惠券</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goActivity"><image class="mi-icon ic ic-gift" src="/assets/icons/gift.png" /><text class="mi-text">活动</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goMember"><image class="mi-icon ic ic-gem" src="/assets/icons/gem.png" /><text class="mi-text">会员中心</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goBalance"><image class="mi-icon ic ic-wallet" src="/assets/icons/wallet.png" /><text class="mi-text">余额明细</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="goPoints"><image class="mi-icon ic ic-star" src="/assets/icons/star.png" /><text class="mi-text">积分明细</text><text class="mi-arrow">›</text></view>
   </view>
 
   <!-- 管理入口 -->
   <view class="card admin-entry" bindtap="goAdmin">
-    <view class="ae-icon ic ic-sliders-w"></view>
+    <image class="ae-icon ic ic-sliders-w" src="/assets/icons/sliders-w.png" />
     <view class="ae-text">
       <view style="font-weight:700;">店长管理后台</view>
       <view class="sub">台账统计 · 派送管理 · 商品 · 优惠券 · 活动海报 · 会员 · 设置</view>
@@ -57,7 +57,7 @@
 
   <!-- 派送员入口 -->
   <view class="card staff-entry" bindtap="goStaff">
-    <view class="se-icon ic ic-truck"></view>
+    <image class="se-icon ic ic-truck" src="/assets/icons/truck.png" />
     <view class="se-text">
       <view style="font-weight:700;">派送员工作台</view>
       <view class="sub">今日派送任务 · 认领订单 · 一键拨打客户电话 · 送达确认</view>
@@ -66,7 +66,7 @@
   </view>
 
   <view class="card menu-list">
-    <view class="mi" bindtap="logout"><text class="mi-icon ic ic-receipt" style="margin-right:22rpx;"></text><text class="mi-text" style="color:var(--danger);">退出登录</text><text class="mi-arrow">›</text></view>
+    <view class="mi" bindtap="logout"><image class="mi-icon ic ic-receipt" style="margin-right:22rpx;" src="/assets/icons/receipt.png" /><text class="mi-text" style="color:var(--danger);">退出登录</text><text class="mi-arrow">›</text></view>
   </view>
 
   <view class="dev-zone" bindtap="switchDemo">开发辅助：切换演示账号（mock 模式）</view>

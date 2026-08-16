@@ -50,62 +50,80 @@ COLORS = {
     "-g": "#C08A4E", # 金色（强调）
 }
 
-TPL = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" '
-       'stroke="{c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">{p}</svg>')
+# 必须用 <path d="..."/> 包裹路径数据（裸写路径是非法 SVG，任何渲染器都不会绘制）
+TPL = ('<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" '
+       'stroke="{c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{p}"/></svg>')
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-CACHE = os.path.join(HERE, "icon-cache")
+CACHE = os.path.join(HERE, "icon-cache-v2")
 
 
-def render_png(svg_text: str, name: str) -> bytes:
-    """qlmanage 渲染 SVG -> PNG（批量），带缓存"""
+def render_batch(items):
+    """每个 SVG 作为顶层文档交给 Chrome 无头导航截图（页面内 SVG 渲染不可靠）"""
     os.makedirs(CACHE, exist_ok=True)
-    cache_file = os.path.join(CACHE, name + ".png")
-    if os.path.exists(cache_file) and os.path.getsize(cache_file) > 0:
-        return open(cache_file, "rb").read()
-    tmp = os.path.join(CACHE, "_render")
-    os.makedirs(tmp, exist_ok=True)
-    svg_path = os.path.join(tmp, name + ".svg")
-    with open(svg_path, "w", encoding="utf-8") as f:
-        f.write(svg_text)
-    subprocess.run(["qlmanage", "-t", "-s", "96", "-o", tmp, svg_path],
-                   capture_output=True, check=True)
-    png_path = os.path.join(tmp, name + ".svg.png")
-    data = open(png_path, "rb").read()
-    with open(cache_file, "wb") as f:
-        f.write(data)
-    return data
+    missing = [it for it in items if not os.path.exists(os.path.join(CACHE, it[0] + ".png"))]
+    if missing:
+        import json as _json
+        list_path = os.path.join(CACHE, "_batch.json")
+        with open(list_path, 'w', encoding='utf-8') as f:
+            _json.dump([{'name': n, 'svg': s} for n, s in missing], f, ensure_ascii=False)
+        node_script = os.path.join(ROOT, 'miniprogram', 'test', 'tools', 'render-icons.js')
+        subprocess.run(['node', node_script, list_path, CACHE], check=True)
+    result = {}
+    for name, _ in items:
+        p = os.path.join(CACHE, name + '.png')
+        if not os.path.exists(p):
+            raise RuntimeError(f'渲染失败: {name}')
+        result[name] = open(p, 'rb').read()
+    return result
 
 
 def b64_png(png: bytes) -> str:
     return "data:image/png;base64," + base64.b64encode(png).decode()
 
 
-def gen_css() -> str:
+def gen_css(png_map) -> str:
     lines = [
         "/* GC Coffee 线性图标库（PNG，自动生成，勿手改） */",
         ".ic{display:inline-block;width:40rpx;height:40rpx;background-repeat:no-repeat;background-position:center;background-size:contain;}",
     ]
-    for name, path in ICONS.items():
-        for suffix, color in COLORS.items():
-            png = render_png(TPL.format(c=color, p=path), f"{name}{suffix or '-d'}")
-            cls = f"ic-{name}{suffix}"
-            lines.append(f".{cls}{{background-image:url('{b64_png(png)}');}}")
+    for name in png_map:
+        base = name[:-2] if name.endswith('-d') else name
+        suffix = '' if name.endswith('-d') else name[len(base):]
+        cls = f"ic-{base}{suffix}"
+        lines.append(f".{cls}{{background-image:url('{b64_png(png_map[name])}');}}")
     return "\n".join(lines) + "\n"
 
 
 def main():
-    wxss = gen_css()
-    os.makedirs(os.path.join(ROOT, "miniprogram", "assets"), exist_ok=True)
+    # 1. Chrome 渲染全部图标 PNG
+    items = []
+    for name, path in ICONS.items():
+        for suffix, color in COLORS.items():
+            items.append((f"{name}{suffix or '-d'}", TPL.format(c=color, p=path)))
+    png_map = render_batch(items)
+
+    # 2. PNG 文件：小程序 <image src> 引用
+    icon_dir = os.path.join(ROOT, "miniprogram", "assets", "icons")
+    os.makedirs(icon_dir, exist_ok=True)
+    for key, png in png_map.items():
+        base = key[:-2] if key.endswith('-d') else key
+        suffix = '' if key.endswith('-d') else key[len(base):]
+        with open(os.path.join(icon_dir, f"{base}{suffix}.png"), "wb") as f:
+            f.write(png)
+
+    # 3. 小程序 icons.wxss：仅 .ic 基础类（图标由 image 文件承载）
     with open(os.path.join(ROOT, "miniprogram", "assets", "icons.wxss"), "w", encoding="utf-8") as f:
-        f.write(wxss)
-    css = wxss.replace("40rpx", "18px")
+        f.write(".ic{display:inline-block;width:40rpx;height:40rpx;}\n")
+
+    # 4. 浏览器预览：data-URI CSS（Chrome 渲染的正确图标）
+    css = gen_css(png_map).replace("40rpx", "18px")
     os.makedirs(os.path.join(ROOT, "preview"), exist_ok=True)
     with open(os.path.join(ROOT, "preview", "icons.css"), "w", encoding="utf-8") as f:
         f.write(css)
-    size = sum(1 for _ in ICONS) * len(COLORS)
-    print(f"generated: {size} PNG icons -> miniprogram/assets/icons.wxss + preview/icons.css")
+
+    print(f"generated: {len(png_map)} PNG 图标 + icons.wxss + preview/icons.css")
 
 
 if __name__ == "__main__":

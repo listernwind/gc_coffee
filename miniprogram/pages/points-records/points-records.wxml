@@ -9,7 +9,7 @@
     </view>
   </view>
   <view class="empty" wx:else>
-    <view class="icon ic ic-star"></view>
+    <image class="icon ic ic-star" src="/assets/icons/star.png" />
     <view>暂无积分记录</view>
   </view>
 </view>

@@ -4,7 +4,7 @@
 /* 顶部渐变区 */
 .dash-top {
   background: linear-gradient(160deg, #4B3621 0%, #6F4E37 100%);
-  padding: 56rpx 32rpx 96rpx;
+  padding: calc(56rpx + env(safe-area-inset-top)) 32rpx 96rpx;
   border-radius: 0 0 48rpx 48rpx;
   color: #FFF7EC;
 }

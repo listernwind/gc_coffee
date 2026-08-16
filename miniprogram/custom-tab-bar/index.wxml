@@ -7,7 +7,7 @@
     data-index="{{index}}"
     bindtap="switchTab"
   >
-    <view class="tab-icon ic {{selected === index ? 'ic-' + item.key + '-w' : 'ic-' + item.key + '-m'}}"></view>
+    <image class="tab-icon ic" src="/assets/icons/{{selected === index ? item.key + '-w' : item.key + '-m'}}.png" />
     <view class="tab-text">{{item.text}}</view>
   </view>
 </view>

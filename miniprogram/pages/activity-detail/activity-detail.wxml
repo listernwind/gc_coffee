@@ -1,6 +1,6 @@
 <view class="page" wx:if="{{activity}}">
   <view class="hero-banner">
-    <view class="hb-emoji ic ic-gift-w"></view>
+    <image class="hb-emoji ic ic-gift-w" src="/assets/icons/gift-w.png" />
     <view class="hb-title">{{activity.title}}</view>
     <view class="hb-sub">{{activity.subtitle}}</view>
     <view class="hb-period">{{activity.period}}</view>

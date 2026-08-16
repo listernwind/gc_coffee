@@ -1,5 +1,5 @@
 <view class="login-page">
-  <view class="logo ic ic-truck"></view>
+  <image class="logo ic ic-truck" src="/assets/icons/truck.png" />
   <view class="l-title">派送员工作台</view>
   <view class="l-sub">GC Coffee 咖啡小馆 · 本小区配送</view>
 

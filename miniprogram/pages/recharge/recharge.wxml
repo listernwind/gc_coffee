@@ -17,7 +17,7 @@
       <text class="label">自定义金额</text>
       <input class="input" type="digit" placeholder="输入金额（元）" value="{{custom}}" bindinput="onCustom" />
     </view>
-    <view class="notice-line"><view class="nl-ic ic ic-lightbulb"></view><text>开发期为模拟支付，接入微信支付后自动走真实收银</text></view>
+    <view class="notice-line"><image class="nl-ic ic ic-lightbulb" src="/assets/icons/lightbulb.png" /><text>开发期为模拟支付，接入微信支付后自动走真实收银</text></view>
   </view>
 
   <button class="btn btn-accent" disabled="{{submitting}}" bindtap="submit">立即充值 ¥{{amount || custom || 0}}</button>

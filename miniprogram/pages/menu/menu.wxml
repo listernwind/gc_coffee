@@ -21,7 +21,7 @@
       <view wx:for="{{categories}}" wx:key="id" wx:for-item="cat" class="cat-block" id="cat-{{index}}">
         <view class="cat-name">{{cat.name}}</view>
         <view wx:for="{{cat.products}}" wx:key="id" wx:for-item="p" class="product">
-          <view class="p-img"><view class="ic ic-cup"></view></view>
+          <view class="p-img"><image class="ic ic-cup" src="/assets/icons/cup.png" /></view>
           <view class="p-info">
             <view class="p-name">{{p.name}}</view>
             <view class="p-desc">{{p.descText}}</view>
@@ -62,7 +62,7 @@
 
   <!-- 底部结算栏 -->
   <view class="cart-bar">
-    <view class="cart-icon ic ic-cart-w" bindtap="toggleCart"><view wx:if="{{cartCount}}" class="cart-count">{{cartCount}}</view></view>
+    <view class="cart-icon" bindtap="toggleCart"><image class="ic ic-cart-w" src="/assets/icons/cart-w.png" /><view wx:if="{{cartCount}}" class="cart-count">{{cartCount}}</view></view>
     <view class="cart-total">
       <view class="price" style="color:#FFF7EC;font-size:36rpx;">¥{{cartAmount}}</view>
       <view class="muted" style="color:rgba(255,247,236,0.6);font-size:20rpx;">配送费 0 元</view>

@@ -22,5 +22,5 @@
       </view>
     </view>
   </view>
-  <view class="empty" wx:else><view class="icon ic ic-cup"></view><view>暂无订单</view></view>
+  <view class="empty" wx:else><image class="icon ic ic-cup" src="/assets/icons/cup.png" /><view>暂无订单</view></view>
 </view>

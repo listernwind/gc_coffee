@@ -1,7 +1,7 @@
 <view class="page page-pad">
   <!-- 顶部说明 -->
   <view class="hero-tip">
-    <view class="ht-emoji ic ic-truck-w"></view>
+    <image class="ht-emoji ic ic-truck-w" src="/assets/icons/truck-w.png" />
     <view>
       <view class="ht-title">今日预订 · 次日派送</view>
       <view class="ht-sub">仅限本小区 · 按门牌号配送上门</view>
@@ -18,7 +18,7 @@
       data-id="{{item.id}}"
       bindtap="selectProduct"
     >
-      <view class="prod-emoji"><view class="ic ic-bottle"></view></view>
+      <view class="prod-emoji"><image class="ic ic-bottle" src="/assets/icons/bottle.png" /></view>
       <view class="prod-info">
         <view class="prod-name">{{item.name}}</view>
         <view class="sub">{{item.spec}} · {{item.descText}}</view>
