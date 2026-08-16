@@ -24,7 +24,7 @@ const browser = await puppeteer.launch({
 });
 try {
   const page = await browser.newPage();
-  await page.setViewport({ width: 96, height: 96, deviceScaleFactor: 2 });
+  await page.setViewport({ width: 96, height: 96, deviceScaleFactor: 1 });
   await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'light' }]);
 
   let done = 0;

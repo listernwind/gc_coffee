@@ -1,7 +1,12 @@
 {
   "description": "GC Coffee 咖啡店微信小程序",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "folder", "value": "test" },
+      { "type": "folder", "value": "node_modules" },
+      { "type": "file", "value": "package.json" },
+      { "type": "file", "value": "package-lock.json" }
+    ],
     "include": []
   },
   "setting": {
