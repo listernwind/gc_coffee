@@ -15,3 +15,7 @@ tools/*
 .idea/
 *.iml
 .vscode/
+
+# 前端测试
+miniprogram/node_modules/
+miniprogram/test/screenshots/

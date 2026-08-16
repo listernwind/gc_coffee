@@ -1,0 +1,30 @@
+{
+  "name": "gc-coffee-miniprogram",
+  "version": "1.0.0",
+  "description": "GC Coffee 咖啡店微信小程序（含单元/静态/E2E 测试）",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:flow": "node test/preview/flow.js",
+    "test:shots": "node test/preview/screenshot.js",
+    "test:e2e": "node test/e2e/run-e2e.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/**/*.test.js"
+    ],
+    "verbose": true
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "miniprogram-automator": "^0.12.1",
+    "miniprogram-simulate": "^1.6.2",
+    "puppeteer-core": "^25.7.0"
+  }
+}

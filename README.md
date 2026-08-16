@@ -111,6 +111,24 @@ mvn spring-boot:run
 | 管理-会员 | `GET /admin/members`、`POST /admin/members/{id}/balance|points|status` |
 | 管理-运营 | `GET /admin/ops/reservations|orders`、`PUT .../status|cancel`、`GET/PUT /admin/ops/settings` |
 
+## 前端测试体系
+
+| 层级 | 工具 | 命令 | 说明 |
+| --- | --- | --- | --- |
+| 单元测试 | Jest（29 项） | `cd miniprogram && npm test` | utils 金额/日期/券计算、request 封装（token 路由/401/403/网络异常 mock） |
+| 静态回归 | Jest 内置 | 同上 | 页面 4 件套齐全、JSON/JS 语法、WXML 非法表达式、emoji 残留、图标类引用校验 |
+| 页面功能流 | puppeteer-core + 本机 Chrome（21 项） | `npm run test:flow` | 无头浏览器驱动预览页真实点击：登录→首页→加购→预订试算→月度→会员→派送→看板，每步截图存 test/screenshots/flow/ |
+| 页面截图巡检 | puppeteer-core | `npm run test:shots` | 9 个屏幕逐屏截 390×844 高清图到 test/screenshots/，供人工/图像模型审查布局 |
+| 小程序 E2E | miniprogram-automator（微信官方） | `npm run test:e2e` | 需开发者工具开启「服务端口」，真实小程序 tap/input/断言 |
+| 组件级测试 | miniprogram-simulate（微信官方） | 按需 | custom-tab-bar 等组件隔离测试 |
+| 真机自动化 | minium（腾讯官方，Python） | 按需 | 支持 iOS/Android 真机 + IDE 双模式，适合上线前回归 |
+| 云真机 | WeTest / 微信云测 | 按需 | 多机型兼容性验证，商业服务 |
+
+后端侧配套：`backend/smoke/smoke_test.py`（业务链路 59 项）、`backend/smoke/api_contract_test.py`（前后端接口契约 53 项）。
+
+布局调整闭环：改 `preview/index.html` 或小程序 `.wxss` → `npm run test:shots` 重拍 → 对比 test/screenshots/ 目录或直接刷新 http://127.0.0.1:8090/ 查看。
+
+## 四、上线前还缺什么
 ## 四、上线前还缺什么（按优先级）
 
 1. **微信小程序 AppID**：注册小程序账号，替换 `project.config.json` 的 `touristappid`，并在后端 `application.yml` 配置 `app.wx.appid/secret` 开启真实登录。
